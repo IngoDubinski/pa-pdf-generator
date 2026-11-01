@@ -1,0 +1,12 @@
+TESTCHECKLISTE v1.0 RC1 (mit fiktiven Daten)
+[ ] Excel-Reiter und Schülerzahlen korrekt erkannt
+[ ] 2 Aufgaben je AK gewählt
+[ ] Sortierung Gruppe aufsteigend korrekt
+[ ] 6 BB + 1 BBK + 1 SE pro Klasse im ZIP
+[ ] Namen, Datum, Beobachter, AC-Einheit und Aufgaben korrekt
+[ ] Kompetenz-Häkchen stimmen
+[ ] BBK/SE: keine vorausgewählten Bewertungen
+[ ] Flachgerechnet: Felder nicht editierbar
+[ ] Bearbeitbar: Formularfelder anklickbar
+[ ] PDF-Dateinamen ohne Windows-Sonderzeichen
+[ ] Offline-Test: WLAN trennen und index.html öffnen

@@ -1,0 +1,6 @@
+PA-PDF-Generator Web v1.0 – GitHub Pages mit integrierten Original-PDF-Vorlagen
+
+GITHUB PAGES: Nach Veröffentlichung sind keine separaten PDF-Vorlagen auszuwählen.
+LOKAL: index.html in Firefox öffnen. Falls PDF-Vorlagen nicht automatisch geladen werden können, die drei PDF-Dateien aus „Vorlagen“ manuell auswählen.
+
+Details: GITHUB_PAGES_ANLEITUNG.txt
