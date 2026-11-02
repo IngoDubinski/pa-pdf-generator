@@ -1,0 +1,14 @@
+const ADMIN_PASSWORD = "vIbHBWst1JVtLaYoddbUHQ";
+const STORAGE='pa_generator_links_v12';
+const $=id=>document.getElementById(id);
+const load=()=>{try{return JSON.parse(localStorage.getItem(STORAGE)||'[]')}catch{return []}};
+const save=x=>localStorage.setItem(STORAGE,JSON.stringify(x));
+const urlFor=key=>new URL('tool.html?key='+encodeURIComponent(key),location.href).href;
+function encodeData(d){const bytes=new TextEncoder().encode(JSON.stringify(d));let s='';bytes.forEach(b=>s+=String.fromCharCode(b));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+function render(){const tb=$('entries');tb.replaceChildren();load().forEach((entry,i)=>{const tr=document.createElement('tr');const expired=Date.now()>=entry.until;for(const t of [entry.name,new Date(entry.until).toLocaleString('de-DE'),expired?'Abgelaufen':'Aktiv']){const td=document.createElement('td');td.textContent=t;tr.append(td)}const td=document.createElement('td');const copy=document.createElement('button');copy.textContent='Link kopieren';copy.onclick=()=>navigator.clipboard.writeText(urlFor(entry.key));const del=document.createElement('button');del.textContent='Aus Liste löschen';del.onclick=()=>{if(confirm('Eintrag aus der lokalen Liste löschen? Der Link bleibt technisch bis zum Ablauf gültig.')){const a=load();a.splice(i,1);save(a);render()}};td.append(copy,' ',del);tr.append(td);tb.append(tr)})}
+function unlock(){if($('password').value!==ADMIN_PASSWORD){$('error').textContent='Passwort falsch.';return} $('login').hidden=true;$('admin').hidden=false;render()}
+$('loginButton').onclick=unlock;$('password').onkeydown=e=>{if(e.key==='Enter')unlock()};
+$('create').onclick=()=>{const name=$('colleague').value.trim();if(!name){$('created').textContent='Bitte einen Namen eingeben.';return}const until=Date.now()+Number($('duration').value)*86400000;const nonce=Array.from(crypto.getRandomValues(new Uint8Array(18)),b=>b.toString(16).padStart(2,'0')).join('');const key=encodeData({v:1,name,until,nonce});const a=load();a.push({name,until,key});save(a);render();$('created').textContent='Link für '+name+' erstellt. Über „Link kopieren“ in der Tabelle kopieren.';$('colleague').value=''};
+$('copyPermanent').onclick=()=>navigator.clipboard.writeText(urlFor(PAAccess.permanent));
+$('export').onclick=()=>{const b=new Blob([JSON.stringify(load(),null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='pa-kollegen-links.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)};
+$('import').onchange=async e=>{try{const a=JSON.parse(await e.target.files[0].text());if(!Array.isArray(a)||!a.every(x=>typeof x.name==='string'&&typeof x.key==='string'&&Number.isFinite(x.until)))throw Error();save(a);render();alert('Liste importiert.')}catch{alert('Ungültige JSON-Datei.')}};
