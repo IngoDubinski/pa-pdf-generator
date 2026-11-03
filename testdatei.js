@@ -1,13 +1,7 @@
 // Testdaten sind in dieser Datei eingebettet: kein file://- oder GitHub-Fetch notwendig.
 (() => {
-  const key = new URLSearchParams(location.search).get('key') || '';
-  let isTestLink = false;
-  try {
-    const normalized = key.replace(/-/g, '+').replace(/_/g, '/');
-    const decoded = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(normalized), c => c.charCodeAt(0))));
-    isTestLink = decoded.v === 1 && typeof decoded.name === 'string' && /^test(?:\b|[ _-])/i.test(decoded.name.trim());
-  } catch (_) {}
-  if (!(isTestLink || key === PAAccess.permanent) || !PAAccess.allowed()) return;
+  // Alle gültigen Zugänge dürfen die integrierten Testdaten nutzen.
+  if (!PAAccess.allowed()) return;
   const area = document.getElementById('dummyTestArea');
   const button = document.getElementById('testFileButton');
   area.hidden = false;
