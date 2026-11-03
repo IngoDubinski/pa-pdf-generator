@@ -12,18 +12,6 @@
   const area = document.getElementById('dummyTestArea');
   const button = document.getElementById('testFileButton');
   area.hidden = false;
-  document.getElementById('viewTestFileButton').addEventListener('click', () => {
-    const encoded = DUMMY_XLSX_BASE64;
-    const bytes = Uint8Array.from(atob(encoded), c => c.charCodeAt(0));
-    const url = URL.createObjectURL(new Blob([bytes], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'PA-Testdatei-7C.xlsx';
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  });
 
   button.addEventListener('click', () => {
     button.disabled = true;
