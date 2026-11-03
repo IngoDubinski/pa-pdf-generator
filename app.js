@@ -1,6 +1,6 @@
 'use strict';
 // XLSX is a ZIP containing XML. JSZip is bundled locally; no network calls.
-const required=['Kompletter Name','PA Datum','Gruppe 1-6'];
+const required=['Kompletter Name','PA Datum'];
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const xml=s=>new DOMParser().parseFromString(s,'application/xml');
 const nodes=(p,n)=>Array.from(p.getElementsByTagNameNS('*',n));
@@ -22,7 +22,7 @@ async function inspect(file){
  const first=decoded.find(r=>r.line===1);const headers={};if(first)for(const [i,c] of Object.entries(first.cells))headers[c.value.trim()]=Number(i);
  const missing=required.filter(k=>!(k in headers));const errors=[];if(missing.length)errors.push('Pflichtspalten fehlen: '+missing.join(', '));let count=0;const years=new Set();const students=[];
  if(!missing.length)for(const row of decoded.filter(r=>r.line>=2)){const get=k=>(k in headers ? row.cells[headers[k]] : null)||{value:'',numeric:false};const student=get('Kompletter Name').value.trim();if(!student)continue;count++;
- const g=Number(String(get('Gruppe 1-6').value).replace(',','.'));if(!Number.isInteger(g)||g<1||g>6)errors.push(`Zeile ${row.line}: Gruppe muss eine ganze Zahl von 1 bis 6 sein.`);
+ const rawGroup=String(get('Gruppe 1-6').value).trim();const g=rawGroup===''?null:Number(rawGroup.replace(',','.'));if(g!==null&&(!Number.isInteger(g)||g<1||g>6))errors.push(`Zeile ${row.line}: Gruppe muss eine ganze Zahl von 1 bis 6 sein.`);
  const dc=get('PA Datum'),date=normDate(dc.value,dc.numeric);if(!date)errors.push(`Zeile ${row.line}: PA Datum ist ungültig.`);else years.add(date.slice(-4));
  students.push({name:student,group:g,date,observer1:get('1. Beobachter').value,observer2:get('2. Beobachter').value,line:row.line});
  }
@@ -39,8 +39,8 @@ function selectedClasses(){return [...document.querySelectorAll('.class-check:ch
 function sortedStudents(className){
  const sheet=currentReport.find(r=>r.name===className);if(!sheet)return [];
  const rows=[...sheet.students],mode=document.getElementById('sortMode').value;
- if(mode==='Gruppe aufsteigend')rows.sort((a,b)=>a.group-b.group||a.line-b.line);
- else if(mode==='Gruppe absteigend')rows.sort((a,b)=>b.group-a.group||a.line-b.line);
+ if(mode==='Gruppe aufsteigend')rows.sort((a,b)=>(a.group??7)-(b.group??7)||a.line-b.line);
+ else if(mode==='Gruppe absteigend')rows.sort((a,b)=>(a.group===null?1:0)-(b.group===null?1:0)||(b.group??0)-(a.group??0)||a.line-b.line);
  else rows.sort((a,b)=>a.name.localeCompare(b.name,'de')*(mode==='Name absteigend'?-1:1));
  return rows;
 }
