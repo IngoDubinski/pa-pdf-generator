@@ -51,6 +51,6 @@ function showPreview(){
  if(!checkTasks()){target.textContent='Bitte die 2+2+2-Regel einhalten.';return;}
  const docs=['BB','BBK','SE'].filter(k=>document.getElementById('doc'+k).checked);
  if(!docs.length){target.textContent='Bitte mindestens eine Dokumentart auswählen.';return;}
- target.innerHTML='<strong>Geplanter PDF-Lauf:</strong><br>'+classes.map(name=>{const rows=sortedStudents(name),sheet=currentReport.find(r=>r.name===name);return `${esc(name.toUpperCase())}: ${rows.length} Schüler, ${docs.includes('BB')?6:0}${docs.includes('BBK')?'+1 BBK':''}${docs.includes('SE')?'+1 SE':''} Sammeldateien; erstes Kind: ${esc(rows[0]?.name||'–')} (${rows[0]?.group||'–'})`;}).join('<br>')+'<p class="notice">Die PDF-Engine für die originalgetreue Formularverarbeitung ist noch nicht integriert. Es werden noch keine PDFs erstellt.</p>';
+ target.innerHTML='<strong>Geplanter PDF-Lauf:</strong><br>'+classes.map(name=>{const rows=sortedStudents(name),sheet=currentReport.find(r=>r.name===name);return `${esc(name.toUpperCase())}: ${rows.length} Schüler, ${docs.includes('BB')?6:0}${docs.includes('BBK')?'+1 BKB':''}${docs.includes('SE')?'+1 SE':''} Sammeldateien; erstes Kind: ${esc(rows[0]?.name||'–')} (${rows[0]?.group||'–'})`;}).join('<br>')+'<p class="notice">Die PDF-Engine für die originalgetreue Formularverarbeitung ist noch nicht integriert. Es werden noch keine PDFs erstellt.</p>';
 }
 document.getElementById('previewButton').addEventListener('click',showPreview);
