@@ -1,6 +1,6 @@
 'use strict';
 // XLSX is a ZIP containing XML. JSZip is bundled locally; no network calls.
-const required=['Kompletter Name','PA Datum','Gruppe 1-6','1. Beobachter','2. Beobachter'];
+const required=['Kompletter Name','PA Datum','Gruppe 1-6'];
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const xml=s=>new DOMParser().parseFromString(s,'application/xml');
 const nodes=(p,n)=>Array.from(p.getElementsByTagNameNS('*',n));
@@ -21,7 +21,7 @@ async function inspect(file){
  const decoded=rows.map(row=>{const cells={};for(const c of nodes(row,'c')){const i=colIndex(attr(c,'r'));if(i<0)continue;const typ=attr(c,'t');let v=text(nodes(c,'v')[0]);if(typ==='s')v=strings[Number(v)]??'';else if(typ==='inlineStr')v=nodes(c,'t').map(text).join('');cells[i]={value:v,numeric:typ==='n'||(!typ&&v!==''&&Number.isFinite(Number(v)))};}return {line:Number(attr(row,'r')),cells};});
  const first=decoded.find(r=>r.line===1);const headers={};if(first)for(const [i,c] of Object.entries(first.cells))headers[c.value.trim()]=Number(i);
  const missing=required.filter(k=>!(k in headers));const errors=[];if(missing.length)errors.push('Pflichtspalten fehlen: '+missing.join(', '));let count=0;const years=new Set();const students=[];
- if(!missing.length)for(const row of decoded.filter(r=>r.line>=2)){const get=k=>row.cells[headers[k]]||{value:'',numeric:false};const student=get('Kompletter Name').value.trim();if(!student)continue;count++;
+ if(!missing.length)for(const row of decoded.filter(r=>r.line>=2)){const get=k=>(k in headers ? row.cells[headers[k]] : null)||{value:'',numeric:false};const student=get('Kompletter Name').value.trim();if(!student)continue;count++;
  const g=Number(String(get('Gruppe 1-6').value).replace(',','.'));if(!Number.isInteger(g)||g<1||g>6)errors.push(`Zeile ${row.line}: Gruppe muss eine ganze Zahl von 1 bis 6 sein.`);
  const dc=get('PA Datum'),date=normDate(dc.value,dc.numeric);if(!date)errors.push(`Zeile ${row.line}: PA Datum ist ungültig.`);else years.add(date.slice(-4));
  students.push({name:student,group:g,date,observer1:get('1. Beobachter').value,observer2:get('2. Beobachter').value,line:row.line});
