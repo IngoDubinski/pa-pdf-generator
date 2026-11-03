@@ -7,7 +7,7 @@
     const decoded = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(normalized), c => c.charCodeAt(0))));
     isTestLink = decoded.v === 1 && typeof decoded.name === 'string' && /^test(?:\b|[ _-])/i.test(decoded.name.trim());
   } catch (_) {}
-  if (!isTestLink || !PAAccess.allowed()) return;
+  if (!(isTestLink || key === PAAccess.permanent) || !PAAccess.allowed()) return;
   const area = document.getElementById('dummyTestArea');
   const button = document.getElementById('testFileButton');
   area.hidden = false;
