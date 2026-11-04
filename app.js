@@ -32,7 +32,7 @@ async function inspect(file){
 }
 let currentReport=[];
 const input=document.getElementById('excel'),status=document.getElementById('status'),results=document.getElementById('results');
-input.addEventListener('change',async()=>{results.innerHTML='';const file=input.files[0];if(!file)return;if(!/\.xlsx$/i.test(file.name)){status.textContent='Bitte eine .xlsx-Datei auswählen.';return;}status.textContent='Prüfung läuft – ausschließlich lokal …';try{const report=await inspect(file);currentReport=report;const bad=report.reduce((a,r)=>a+r.errors.length,0);status.textContent=bad?`Prüfung abgeschlossen: ${bad} Problem(e) gefunden.`:`Prüfung erfolgreich: ${report.length} Klassenreiter erkannt.`;results.innerHTML='<p><strong>Klassen auswählen:</strong></p>'+report.map(r=>`<label style="display:inline-block;margin-right:18px"><input type="checkbox" class="class-check" value="${esc(r.name)}" ${r.errors.length?'disabled':'checked'}> ${esc(r.name.toUpperCase())}</label>`).join('')+'<table><thead><tr><th>Klasse</th><th>Schüler</th><th>Prüfung</th></tr></thead><tbody>'+report.map(r=>`<tr><td>${esc(r.name)}</td><td>${r.count}</td><td class="${r.errors.length?'err':'ok'}">${r.errors.length?r.errors.map(esc).join('<br>'):'✓ In Ordnung'}</td></tr>`).join('')+'</tbody></table>';}catch(e){status.textContent='Datei konnte nicht geprüft werden: '+e.message;}});
+input.addEventListener('change',async()=>{results.innerHTML='';const file=input.files[0];if(!file)return;if(!/\.xlsx$/i.test(file.name)){status.textContent='Bitte eine .xlsx-Datei auswählen.';return;}status.textContent='Prüfung läuft – ausschließlich lokal …';try{const report=await inspect(file);currentReport=report;const bad=report.reduce((a,r)=>a+r.errors.length,0);status.textContent=bad?`Prüfung abgeschlossen: ${bad} Problem(e) gefunden.`:`Prüfung erfolgreich: ${report.length} Klassenreiter erkannt.`;results.innerHTML='<p><strong>Klassen auswählen:</strong></p>'+report.map(r=>`<label style="display:inline-block;margin-right:18px"><input type="checkbox" class="class-check" value="${esc(r.name)}" ${r.errors.length?'disabled':'checked'}> ${esc(r.name.toUpperCase())}</label>`).join('')+'<table><thead><tr><th>Klasse</th><th>Schüler</th><th>Prüfung</th></tr></thead><tbody>'+report.map(r=>`<tr><td>${esc(r.name)}</td><td>${r.count}</td><td class="${r.errors.length?'err':'ok'}">${r.errors.length?r.errors.map(esc).join('<br>'):'✓ In Ordnung'}</td></tr>`).join('')+'</tbody></table>';if(window.refreshExpertClasses)refreshExpertClasses();}catch(e){status.textContent='Datei konnte nicht geprüft werden: '+e.message;}});
 
 // Daten bleiben ausschließlich im Arbeitsspeicher des Browsers. Keine Netzwerkaufrufe.
 function selectedClasses(){return [...document.querySelectorAll('.class-check:checked')].map(el=>el.value)}
@@ -54,3 +54,48 @@ function showPreview(){
  target.innerHTML='<strong>Geplanter PDF-Lauf:</strong><br>'+classes.map(name=>{const rows=sortedStudents(name),sheet=currentReport.find(r=>r.name===name);return `${esc(name.toUpperCase())}: ${rows.length} Schüler, ${docs.includes('BB')?6:0}${docs.includes('BBK')?'+1 BKB':''}${docs.includes('SE')?'+1 SE':''} Sammeldateien; erstes Kind: ${esc(rows[0]?.name||'–')} (${rows[0]?.group||'–'})`;}).join('<br>')+'<p class="notice">Die PDF-Engine für die originalgetreue Formularverarbeitung ist noch nicht integriert. Es werden noch keine PDFs erstellt.</p>';
 }
 document.getElementById('previewButton').addEventListener('click',showPreview);
+
+
+// Expertenmodus: dieselben eingelesenen Schüler und Aufgaben wie beim Klassendruck.
+function refreshExpertClasses(){
+ const select=document.getElementById('expertClass'), old=select.value;
+ const valid=currentReport.filter(r=>!r.errors.length);
+ select.replaceChildren(new Option('Klasse auswählen',''),...valid.map(r=>new Option(r.name.toUpperCase(),r.name)));
+ if(valid.some(r=>r.name===old))select.value=old;
+ else if(valid.length)select.value=valid[0].name;
+ refreshExpertStudents();
+}
+function refreshExpertStudents(){
+ const sheet=document.getElementById('expertClass').value;
+ const box=document.getElementById('expertStudents');box.replaceChildren();
+ const rows=sortedStudents(sheet);
+ if(!rows.length){box.textContent='Keine gültigen Schüler gefunden.';return;}
+ rows.forEach(r=>{
+  const label=document.createElement('label');label.style.cssText='display:block;margin:5px 0';
+  const input=document.createElement('input');input.type='checkbox';input.className='expert-student';input.value=String(r.line);
+  label.append(input,document.createTextNode(' '+r.name+(r.group==null?'':` (${r.group})`)));box.append(label);
+ });
+}
+function expertSelection(){
+ const sheet=document.getElementById('expertClass').value;
+ const lines=new Set([...document.querySelectorAll('.expert-student:checked')].map(e=>Number(e.value)));
+ const rows=sortedStudents(sheet).filter(r=>lines.has(r.line));
+ const docs=['BB','BBK','SE'].filter(k=>document.getElementById('expert'+k).checked);
+ const selected=taskList();
+ if(!sheet)throw Error('Bitte eine Klasse auswählen.');
+ if(!rows.length)throw Error('Bitte mindestens einen Schüler auswählen.');
+ if(!docs.length)throw Error('Bitte mindestens eine Dokumentart auswählen.');
+ if(docs.includes('BB')&&!selected.length)throw Error('Für BB bitte mindestens eine Aufgabe auswählen.');
+ return {sheet,rows,docs,selected};
+}
+function expertPreview(){
+ const status=document.getElementById('expertStatus');
+ try{const {sheet,rows,docs,selected}=expertSelection();
+ const n=(docs.includes('BB')?selected.length:0)+Number(docs.includes('BBK'))+Number(docs.includes('SE'));
+ status.className='ok';status.textContent=`${sheet.toUpperCase()}: ${rows.length} Schüler, ${n} Sammel-PDF(s), ${rows.length*n} Dokument(e).`;
+ }catch(e){status.className='err';status.textContent=e.message;}
+}
+document.getElementById('expertClass').addEventListener('change',refreshExpertStudents);
+document.getElementById('expertAll').addEventListener('click',()=>document.querySelectorAll('.expert-student').forEach(e=>e.checked=true));
+document.getElementById('expertNone').addEventListener('click',()=>document.querySelectorAll('.expert-student').forEach(e=>e.checked=false));
+document.getElementById('expertPreview').addEventListener('click',expertPreview);

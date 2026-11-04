@@ -94,19 +94,20 @@ async function joinStudents(bytes,records,sheet,kind,task,selected,editable){
  }
  return output.save({useObjectStreams:false});
 }
-async function generatePDFs(){
- const btn=document.getElementById('generateButton');
+async function generatePDFs(expert=false){
+ const btn=document.getElementById(expert?'expertGenerate':'generateButton');
  if(!window.PDFLib){setStatus('Die mitgelieferte PDF-Bibliothek fehlt (js/pdf-lib.min.js). Bitte ZIP vollständig entpacken.',true);return;}
  if(!currentReport.length){setStatus('Bitte zuerst eine Excel-Datei auswählen.',true);return;}
- if(!checkTasks()){setStatus('Bitte genau zwei Aufgaben je Kategorie wählen.',true);return;}
- const classes=selectedClasses(),docs=checkedDocs(),selected=taskList(),editable=document.getElementById('pdfMode').value==='Bearbeitbar';
+ if(!expert&&!checkTasks()){setStatus('Bitte genau zwei Aufgaben je Kategorie wählen.',true);return;}
+ let selection;try{if(expert)selection=expertSelection();}catch(e){setStatus(e.message,true);document.getElementById('expertStatus').textContent=e.message;return;}
+ const classes=expert?[selection.sheet]:selectedClasses(),docs=expert?selection.docs:checkedDocs(),selected=expert?selection.selected:taskList(),editable=document.getElementById('pdfMode').value==='Bearbeitbar';
  if(!classes.length||!docs.length){setStatus('Bitte mindestens eine Klasse und Dokumentart wählen.',true);return;}
  btn.disabled=true;
  try{
   const loaded={};const files=[...document.getElementById('templateFiles').files];for(const kind of docs){const filename=templates[kind].split('/').pop();const f=files.find(f=>f.name===filename);if(f){loaded[kind]=await f.arrayBuffer();}else{try{const response=await fetch(templates[kind]);if(!response.ok)throw Error('HTTP '+response.status);loaded[kind]=await response.arrayBuffer();}catch(e){throw Error('Vorlage nicht automatisch ladbar: '+filename+'. Bei lokalem Start (file://) bitte die Vorlagen unten auswählen oder die GitHub-Pages-Version verwenden.');}}}
-  const archive=new JSZip();let completed=0;const total=classes.length*(docs.includes('BB')?6:0)+classes.length*Number(docs.includes('BBK'))+classes.length*Number(docs.includes('SE'));
+  const archive=new JSZip();let completed=0;const total=classes.length*(docs.includes('BB')?selected.length:0)+classes.length*Number(docs.includes('BBK'))+classes.length*Number(docs.includes('SE'));
   for(const sheet of classes){
-   const rows=sortedStudents(sheet);const year=rows[0].date.slice(-4),folder=archive.folder(`PA ${year} ${sheet.toUpperCase()}`);
+   const rows=expert?selection.rows:sortedStudents(sheet);const year=rows[0].date.slice(-4),folder=archive.folder(`PA ${year} ${sheet.toUpperCase()}`);
    const jobs=[...(docs.includes('BB')?selected.map(task=>({kind:'BB',task})):[]),...(docs.includes('BBK')?[{kind:'BBK',task:null}]:[]),...(docs.includes('SE')?[{kind:'SE',task:null}]:[])];
    for(const {kind,task} of jobs){
     setStatus(`${++completed}/${total}: ${sheet.toUpperCase()} – ${task?.name||fileLabel[kind]}`);
@@ -116,8 +117,9 @@ async function generatePDFs(){
    }
   }
   setStatus('ZIP wird lokal erstellt …');const blob=await archive.generateAsync({type:'blob',compression:'DEFLATE'});
-  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='PA-PDF-Ausgabe.zip';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=expert?'PA-PDF-Expertenmodus.zip':'PA-PDF-Ausgabe.zip';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
   setStatus(`Fertig: ${total} Sammel-PDFs im ZIP. Bearbeitbare Ausgabe bitte besonders sorgfältig testen.`);
  }catch(e){console.error(e);setStatus('PDF-Erstellung fehlgeschlagen: '+e.message,true);}finally{btn.disabled=false;}
 }
-document.getElementById('generateButton').addEventListener('click',generatePDFs);
+document.getElementById('generateButton').addEventListener('click',()=>generatePDFs(false));
+document.getElementById('expertGenerate').addEventListener('click',()=>generatePDFs(true));
