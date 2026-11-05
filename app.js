@@ -45,7 +45,7 @@ function sortedStudents(className){
  return rows;
 }
 function showPreview(){
- const target=document.getElementById('preview');if(!currentReport.length){target.textContent='Bitte zuerst eine Excel-Datei auswählen.';return;}
+ const target=document.getElementById('preview');if(!currentReport.length){target.textContent='Bitte zuerst eine Schülerliste auswählen.';return;}
  const classes=selectedClasses();if(!classes.length){target.textContent='Bitte mindestens eine gültige Klasse auswählen.';return;}
  const jobs=Object.entries(tasks).flatMap(([cat])=>[...area.querySelectorAll(`input[data-category="${cat}"]:checked`)].map(x=>x.value));
  if(!checkTasks()){target.textContent='Bitte die 2+2+2-Regel einhalten.';return;}

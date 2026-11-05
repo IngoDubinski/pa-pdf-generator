@@ -12,7 +12,17 @@ const safeName=s=>String(s).replace(/[<>:"/\\|?*\x00-\x1f]/g,'').trim().replace(
 const setStatus=(s,isError=false)=>{const e=document.getElementById('generationStatus');e.textContent=s;e.className=isError?'err':'ok';};
 function taskList(){return Object.keys(tasks).flatMap(cat=>[...area.querySelectorAll(`input[data-category="${cat}"]:checked`)].map(el=>({category:cat,name:el.value})));}
 function checkedDocs(){return ['BB','BBK','SE'].filter(k=>document.getElementById('doc'+k).checked);}
-function setText(form,key,value){try{const field=form.getTextField(key);field.setText(String(value));return true;}catch(e){return false;}}
+function setText(form,key,value){try{
+ const field=form.getTextField(key),content=String(value);field.setText(content);
+ if((key==='Name Schüler/in'||key==='Name Schüler')&&content.length>24){
+  const widgets=field.acroField.getWidgets();const width=widgets[0]?.getRectangle()?.width||190;
+  const font=PDFLib.StandardFonts.Helvetica;
+  // Conservative estimate for long names; preserves original field width and layout.
+  const size=Math.max(7,Math.min(12,Math.floor((width-10)/(content.length*0.56))));
+  field.setFontSize(size);
+ }
+ return true;
+ }catch(e){return false;}}
 function setCheck(form,key){try{form.getCheckBox(key).check();}catch(e){throw new Error('Checkbox nicht gefunden: '+key+' ('+e.message+')');}}
 function removeRadioWidgets(pdf){
  // Remove radio widget annotations from pages AND corresponding fields from AcroForm.
@@ -48,7 +58,7 @@ async function makeOne(templateBytes,record,sheet,kind,task,selected,editable,se
  const pdf=await PDFLib.PDFDocument.load(templateBytes,{updateMetadata:false});
  const form=pdf.getForm();
  const fullName=record.group==null?record.name:`${record.name} (${record.group})`;
- const values={'Name Schüler/in':fullName,'Name Schüler':fullName,'Datum':record.date,'AC Einheit':`PA ${record.date.slice(-4)} ${sheet.toLowerCase()}`};
+ const values={'Name Schüler/in':fullName,'Name Schüler':fullName,'Datum':record.date,'AC Einheit':`PA${record.date?' '+record.date.slice(-4):''} ${sheet.toLowerCase()}`};
  if(kind==='BB')values['Aufgbe']=task.name;
  if(kind==='BBK')Object.assign(values,{'Name Beobachter/in':record.observer1||'','Name 2. Beobachter/in':record.observer2||'','Aufgaben':selected.map(t=>t.name).join(', ')});
  for(const [k,v] of Object.entries(values))setText(form,k,v);
@@ -97,7 +107,7 @@ async function joinStudents(bytes,records,sheet,kind,task,selected,editable){
 async function generatePDFs(expert=false){
  const btn=document.getElementById(expert?'expertGenerate':'generateButton');
  if(!window.PDFLib){setStatus('Die mitgelieferte PDF-Bibliothek fehlt (js/pdf-lib.min.js). Bitte ZIP vollständig entpacken.',true);return;}
- if(!currentReport.length){setStatus('Bitte zuerst eine Excel-Datei auswählen.',true);return;}
+ if(!currentReport.length){setStatus('Bitte zuerst eine Schülerliste auswählen.',true);return;}
  if(!expert&&!checkTasks()){setStatus('Bitte genau zwei Aufgaben je Kategorie wählen.',true);return;}
  let selection;try{if(expert)selection=expertSelection();}catch(e){setStatus(e.message,true);document.getElementById('expertStatus').textContent=e.message;return;}
  const classes=expert?[selection.sheet]:selectedClasses(),docs=expert?selection.docs:checkedDocs(),selected=expert?selection.selected:taskList(),editable=document.getElementById('pdfMode').value==='Bearbeitbar';
@@ -107,7 +117,7 @@ async function generatePDFs(expert=false){
   const loaded={};const files=[...document.getElementById('templateFiles').files];for(const kind of docs){const filename=templates[kind].split('/').pop();const f=files.find(f=>f.name===filename);if(f){loaded[kind]=await f.arrayBuffer();}else{try{const response=await fetch(templates[kind]);if(!response.ok)throw Error('HTTP '+response.status);loaded[kind]=await response.arrayBuffer();}catch(e){throw Error('Vorlage nicht automatisch ladbar: '+filename+'. Bei lokalem Start (file://) bitte die Vorlagen unten auswählen oder die GitHub-Pages-Version verwenden.');}}}
   const archive=new JSZip();let completed=0;const total=classes.length*(docs.includes('BB')?selected.length:0)+classes.length*Number(docs.includes('BBK'))+classes.length*Number(docs.includes('SE'));
   for(const sheet of classes){
-   const rows=expert?selection.rows:sortedStudents(sheet);const year=rows[0].date.slice(-4),folder=archive.folder(`PA ${year} ${sheet.toUpperCase()}`);
+   const rows=expert?selection.rows:sortedStudents(sheet);const year=rows[0].date.slice(-4)||'ohne Datum',folder=archive.folder(`PA ${year} ${sheet.toUpperCase()}`);
    const jobs=[...(docs.includes('BB')?selected.map(task=>({kind:'BB',task})):[]),...(docs.includes('BBK')?[{kind:'BBK',task:null}]:[]),...(docs.includes('SE')?[{kind:'SE',task:null}]:[])];
    for(const {kind,task} of jobs){
     setStatus(`${++completed}/${total}: ${sheet.toUpperCase()} – ${task?.name||fileLabel[kind]}`);
