@@ -1,1 +1,1 @@
-Auf GitHub tool.html und saxsvs-import.js ersetzen. Mit Strg+F5 neu laden. SaxSVS PDF importieren und Namen/Anzahl vor PDF-Erstellung kontrollieren. Nicht mit Echtdaten an Dritte weitergeben.
+Beide Dateien ins Hauptverzeichnis des GitHub-Repositories hochladen: tipp.html ersetzen, captcha-beispiel.png hinzufügen.
