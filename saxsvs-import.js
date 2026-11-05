@@ -69,6 +69,30 @@
   return {cls,students};
  }
  function validDate(s){if(!s)return true;const m=s.match(/^(\d{4})-(\d{2})-(\d{2})$/);if(!m)return false;const d=new Date(s+'T00:00:00Z');return d.getUTCFullYear()==+m[1]&&d.getUTCMonth()+1==+m[2]&&d.getUTCDate()==+m[3]}
+
+ const diagButton=pick('saxDiagnose'),diagStatus=pick('saxDiagStatus');
+ diagButton.addEventListener('click',async()=>{
+  diagButton.disabled=true;diagStatus.textContent='Diagnose wird lokal erstellt …';
+  try{
+   if(!file.files.length)throw Error('Bitte zuerst eine PDF-Datei auswählen.');
+   const doc=await PDFLib.PDFDocument.load(await file.files[0].arrayBuffer());
+   const pages=doc.getPages().map((page,i)=>{
+    const items=extractPage(page,doc.context).filter(t=>t.text.trim());
+    const ys=[...new Set(items.map(t=>Math.round(t.y/5)*5))];
+    const xs=[...new Set(items.map(t=>Math.round(t.x/10)*10))].sort((a,b)=>a-b);
+    const ranges=[0,0,0,0];
+    for(const t of items){const n=t.text.length;ranges[n<=2?0:n<=10?1:n<=25?2:3]++}
+    const headings={name:0,vorname:0,klasse:0};
+    for(const t of items){const s=t.text.trim().toLowerCase();if(s==='name')headings.name++;if(s==='vorname')headings.vorname++;if(s==='klasse')headings.klasse++}
+    const rowCounts=new Map();for(const t of items){const y=Math.round(t.y/5)*5;rowCounts.set(y,(rowCounts.get(y)||0)+1)}
+    return {seite:i+1,breite:Math.round(page.getWidth()),hoehe:Math.round(page.getHeight()),textElemente:items.length,zeilenCa:ys.length,spaltenpositionenGerundet:xs,elementeProZeileVerteilung:[...rowCounts.values()].reduce((a,n)=>(a[n>=5?'5plus':String(n)]=(a[n>=5?'5plus':String(n)]||0)+1,a),{}),textlaengenBereiche:{'1-2':ranges[0],'3-10':ranges[1],'11-25':ranges[2],'>25':ranges[3]},spaltenueberschriftenGefunden:headings};
+   });
+   const report={format:'PA-SaxSVS-Strukturdiagnose-v1',hinweis:'Keine PDF-Texte, Schülernamen oder Dateinamen enthalten. Bitte Bericht vor dem Teilen dennoch prüfen.',seiten:pages};
+   const blob=new Blob([JSON.stringify(report,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+   a.href=url;a.download='PA-SaxSVS-Diagnose-ohne-Namen.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+   diagStatus.textContent='Diagnose gespeichert. Bitte JSON-Datei vor dem Teilen prüfen.';
+  }catch(e){diagStatus.textContent='Diagnose fehlgeschlagen: '+e.message}finally{diagButton.disabled=false}
+ });
  button.addEventListener('click',async()=>{
   status.textContent='PDF wird lokal gelesen …';preview.replaceChildren();button.disabled=true;
   try{if(!file.files.length)throw Error('Bitte eine PDF-Schülerliste auswählen.');if(!validDate(date.value))throw Error('Ungültiges PA-Datum.');
