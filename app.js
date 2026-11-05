@@ -1,6 +1,6 @@
 'use strict';
 // XLSX is a ZIP containing XML. JSZip is bundled locally; no network calls.
-const required=['Kompletter Name','PA Datum'];
+const required=['PA Datum'];
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const xml=s=>new DOMParser().parseFromString(s,'application/xml');
 const nodes=(p,n)=>Array.from(p.getElementsByTagNameNS('*',n));
@@ -20,8 +20,20 @@ async function inspect(file){
  for(const sh of sheets){const name=attr(sh,'name'),id=attr(sh,'r:id')||sh.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id');let path=paths[id];if(!path)throw Error('Tabellenpfad fehlt: '+name);path=path.replace(/\/[^/]+\/\.\.\//g,'/');const doc=await read(path);const rows=nodes(doc,'sheetData').flatMap(n=>nodes(n,'row'));
  const decoded=rows.map(row=>{const cells={};for(const c of nodes(row,'c')){const i=colIndex(attr(c,'r'));if(i<0)continue;const typ=attr(c,'t');let v=text(nodes(c,'v')[0]);if(typ==='s')v=strings[Number(v)]??'';else if(typ==='inlineStr')v=nodes(c,'t').map(text).join('');cells[i]={value:v,numeric:typ==='n'||(!typ&&v!==''&&Number.isFinite(Number(v)))};}return {line:Number(attr(row,'r')),cells};});
  const first=decoded.find(r=>r.line===1);const headers={};if(first)for(const [i,c] of Object.entries(first.cells))headers[c.value.trim()]=Number(i);
- const missing=required.filter(k=>!(k in headers));const errors=[];if(missing.length)errors.push('Pflichtspalten fehlen: '+missing.join(', '));let count=0;const years=new Set();const students=[];
- if(!missing.length)for(const row of decoded.filter(r=>r.line>=2)){const get=k=>(k in headers ? row.cells[headers[k]] : null)||{value:'',numeric:false};const student=get('Kompletter Name').value.trim();if(!student)continue;count++;
+ const missing=required.filter(k=>!(k in headers));
+ const hasComplete='Kompletter Name' in headers;
+ const hasSplit='Vorname' in headers && ('Nachname' in headers || 'Name' in headers);
+ if(!hasComplete&&!hasSplit)missing.push('Kompletter Name oder Vorname + Nachname');
+ const errors=[];if(missing.length)errors.push('Pflichtspalten fehlen: '+missing.join(', '));let count=0;const years=new Set();const students=[];
+ if(!missing.length)for(const row of decoded.filter(r=>r.line>=2)){const get=k=>(k in headers ? row.cells[headers[k]] : null)||{value:'',numeric:false};const complete=get('Kompletter Name').value.trim();
+ const first=get('Vorname').value.trim();
+ const last=(get('Nachname').value||get('Name').value).trim();
+ const student=complete||(first&&last?`${first} ${last}`:'');
+ if(!student){
+   if(first||last)errors.push(`Zeile ${row.line}: Vorname und Nachname müssen beide ausgefüllt sein.`);
+   continue;
+ }
+ count++;
  const rawGroup=String(get('Gruppe 1-6').value).trim();const g=rawGroup===''?null:Number(rawGroup.replace(',','.'));if(g!==null&&(!Number.isInteger(g)||g<1||g>6))errors.push(`Zeile ${row.line}: Gruppe muss eine ganze Zahl von 1 bis 6 sein.`);
  const dc=get('PA Datum'),date=normDate(dc.value,dc.numeric);if(!date)errors.push(`Zeile ${row.line}: PA Datum ist ungültig.`);else years.add(date.slice(-4));
  students.push({name:student,group:g,date,observer1:get('1. Beobachter').value,observer2:get('2. Beobachter').value,line:row.line});
