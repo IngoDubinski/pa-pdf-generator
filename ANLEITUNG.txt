@@ -1,3 +1,1 @@
-Beide Dateien im GitHub-Repository ersetzen: tool.html und saxsvs-import.js.
-Original-PDF im SaxSVS-Bereich auswählen, dann „PDF-Diagnose erstellen (ohne Namen)“ klicken.
-Die heruntergeladene JSON-Datei enthält nur Zahlen, Positionen und Zählwerte, keine Schülernamen oder Dateinamen. Vor dem Teilen trotzdem prüfen.
+Auf GitHub tool.html und saxsvs-import.js ersetzen. Browser neu laden (Strg+F5). PDF auswählen und Diagnose klicken. Falls kein Download startet, Diagnosebericht im Textfeld kopieren. Enthält keine Namen, aber bitte vor dem Teilen prüfen.
