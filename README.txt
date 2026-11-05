@@ -1,0 +1,1 @@
+Auf GitHub die 5 HTML-Dateien ersetzen: index.html, admin.html, tool.html, excel-anleitung.html, quellcode.html. Keine JavaScript- oder PDF-Dateien austauschen. Versionsstand v1.4 · 05.11.2026. Nutzungsstatistik ist NICHT Bestandteil dieses Updates; dafür ist eine sichere separate Lösung nötig.
