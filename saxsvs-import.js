@@ -54,26 +54,57 @@
   }return items;
  }
  function readRows(items,height){
-  const texts=items.filter(t=>t.text.trim()).sort((a,b)=>b.y-a.y||a.x-b.x);
-  const klass=texts.find(t=>/^Klasse\s*$/i.test(t.text.trim()));let cls='';
-  if(klass){const candidates=texts.filter(t=>Math.abs(t.y-klass.y)<12&&t.x>klass.x+25&&/^\d{1,2}[a-z]$/i.test(t.text.trim()));cls=candidates[0]?.text.trim().toLowerCase()||''}
-  if(!cls){const line=texts.find(t=>/^\d{1,2}[a-z]$/i.test(t.text.trim())&&t.y>height*.60);cls=line?.text.trim().toLowerCase()||''}
-  const headN=texts.find(t=>/^Name$/i.test(t.text.trim())),headV=texts.find(t=>/^Vorname$/i.test(t.text.trim()));
-  if(!headN||!headV)throw Error('Die Spalten „Name“ und „Vorname“ wurden nicht erkannt. Bitte eine textbasierte SaxSVS-PDF verwenden.');
-  const left=headN.x,mid=headV.x,edge=mid+(mid-left)*.99;
-  const cells=texts.filter(t=>t.y<headN.y-4&&t.y>35&&t.x>=left-10&&t.x<edge);
-  const groups=[];for(const t of cells){let g=groups.find(r=>Math.abs(r.y-t.y)<3);if(!g){g={y:t.y,parts:[]};groups.push(g)}g.parts.push(t)}
-  const students=groups.sort((a,b)=>b.y-a.y).map((r,i)=>{const last=r.parts.filter(t=>t.x<mid-5).sort((a,b)=>a.x-b.x).map(t=>t.text.trim()).join(' ').trim();const first=r.parts.filter(t=>t.x>=mid-5).sort((a,b)=>a.x-b.x).map(t=>t.text.trim()).join(' ').trim();return {name:(first+' '+last).trim(),first,last,line:i+2,group:null,observer1:'',observer2:''}}).filter(r=>r.first&&r.last&&!/^(name|vorname)$/i.test(r.last));
-  if(!students.length)throw Error('Keine vollständigen Vor- und Nachnamen erkannt. Das PDF könnte ein Bild sein oder eine andere Textkodierung verwenden.');
-  if(!cls)throw Error('Klassenbezeichnung konnte nicht sicher erkannt werden.');
+  const texts=items.filter(t=>t.text&&t.text.trim()).sort((a,b)=>b.y-a.y||a.x-b.x);
+  const clean=t=>t.text.replace(/\s+/g,' ').trim();
+  const headN=texts.find(t=>/^Name$/i.test(clean(t)));
+  const headV=texts.find(t=>/^Vorname$/i.test(clean(t)));
+  if(!headN||!headV)throw Error('Spaltenüberschriften Name/Vorname fehlen.');
+  const klass=texts.find(t=>/^Klasse\s*$/i.test(clean(t)));
+  let cls='';
+  if(klass){
+   const candidates=texts.filter(t=>Math.abs(t.y-klass.y)<16&&t.x>klass.x+10&&/^\d{1,2}[a-z]$/i.test(clean(t)));
+   candidates.sort((a,b)=>Math.abs(a.x-klass.x)-Math.abs(b.x-klass.x));
+   cls=candidates[0]?.text.trim().toLowerCase()||'';
+  }
+  if(!cls){const matches=texts.filter(t=>/^\d{1,2}[a-z]$/i.test(clean(t))&&t.y>height*.6);cls=matches[0]?.text.trim().toLowerCase()||''}
+  if(!cls)throw Error('Klasse nicht erkannt.');
+  // SaxSVS: Namen sind tabellarisch unter den Spaltenüberschriften.
+  // Die x-Positionen der Zelltexte dürfen leicht von denen der Überschriften abweichen.
+  const rows=[];
+  for(const t of texts.filter(t=>t.y<headN.y-5&&t.y>25)){
+   let r=rows.find(r=>Math.abs(r.y-t.y)<5);
+   if(!r){r={y:t.y,parts:[]};rows.push(r)}
+   r.parts.push(t);
+  }
+  rows.sort((a,b)=>b.y-a.y);
+  const left=Math.min(headN.x,headV.x),right=Math.max(headN.x,headV.x);
+  const gap=right-left;
+  const candidates=[];
+  // Verschiedene SaxSVS-Fontausrichtungen: linksbündig und leicht eingerückt.
+  for(const shift of [-18,-8,0,8,18]){
+   const result=[];
+   for(const row of rows){
+    const parts=row.parts.slice().sort((a,b)=>a.x-b.x);
+    const nameParts=parts.filter(t=>t.x>=left+shift&&t.x<right-gap*.16);
+    const firstParts=parts.filter(t=>t.x>=right-gap*.16&&t.x<right+gap*.98);
+    const last=nameParts.map(clean).join(' ').trim();
+    const first=firstParts.map(clean).join(' ').trim();
+    const valid=t=>t&&/[A-Za-zÀ-ž]/.test(t)&&!/^(name|vorname|klasse|geschlecht|geburtsdatum|m|w|d)$/i.test(t)&&!(/^\d+$/.test(t));
+    if(valid(last)&&valid(first)&&last.length<100&&first.length<100)
+     result.push({name:first+' '+last,first,last,group:null,observer1:'',observer2:''});
+   }
+   candidates.push(result);
+  }
+  candidates.sort((a,b)=>b.length-a.length);
+  const students=candidates[0]||[];
+  if(!students.length)throw Error('Keine vollständigen Vor- und Nachnamen erkannt. Bitte eine erweiterte Strukturanalyse durchführen.');
   return {cls,students};
  }
  function validDate(s){if(!s)return true;const m=s.match(/^(\d{4})-(\d{2})-(\d{2})$/);if(!m)return false;const d=new Date(s+'T00:00:00Z');return d.getUTCFullYear()==+m[1]&&d.getUTCMonth()+1==+m[2]&&d.getUTCDate()==+m[3]}
 
- const diagButton=pick('saxDiagnose'),diagStatus=pick('saxDiagStatus'),diagResult=pick('saxDiagResult'),diagText=pick('saxDiagText');
- pick('saxDiagCopy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(diagText.value);diagStatus.textContent='Diagnose kopiert.'}catch(e){diagText.focus();diagText.select();diagStatus.textContent='Text markiert – bitte mit Strg+C kopieren.'}});
+ const diagButton=pick('saxDiagnose'),diagStatus=pick('saxDiagStatus');
  diagButton.addEventListener('click',async()=>{
-  diagButton.disabled=true;diagResult.hidden=true;diagStatus.textContent='Diagnose wird lokal erstellt …';
+  diagButton.disabled=true;diagStatus.textContent='Diagnose wird lokal erstellt …';
   try{
    if(!file.files.length)throw Error('Bitte zuerst eine PDF-Datei auswählen.');
    const doc=await PDFLib.PDFDocument.load(await file.files[0].arrayBuffer());
@@ -86,13 +117,12 @@
     const headings={name:0,vorname:0,klasse:0};
     for(const t of items){const s=t.text.trim().toLowerCase();if(s==='name')headings.name++;if(s==='vorname')headings.vorname++;if(s==='klasse')headings.klasse++}
     const rowCounts=new Map();for(const t of items){const y=Math.round(t.y/5)*5;rowCounts.set(y,(rowCounts.get(y)||0)+1)}
-    return {seite:i+1,breite:Math.round(page.getWidth()),hoehe:Math.round(page.getHeight()),textElemente:items.length,zeilenCa:ys.length,spaltenpositionenGerundet:xs,elementeProZeileVerteilung:[...rowCounts.values()].reduce((a,n)=>(a[n>=5?'5plus':String(n)]=(a[n>=5?'5plus':String(n)]||0)+1,a),{}),textlaengenBereiche:{'1-2':ranges[0],'3-10':ranges[1],'11-25':ranges[2],'>25':ranges[3]},spaltenueberschriftenGefunden:headings};
+    return {seite:i+1,breite:Math.round(page.getWidth()),hoehe:Math.round(page.getHeight()),textElemente:items.length,zeilenCa:ys.length,spaltenpositionenGerundet:xs,elementeProZeileVerteilung:[...rowCounts.values()].reduce((a,n)=>(a[n>=5?'5plus':String(n)]=(a[n>=5?'5plus':String(n)]||0)+1,a),{}),textlaengenBereiche:{'1-2':ranges[0],'3-10':ranges[1],'11-25':ranges[2],'>25':ranges[3]},spaltenueberschriftenGefunden:headings,zeilenpositionenBeispiel:items.filter(t=>t.y<page.getHeight()*.83&&t.y>page.getHeight()*.30).slice(0,20).map(t=>({x:Math.round(t.x),y:Math.round(t.y)}))};
    });
-   const report={format:'PA-SaxSVS-Strukturdiagnose-v1',hinweis:'Keine PDF-Texte, Schülernamen oder Dateinamen enthalten. Bitte Bericht vor dem Teilen dennoch prüfen.',seiten:pages};
-   diagText.value=JSON.stringify(report,null,2);diagResult.hidden=false;
-   const blob=new Blob([diagText.value],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+   const report={format:'PA-SaxSVS-Strukturdiagnose-v2',hinweis:'Keine PDF-Texte, Schülernamen oder Dateinamen enthalten. Bitte Bericht vor dem Teilen dennoch prüfen.',seiten:pages};
+   const blob=new Blob([JSON.stringify(report,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
    a.href=url;a.download='PA-SaxSVS-Diagnose-ohne-Namen.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
-   diagStatus.textContent='Diagnose erstellt. Falls kein Download startet, bitte den angezeigten Bericht kopieren.';
+   diagStatus.textContent='Diagnose gespeichert. Bitte JSON-Datei vor dem Teilen prüfen.';
   }catch(e){diagStatus.textContent='Diagnose fehlgeschlagen: '+e.message}finally{diagButton.disabled=false}
  });
  button.addEventListener('click',async()=>{

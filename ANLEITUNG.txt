@@ -1,1 +1,1 @@
-Auf GitHub tool.html und saxsvs-import.js ersetzen. Browser neu laden (Strg+F5). PDF auswählen und Diagnose klicken. Falls kein Download startet, Diagnosebericht im Textfeld kopieren. Enthält keine Namen, aber bitte vor dem Teilen prüfen.
+Beide Dateien auf GitHub ersetzen, dann Strg+F5. SaxSVS-Liste einlesen und alle Namen vor dem Drucken prüfen. Diagnose v2 enthält zusätzliche x/y-Positionen, keine Textinhalte.
