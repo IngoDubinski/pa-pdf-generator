@@ -1,1 +1,1 @@
-Beide Dateien auf GitHub ersetzen, dann Strg+F5. SaxSVS-Liste einlesen und alle Namen vor dem Drucken prüfen. Diagnose v2 enthält zusätzliche x/y-Positionen, keine Textinhalte.
+Auf GitHub tool.html und saxsvs-import.js ersetzen. Mit Strg+F5 neu laden. SaxSVS PDF importieren und Namen/Anzahl vor PDF-Erstellung kontrollieren. Nicht mit Echtdaten an Dritte weitergeben.

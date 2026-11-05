@@ -77,26 +77,24 @@
    r.parts.push(t);
   }
   rows.sort((a,b)=>b.y-a.y);
-  const left=Math.min(headN.x,headV.x),right=Math.max(headN.x,headV.x);
-  const gap=right-left;
-  const candidates=[];
-  // Verschiedene SaxSVS-Fontausrichtungen: linksbündig und leicht eingerückt.
-  for(const shift of [-18,-8,0,8,18]){
-   const result=[];
-   for(const row of rows){
-    const parts=row.parts.slice().sort((a,b)=>a.x-b.x);
-    const nameParts=parts.filter(t=>t.x>=left+shift&&t.x<right-gap*.16);
-    const firstParts=parts.filter(t=>t.x>=right-gap*.16&&t.x<right+gap*.98);
-    const last=nameParts.map(clean).join(' ').trim();
-    const first=firstParts.map(clean).join(' ').trim();
-    const valid=t=>t&&/[A-Za-zÀ-ž]/.test(t)&&!/^(name|vorname|klasse|geschlecht|geburtsdatum|m|w|d)$/i.test(t)&&!(/^\d+$/.test(t));
-    if(valid(last)&&valid(first)&&last.length<100&&first.length<100)
-     result.push({name:first+' '+last,first,last,group:null,observer1:'',observer2:''});
-   }
-   candidates.push(result);
+  // SaxSVS: Zelltexte beginnen etwa 20–25 pt links der Überschriften.
+  // Grenzen aus der relativen Lage der beiden Überschriften ableiten.
+  const surnameX=Math.min(headN.x,headV.x);
+  const firstX=Math.max(headN.x,headV.x);
+  const distance=firstX-surnameX;
+  if(distance<25)throw Error('Namensspalten liegen zu nah beieinander.');
+  const surnameStart=surnameX-distance*.55;
+  const divider=(surnameX+firstX)/2-distance*.08;
+  const firstEnd=firstX+distance*.65;
+  const students=[];
+  for(const row of rows){
+   const parts=row.parts.slice().sort((a,b)=>a.x-b.x);
+   const last=parts.filter(t=>t.x>=surnameStart&&t.x<divider).map(clean).join(' ').trim();
+   const first=parts.filter(t=>t.x>=divider&&t.x<firstEnd).map(clean).join(' ').trim();
+   const valid=t=>t&&/[A-Za-zÀ-ž]/.test(t)&&!/^(name|vorname|klasse|geschlecht|geburtsdatum|m|w|d)$/i.test(t)&&!/^[\d.,-]+$/.test(t);
+   if(valid(last)&&valid(first)&&last.length<100&&first.length<100)
+    students.push({name:first+' '+last,first,last,group:null,observer1:'',observer2:''});
   }
-  candidates.sort((a,b)=>b.length-a.length);
-  const students=candidates[0]||[];
   if(!students.length)throw Error('Keine vollständigen Vor- und Nachnamen erkannt. Bitte eine erweiterte Strukturanalyse durchführen.');
   return {cls,students};
  }
