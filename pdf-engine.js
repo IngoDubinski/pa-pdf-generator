@@ -26,8 +26,12 @@ function strikeSE(pdf){
   throw Error('SE-Vorlage hat ein anderes Seitenformat. Durchstreichungen nicht sicher positionierbar.');
  for(const row of SE_STRIKE_ROWS){
   const y=height-row.y;
-  for(const [x1,x2] of [row.label,row.scale])
-   page.drawLine({start:{x:x1,y},end:{x:x2,y},thickness:1.3,color:PDFLib.rgb(0,0,0),opacity:1});
+  // Merkmalsname: bewährte Position unverändert lassen.
+  page.drawLine({start:{x:row.label[0],y},end:{x:row.label[1],y},thickness:1.3,color:PDFLib.rgb(0,0,0),opacity:1});
+  // Skalenfelder sind 15,5 pt hoch. Ihre Mitte liegt rund 7,7 pt
+  // ÜBER der bisherigen Linie (die am unteren Kästchenrand lag).
+  const scaleY=height-(row.y-7.7);
+  page.drawLine({start:{x:row.scale[0],y:scaleY},end:{x:row.scale[1],y:scaleY},thickness:1.8,color:PDFLib.rgb(0,0,0),opacity:1});
  }
 }
 const fileLabel={BBK:'Beobachterkonferenzbogen',SE:'Selbsteinschätzung'};
