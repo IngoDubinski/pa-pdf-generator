@@ -7,6 +7,29 @@ const SKILLS={
  'AK III':['Selbständigkeit','Ordentlichkeit','Feinmotorische Fähigkeit','Arbeitsgenauigkeit','Arbeitstempo']
 };
 const templates={BB:'Vorlagen/Vorlage Beobachtungsbogen.pdf',BBK:'Vorlagen/Vorlage Beobachterkonferenzbogen.pdf',SE:'Vorlagen/Vorlage Selbsteinschaetzungsbogen.pdf'};
+// Koordinaten auf der unveränderten offiziellen SE-Vorlage (A4, 596 x 842.5 pt).
+// Ursprung der gemessenen y-Werte: oben. pdf-lib verwendet Ursprung unten.
+// Je Merkmal zwei mittige Linien: über Bezeichnung und über alle fünf Skalenfelder.
+const SE_STRIKE_ROWS=[
+ {y:482.3,label:[71.5,159.0],scale:[192.0,271.0]}, // Präsentationsfähigkeit
+ {y:482.3,label:[280.0,411.0],scale:[438.0,515.0]}, // informationstechnische Fähigkeit
+ {y:705.2,label:[71.0,165.5],scale:[192.0,271.0]}, // Konzentrationsfähigkeit
+ {y:705.2,label:[280.0,415.0],scale:[438.0,515.0]}, // Räumliches Vorstellungsvermögen
+ {y:736.1,label:[71.0,126.0],scale:[192.0,271.0]}, // Merkfähigkeit
+ {y:736.1,label:[280.0,383.0],scale:[438.0,515.0]} // Schlussfolgerndes Denken
+];
+function strikeSE(pdf){
+ const page=pdf.getPages()[0];
+ if(!page)throw Error('SE-Vorlage hat keine Seite.');
+ const {width,height}=page.getSize();
+ if(Math.abs(width-596)>8||Math.abs(height-842)>8)
+  throw Error('SE-Vorlage hat ein anderes Seitenformat. Durchstreichungen nicht sicher positionierbar.');
+ for(const row of SE_STRIKE_ROWS){
+  const y=height-row.y;
+  for(const [x1,x2] of [row.label,row.scale])
+   page.drawLine({start:{x:x1,y},end:{x:x2,y},thickness:1.3,color:PDFLib.rgb(0,0,0),opacity:1});
+ }
+}
 const fileLabel={BBK:'Beobachterkonferenzbogen',SE:'Selbsteinschätzung'};
 const safeName=s=>String(s).replace(/[<>:"/\\|?*\x00-\x1f]/g,'').trim().replace(/[. ]+$/,'')||'Unbenannt';
 const setStatus=(s,isError=false)=>{const e=document.getElementById('generationStatus');e.textContent=s;e.className=isError?'err':'ok';};
@@ -68,6 +91,7 @@ async function makeOne(templateBytes,record,sheet,kind,task,selected,editable,se
  }
  if(editable){renameFields(pdf,`s${String(serial).padStart(4,'0')}_`);}
  else{form.flatten({updateFieldAppearances:true});}
+ if(kind==='SE'&&document.getElementById('seStrike')?.checked)strikeSE(pdf);
  return pdf;
 }
 async function joinStudents(bytes,records,sheet,kind,task,selected,editable){
