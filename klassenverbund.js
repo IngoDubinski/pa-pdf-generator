@@ -41,7 +41,14 @@
     const pairs=rows.map(r=>[clean(r.observer1),clean(r.observer2)]);
     const unique=[...new Set(pairs.flat().filter(Boolean))];
     const k=key(sheet.name,group);
-    if(!assignments.has(k))assignments.set(k,{a:clean(rows[0].observer1),b:clean(rows[0].observer2)});
+    if(!assignments.has(k)){
+     const first=clean(rows[0].observer1),second=clean(rows[0].observer2);
+     // Gleiche Beobachter betreuen zwei aufeinanderfolgende Gruppen.
+     // In der zweiten Gruppe tauschen die Gruppen den Aufgabenblock,
+     // nicht die Beobachter ihre Aufgaben.
+     const secondGroup=Number(group)%2===0;
+     assignments.set(k,secondGroup?{a:second,b:first}:{a:first,b:second});
+    }
     const state=assignments.get(k);
     const div=document.createElement('div');div.style.cssText='display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #ddd';
     const name=document.createElement('strong');name.textContent=`Gruppe ${group} (${rows.length} Schüler)`;div.append(name);
