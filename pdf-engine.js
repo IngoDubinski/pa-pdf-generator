@@ -86,7 +86,7 @@ async function makeOne(templateBytes,record,sheet,kind,task,selected,editable,se
  const form=pdf.getForm();
  const fullName=record.group==null?record.name:`${record.name} (${record.group})`;
  const values={'Name Schüler/in':fullName,'Name Schüler':fullName,'Datum':record.date,'AC Einheit':`PA${record.date?' '+record.date.slice(-4):''} ${sheet.toLowerCase()}`};
- if(kind==='BB')values['Aufgbe']=task.name;
+ if(kind==='BB'){values['Aufgbe']=task.name;values['Name Beobachter/ in']=window.PAVerbund?.observerFor(sheet,record,task)||'';}
  if(kind==='BBK')Object.assign(values,{'Name Beobachter/in':record.observer1||'','Name 2. Beobachter/in':record.observer2||'','Aufgaben':selected.map(t=>t.name).join(', ')});
  for(const [k,v] of Object.entries(values))setText(form,k,v);
  if(kind==='BB')for(const skill of SKILLS[task.category])setCheck(form,skill);
