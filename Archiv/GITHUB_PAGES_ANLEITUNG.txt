@@ -1,0 +1,13 @@
+PA-PDF-Generator Web v1.0 – GitHub Pages mit integrierten PDF-Vorlagen (01.11.2026)
+
+1. GitHub: öffentliches Repository erstellen (z. B. pa-tool).
+2. Alle Dateien UND Ordner dieses ZIPs ins Stammverzeichnis hochladen, einschließlich „Vorlagen“ und „js“.
+3. Settings → Pages → Deploy from a branch → main → /(root) → Save.
+4. Nach der Veröffentlichung https://BENUTZERNAME.github.io/REPOSITORYNAME/ öffnen.
+5. Excel-Datei auswählen, Aufgaben wählen, PDFs erzeugen. Die Originalvorlagen werden automatisch von GitHub Pages geladen.
+
+WICHTIG: Bei lokalem Öffnen von index.html per Doppelklick kann Firefox das automatische Laden der PDF-Vorlagen blockieren. Dann im Feld „PDF-Vorlagen“ die drei PDFs aus dem Ordner „Vorlagen“ auswählen. Auf GitHub Pages funktioniert das automatische Laden über HTTPS.
+
+DATENSCHUTZ: Excel-Schülerdaten und fertige PDFs werden ausschließlich im Browser verarbeitet. Die unveränderten leeren PDF-Vorlagen und Programmdateien werden von GitHub Pages geladen. GitHub Pages ist öffentlich; robots.txt und noindex sind keine Zugriffssperre. Keine echten Schülerlisten ins Repository hochladen.
+
+NUTZUNGSRECHTE: Nach Bestätigung des Projektinhabers dürfen die Originalvorlagen unverändert in dieser Anwendung bereitgestellt werden. Eine gesonderte Open-Source-Lizenz für die Vorlagen wird nicht behauptet.

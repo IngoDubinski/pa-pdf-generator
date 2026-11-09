@@ -1,0 +1,257 @@
+[
+  {
+    "path": "ARCHITEKTUR.md",
+    "bytes": 1308,
+    "sha256": "135388912221ad932312ebec05691d81e7a7e7990e171f9bc5030686d0ed1399"
+  },
+  {
+    "path": "Archiv/ANLEITUNG.txt",
+    "bytes": 525,
+    "sha256": "8cdbd863d79fcf549dd1999cf0382e5a704c1eddc7e3cc653a6dcaefe9e75bed"
+  },
+  {
+    "path": "Archiv/ANLEITUNG_V1.3.txt",
+    "bytes": 1059,
+    "sha256": "407e0363a610a0bdf14af91f26b77abcde2928cbb5697b9d0674db1138c3e321"
+  },
+  {
+    "path": "Archiv/ANLEITUNG_V1.4.txt",
+    "bytes": 433,
+    "sha256": "d6e9afd3d6179e5a0fed0b42533a23c5ead31d94b837cc068a14ecf30679fb80"
+  },
+  {
+    "path": "Archiv/FEHLERBEHEBUNG.md",
+    "bytes": 636,
+    "sha256": "49a8adc37685f69a300b27f20370231f3f39133c7745961a67c4d36d6edcff73"
+  },
+  {
+    "path": "Archiv/FIX_SKALEN.md",
+    "bytes": 687,
+    "sha256": "9493bdaabb5181712a1a1415495fc8133b7171042c9222e4b6ba77e717e243fb"
+  },
+  {
+    "path": "Archiv/GITHUB_PAGES_ANLEITUNG.txt",
+    "bytes": 1375,
+    "sha256": "1a4b954fb2a0b0082af81dbf697f25f7c4468ad63ad8afee589dfbe6bdc92d7b"
+  },
+  {
+    "path": "Archiv/KLASSENVERBUND_V143.md",
+    "bytes": 1190,
+    "sha256": "c61f7ec73d83595f6e91f0ffb147b5f248bbdc4b9e87b720c84ede14edba8cd9"
+  },
+  {
+    "path": "Archiv/KLASSENVERBUND_V144.md",
+    "bytes": 801,
+    "sha256": "b8d8e94f11356bc3fcd2c752936eb8c1462fbe9a69bc5f130813c6b9eec0319e"
+  },
+  {
+    "path": "Archiv/README.txt",
+    "bytes": 296,
+    "sha256": "0fad631741389caf2e17832c2986d5fc4bd129aca10107504be7e71d337bb591"
+  },
+  {
+    "path": "Archiv/README_V1.2.txt",
+    "bytes": 447,
+    "sha256": "f0638ef138dc2716ca899e6242a98a728748fc2c0f8243f7f7e5f8b31684f179"
+  },
+  {
+    "path": "Archiv/START_HIER.txt",
+    "bytes": 364,
+    "sha256": "205a0e666667ad5b4253179048f4da233bbe4e51558cdd6f7176e8bae9717397"
+  },
+  {
+    "path": "Archiv/UPDATE_HINWEIS.txt",
+    "bytes": 185,
+    "sha256": "cc1648f8814b4cdb87b271c04a5e7984647a9b0dbce17dc29e062ae93f0d1926"
+  },
+  {
+    "path": "Archiv/UPDATE_SE_DURCHSTREICHUNG.md",
+    "bytes": 1483,
+    "sha256": "595102eec36c0735fa86283b25817b51b19eccb1b7efdf2b4ac25eae40fb5f45"
+  },
+  {
+    "path": "CHANGELOG.md",
+    "bytes": 582,
+    "sha256": "61612d7cac67510fa001526a424f43cc96639ec6a0027bc46196554e72ca2bae"
+  },
+  {
+    "path": "DATENSCHUTZ_UND_GITHUB.md",
+    "bytes": 695,
+    "sha256": "443ef3858899b309ab77484cff2a8ddd2d8d47edcafec1d507ed3b406a559b83"
+  },
+  {
+    "path": "LICENSE-JSZIP.txt",
+    "bytes": 33753,
+    "sha256": "566c953c6090b1218ca6217dd7359d45dde46581968586dc607d59a78af6a9c4"
+  },
+  {
+    "path": "LICENSE-PDF-LIB.txt",
+    "bytes": 168,
+    "sha256": "8fb3f38e86217ae36d07770095c58036db9e9f5a3bb0ab8f3726449677e7c39c"
+  },
+  {
+    "path": "PA_Excel_Beispiel_Dummydaten.xlsx",
+    "bytes": 10476,
+    "sha256": "08e16bf9f86353ece1d1f2dace45ec2e37560b6ed9151f47797cf820a50941dd"
+  },
+  {
+    "path": "PROJEKTKONTEXT.md",
+    "bytes": 1447,
+    "sha256": "53d10f6f148b3f6b500e6ea057b29fe6674793652f5a608233ae62a72e45fc30"
+  },
+  {
+    "path": "README.md",
+    "bytes": 1762,
+    "sha256": "afd465a9ef00ccd701314705528b6e74b97ae2eb7da97132a3c41eb17899cb25"
+  },
+  {
+    "path": "README_SaxSVS.txt",
+    "bytes": 1017,
+    "sha256": "0911b427829a0c5636dbc13826e89675e4934f9f2e6d106202904b28731077e1"
+  },
+  {
+    "path": "TESTCHECKLISTE.txt",
+    "bytes": 538,
+    "sha256": "c11f5e645b167d551d12c534324dfb6253f141a63f12382feb918bb6674a695f"
+  },
+  {
+    "path": "Vorlagen/Matrix Beobachtungsaufgaben.pdf",
+    "bytes": 233514,
+    "sha256": "444c177a1c13afd20bee15396f9d1029c837564b64bcf5be0033a6077ae5470a"
+  },
+  {
+    "path": "Vorlagen/Vorlage Beobachterkonferenzbogen.pdf",
+    "bytes": 588444,
+    "sha256": "6671170d9eee502d9f44a7a8299468470309683b4591d81240dc966fa186a2bc"
+  },
+  {
+    "path": "Vorlagen/Vorlage Beobachtungsbogen.pdf",
+    "bytes": 86913,
+    "sha256": "439f07c33898260c1fde8d6ee3ea79ae1a16e0d835789ce94a53aa2cdcd048aa"
+  },
+  {
+    "path": "Vorlagen/Vorlage Selbsteinschaetzungsbogen.pdf",
+    "bytes": 226804,
+    "sha256": "2b57c55b9f87cd9537e549775f6f113baa24b712690558685acc376e0d273cfe"
+  },
+  {
+    "path": "WEITERARBEIT_PROMPT.md",
+    "bytes": 523,
+    "sha256": "5fbeb029826135a81411edaef839040cbabe92966041df5dfa97079cc08c7bdf"
+  },
+  {
+    "path": "access.js",
+    "bytes": 723,
+    "sha256": "bbdbc32b9a2cbb156c7c364bd48d3ea56a8774fb06babbfdc0a66858852b56b0"
+  },
+  {
+    "path": "admin.html",
+    "bytes": 3326,
+    "sha256": "2b5f65df965bda3f426844019d47b520a1ac827bf1523475742ade306fd80ff4"
+  },
+  {
+    "path": "admin.js",
+    "bytes": 5715,
+    "sha256": "e1b83987b6db6582b26a52378f69add079378f3c96a674630ce4633369e364ab"
+  },
+  {
+    "path": "app.js",
+    "bytes": 11103,
+    "sha256": "500f25e694741212d2fe7e9862fe051c38d6e961d965b79e6d141da3f8ca2195"
+  },
+  {
+    "path": "captcha-beispiel.png",
+    "bytes": 11456,
+    "sha256": "cdc0deba7693d6481015a8088416c223fa4b46b2e12b370a67fe40016fc6540f"
+  },
+  {
+    "path": "config.js",
+    "bytes": 1795,
+    "sha256": "f83d1fd2b8a1b4a403be1f45c0220a914b5b27810f5b181069c1bbdc7800cd84"
+  },
+  {
+    "path": "datenfluss-github-browser-pdf.png",
+    "bytes": 1380297,
+    "sha256": "2a32c38ad36052caad6377209b2dc971fe7401c3b12b7a0c8658c8f8dbb80b6e"
+  },
+  {
+    "path": "excel-anleitung.html",
+    "bytes": 6658,
+    "sha256": "6a21276a104e5341bd78da5535ac3bbfd11b701a676dc749e536e043d08a64f7"
+  },
+  {
+    "path": "index.html",
+    "bytes": 997,
+    "sha256": "10748dd264527884e9fd83a7eac02f75d63923b857e74dd06ceb715e752b8d29"
+  },
+  {
+    "path": "js/jszip.min.js",
+    "bytes": 97630,
+    "sha256": "acc7e41455a80765b5fd9c7ee1b8078a6d160bbbca455aeae854de65c947d59e"
+  },
+  {
+    "path": "js/pdf-lib.min.js",
+    "bytes": 525099,
+    "sha256": "0f9a5cad07941f0826586c94e089d89b918c46e5c17cf2d5a3c6f666e3bc694f"
+  },
+  {
+    "path": "klassenverbund.js",
+    "bytes": 6528,
+    "sha256": "763d1ed09aece6c58b489bbea5f62605a80b187a5181e2149a61d300f435f390"
+  },
+  {
+    "path": "pdf-engine.js",
+    "bytes": 11567,
+    "sha256": "00100f484396a50308fe07885b38ca810170b273783e2c7625bf216a24b6a516"
+  },
+  {
+    "path": "projektideen.html",
+    "bytes": 3611,
+    "sha256": "ab294196d8bc2c76ae69403e07aae6151119e8d6aaedc67b1ef6a4d4d0cc81b7"
+  },
+  {
+    "path": "quellcode.html",
+    "bytes": 3129,
+    "sha256": "03068499e9817e366e306ad5c140a7c0348ca45f39de9acf921e937c709a3ccd"
+  },
+  {
+    "path": "robots.txt",
+    "bytes": 26,
+    "sha256": "331ea9090db0c9f6f597bd9840fd5b171830f6e0b3ba1cb24dfa91f0c95aedc1"
+  },
+  {
+    "path": "saxsvs-import.js",
+    "bytes": 12527,
+    "sha256": "d5e5cc6634f6df005f2140c8dbdada24eeffc896ef5b432ebacfa5adb5df9371"
+  },
+  {
+    "path": "style.css",
+    "bytes": 2148,
+    "sha256": "183f7586d1644d79e663e8f56adf5c351e27c2c080777d6649a5ec9bb60b5cec"
+  },
+  {
+    "path": "testdatei.js",
+    "bytes": 15449,
+    "sha256": "19a93402145014a98557055fe38e5e632540b64b8dfdb855d0aa9dba225e1972"
+  },
+  {
+    "path": "testdatei.xlsx",
+    "bytes": 10486,
+    "sha256": "28f96e8caecfd11dd9721fcedea7f3243b23586122f561c5d13119f79e5ce235"
+  },
+  {
+    "path": "tipp.html",
+    "bytes": 1771,
+    "sha256": "a9c315cd126962812eb73aabde12520fcf6167f9c55f3ac9dd2a097ba0de4051"
+  },
+  {
+    "path": "tool-nav.js",
+    "bytes": 1338,
+    "sha256": "b8387095c30f1713d979570a398c012ca364f0d7aaa78610b09f1dbafff739ce"
+  },
+  {
+    "path": "tool.html",
+    "bytes": 7906,
+    "sha256": "641e76d697bc6d73eb43c9578d36257e6f3d23b1859854c66301208888e7082a"
+  }
+]

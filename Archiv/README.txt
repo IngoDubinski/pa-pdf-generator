@@ -1,0 +1,1 @@
+Dateien ins Hauptverzeichnis des GitHub-Pages-Repositories hochladen und gleichnamige ersetzen. Projektideen und Tipp sind neue Dateien. Excel-Namensimport: Kompletter Name ODER Vorname+Nachname; PA Datum bleibt Pflicht. Keine Statistik eingebaut. Nach Upload Strg+F5. Version v1.4 · 05.11.2026.

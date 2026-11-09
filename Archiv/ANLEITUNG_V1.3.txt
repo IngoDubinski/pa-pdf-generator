@@ -1,0 +1,14 @@
+PA-PDF-Generator v1.3 – GitHub-Sicherung
+
+1. Alle Dateien dieser ZIP in das ÖFFENTLICHE Repository pa-pdf-generator hochladen (vorhandene Dateien ersetzen).
+2. Adminseite öffnen, mit bisherigem Admin-Passwort anmelden.
+3. Fine-grained Token in GitHub-Sicherung eintragen und auf „Mit GitHub verbinden“ klicken.
+4. Neue Links werden automatisch lokal und auf GitHub gespeichert.
+5. Auf einem neuen Browser Token erneut eingeben, dann werden Einträge aus dem privaten Repository geladen.
+
+WICHTIG: Token nicht im Chat, Code oder Repository speichern. Nur während der Sitzung im Speicher.
+GitHub-Token benötigt Contents: Read and write auf IngoDubinski/pa-pdf-admin-daten.
+Es wird die Datei gastlinks.json im Branch main des privaten Repository angelegt.
+Einträge in der lokalen Liste werden beim Verbinden mit GitHub zusammengeführt.
+Bei Fehlern bleibt lokale Speicherung aktiv. Nach Fehler „Mit GitHub abgleichen“ klicken.
+Löschen aus der Übersicht ist nicht als globaler Widerruf implementiert; vorhandene Links bleiben bis Ablauf gültig.

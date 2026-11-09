@@ -1,0 +1,5 @@
+Version 1.1.1 – Korrektur Testdatei laden.
+
+Auf GitHub: app.js und index.html ersetzen; testdatei.js kann gelöscht werden.
+Anschließend Strg+F5 in Firefox.
+PDF-Engine unverändert.

@@ -41,6 +41,23 @@ function taskList(){return Object.keys(tasks).flatMap(cat=>[...area.querySelecto
 function checkedDocs(){return ['BB','BBK','SE'].filter(k=>document.getElementById('doc'+k).checked);}
 function setText(form,key,value){try{
  const field=form.getTextField(key),content=String(value);field.setText(content);
+ if(key==='Aufgaben'&&content){
+  const widgets=field.acroField.getWidgets();
+  const rect=widgets[0]?.getRectangle();
+  const available=Math.max(40,(rect?.width||450)-12);
+  // Helvetica-Glyphenbreiten (PDF-Standardfont), Näherung in 1/1000 em.
+  // Eine Zeile im BKB-Feld: verkleinern, wenn der Text nicht hineinpasst.
+  const glyphWidths={i:278,l:222,I:278,j:222,f:278,t:278,r:333,m:833,w:722,M:833,W:944,' ':278,'.':278,',':278,'-':333,'/':278,'(':333,')':333};
+  let units=0;
+  for(const ch of content){
+    if(glyphWidths[ch]!==undefined)units+=glyphWidths[ch];
+    else if(/[A-ZÄÖÜ]/.test(ch))units+=680;
+    else if(/[a-zäöüß]/.test(ch))units+=540;
+    else units+=550;
+  }
+  const size=Math.max(5,Math.min(12,Math.floor(available*1000/Math.max(1,units))));
+  field.setFontSize(size);
+ }
  if((key==='Name Schüler/in'||key==='Name Schüler')&&content.length>24){
   const widgets=field.acroField.getWidgets();const width=widgets[0]?.getRectangle()?.width||190;
   const font=PDFLib.StandardFonts.Helvetica;
