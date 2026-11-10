@@ -197,6 +197,16 @@ async function generateBlanko(){
    else if(field instanceof PDFLib.PDFCheckBox){field.uncheck();}
   }
   let label=kind;
+  const rawDate=document.getElementById('blankoDate').value;
+  if(rawDate){
+   if(!/^\d{4}-\d{2}-\d{2}$/.test(rawDate))throw Error('Bitte ein gültiges Datum wählen.');
+   const [year,month,day]=rawDate.split('-');
+   setText(form,'Datum',`${day}.${month}.${year}`);
+  }
+  if(kind==='BBK'){
+   const selected=[...document.querySelectorAll('#blankoBKBTasks input:checked')].map(el=>el.value);
+   if(selected.length)setText(form,'Aufgaben',selected.join(', '));
+  }
   if(kind==='BB'){
    const category=document.getElementById('blankoCategory').value;
    const name=document.getElementById('blankoTask').value;
@@ -229,7 +239,19 @@ blankoCategory.addEventListener('change',updateBlankoTasks);updateBlankoTasks();
 document.getElementById('blankoKind').addEventListener('change',function(){
  document.getElementById('blankoBBOptions').style.display=this.value==='BB'?'flex':'none';
  document.getElementById('blankoSEOptions').style.display=this.value==='SE'?'block':'none';
+ document.getElementById('blankoBKBOptions').style.display=this.value==='BBK'?'block':'none';
 });
+const blankoBKBTasks=document.getElementById('blankoBKBTasks');
+for(const [category,names] of Object.entries(tasks)){
+ const group=document.createElement('fieldset');
+ const legend=document.createElement('legend');legend.textContent=category;group.append(legend);
+ for(const name of names){
+  const label=document.createElement('label'),input=document.createElement('input');
+  input.type='checkbox';input.value=name;
+  label.append(input,document.createTextNode(' '+name));group.append(label);
+ }
+ blankoBKBTasks.append(group);
+}
 document.getElementById('blankoGenerate').addEventListener('click',generateBlanko);
 
 document.getElementById('generateButton').addEventListener('click',()=>generatePDFs(false));

@@ -38,3 +38,8 @@ html[data-theme="dark"] .workflow-options button:not(.selected){background:#293d
 .workflow-options{gap:18px;row-gap:14px}
 .workflow-options button{margin:0;min-width:145px}
 .blanko-mode{margin:14px 0}
+
+/* Optionale Blanko-Angaben */
+.blanko-bkb-tasks {display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.blanko-bkb-tasks fieldset {min-width:0}
+.blanko-bkb-tasks label {display:block;margin:5px 0;font-weight:normal}

@@ -32,3 +32,7 @@
 - Farbschalter tiefer; Versionsanzeige auf allen HTML-Seiten aktualisiert.
 
 - Bedienung: mehr Abstand zwischen Arbeitswegen; Blanko ohne Schülerdatenimport und ohne Klassen-Einstellungen, mit eigenem PDF-Modus. Versionsanzeige bleibt v1.5.0.
+
+Blanko-Optionen (v1.5.0): Ausklappbereich für PDF-Modus, optionales PA-Datum und optionale BKB-Aufgabenliste. Keine Schülerliste erforderlich.
+
+Blanko-Optionen: SE-Kürzung als standardmäßig aktivierte Checkbox im ausklappbaren Bereich „Optionale Angaben“.
