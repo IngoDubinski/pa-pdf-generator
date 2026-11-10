@@ -36,3 +36,7 @@
 Blanko-Optionen (v1.5.0): Ausklappbereich für PDF-Modus, optionales PA-Datum und optionale BKB-Aufgabenliste. Keine Schülerliste erforderlich.
 
 Blanko-Optionen: SE-Kürzung als standardmäßig aktivierte Checkbox im ausklappbaren Bereich „Optionale Angaben“.
+
+Blanko-Erweiterung: BKB-Aufgabenauswahl direkt sichtbar, AC-Einheit optional, PA-Datum lokal gespeichert. Versionsnummer bleibt v1.5.0.
+
+Blanko-BKB: optional 0 oder genau 6 Aufgaben (2 je AK I–III). Blanko-PA-Datum und AC-Einheit werden für BB/BKB lokal gemerkt. Version bleibt v1.5.0.

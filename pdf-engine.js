@@ -203,8 +203,12 @@ async function generateBlanko(){
    const [year,month,day]=rawDate.split('-');
    setText(form,'Datum',`${day}.${month}.${year}`);
   }
+  const acName=document.getElementById('blankoAC').value.trim();
+  if(acName)setText(form,'AC Einheit',acName);
   if(kind==='BBK'){
    const selected=[...document.querySelectorAll('#blankoBKBTasks input:checked')].map(el=>el.value);
+   const counts=Object.fromEntries(Object.keys(tasks).map(cat=>[cat,[...document.querySelectorAll('#blankoBKBTasks input:checked')].filter(el=>el.dataset.category===cat).length]));
+   if(selected.length && Object.values(counts).some(n=>n!==2))throw Error('BKB: Bitte genau 2 Aufgaben je AK wählen (insgesamt 6) oder alle Aufgaben abwählen.');
    if(selected.length)setText(form,'Aufgaben',selected.join(', '));
   }
   if(kind==='BB'){
@@ -247,11 +251,36 @@ for(const [category,names] of Object.entries(tasks)){
  const legend=document.createElement('legend');legend.textContent=category;group.append(legend);
  for(const name of names){
   const label=document.createElement('label'),input=document.createElement('input');
-  input.type='checkbox';input.value=name;
+  input.type='checkbox';input.value=name;input.dataset.category=category;input.addEventListener('change',updateBlankoBKBStatus);
   label.append(input,document.createTextNode(' '+name));group.append(label);
  }
  blankoBKBTasks.append(group);
 }
+function updateBlankoBKBStatus(){
+ const counts=Object.keys(tasks).map(cat=>[cat,[...document.querySelectorAll('#blankoBKBTasks input:checked')].filter(el=>el.dataset.category===cat).length]);
+ const total=counts.reduce((sum,[,n])=>sum+n,0);
+ const valid=total===0||counts.every(([,n])=>n===2);
+ const status=document.getElementById('blankoBKBTaskStatus');
+ status.textContent=counts.map(([cat,n])=>`${cat}: ${n}/2`).join(' · ')+(total===0?' – keine Aufgaben (optional)':valid?' – 6 Aufgaben ausgewählt':' – bitte 2 je AK oder keine auswählen');
+ status.className=valid?'ok':'err';
+}
+updateBlankoBKBStatus();
+const blankoAC=document.getElementById('blankoAC');
+try{blankoAC.value=localStorage.getItem('pa-blanko-ac')||'';}catch(e){}
+blankoAC.addEventListener('input',()=>{
+ try{if(blankoAC.value)localStorage.setItem('pa-blanko-ac',blankoAC.value);else localStorage.removeItem('pa-blanko-ac');}catch(e){}
+});
+const blankoDate=document.getElementById('blankoDate');
+try{
+ const savedDate=localStorage.getItem('pa-blanko-date');
+ if(savedDate&&/^\d{4}-\d{2}-\d{2}$/.test(savedDate))blankoDate.value=savedDate;
+}catch(e){}
+blankoDate.addEventListener('change',()=>{
+ try{
+  if(blankoDate.value)localStorage.setItem('pa-blanko-date',blankoDate.value);
+  else localStorage.removeItem('pa-blanko-date');
+ }catch(e){}
+});
 document.getElementById('blankoGenerate').addEventListener('click',generateBlanko);
 
 document.getElementById('generateButton').addEventListener('click',()=>generatePDFs(false));
