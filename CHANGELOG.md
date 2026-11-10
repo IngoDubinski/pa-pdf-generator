@@ -19,3 +19,7 @@
 - Letzte Aufgabenwahl, PDF-Modus und Sortierung lokal im Browser merken (localStorage). Keine Schülerdaten gespeichert.
 - Erledigte Ideen Blanko-Bögen und Letzte Einstellungen merken aus Projektideen entfernt.
 - PDF-Druckprobleme anderer Viewer werden später untersucht.
+
+## v1.4.9 (10.11.2026)
+- Hell/Dunkel wird wie bisher im Browser gespeichert.
+- Einheitliche Signatur und Version mit Datum auf allen Seiten mit Kopfbereich.

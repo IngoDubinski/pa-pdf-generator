@@ -16,3 +16,7 @@ v1.4.6: Dark Mode, optional Blanko-BB ohne Schülerliste, Druckhinweise in Anlei
 
 
 v1.4.8: Einstellungen lokal in settings.js; Speicherung nur Aufgabenwahl, PDF-Modus, Sortierung; keine Schülerdaten.
+
+## v1.4.9 (10.11.2026)
+- Hell/Dunkel wird wie bisher im Browser gespeichert.
+- Einheitliche Signatur und Version mit Datum auf allen Seiten mit Kopfbereich.
