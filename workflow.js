@@ -1,7 +1,7 @@
 "use strict";
 // Ausschließlich Anzeige-Umschaltung. Die bestehenden Druckfunktionen bleiben unverändert.
 (()=>{
- const workflows={class:['importPanel','settingsPanel','classOutputPanel','ownTemplatesPanel'],single:['importPanel','settingsPanel','singlePanel','ownTemplatesPanel'],blanko:['settingsPanel','blankoPanel','ownTemplatesPanel']};
+ const workflows={class:['importPanel','settingsPanel','classOutputPanel','ownTemplatesPanel'],single:['importPanel','settingsPanel','singlePanel','ownTemplatesPanel'],blanko:['blankoPanel','ownTemplatesPanel']};
  const ids=['importPanel','settingsPanel','singlePanel','blankoPanel','classOutputPanel','ownTemplatesPanel'];
  const buttons=[...document.querySelectorAll('[data-workflow-button]')];
  const help=document.getElementById('workflowHelp');

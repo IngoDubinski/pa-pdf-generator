@@ -6,6 +6,7 @@
  const sort=document.getElementById('sortMode');
  const area=document.getElementById('taskSelection');
  const seStrike=document.getElementById('seStrike');
+ const blankoMode=document.getElementById('blankoPdfMode');
  if(!mode||!sort||!area)return;
  const allowed=(select,value)=>[...select.options].some(o=>o.value===value);
  let saved=null;
@@ -21,6 +22,7 @@
    }
   }
  }
+ if(blankoMode)blankoMode.value=mode.value;
  if(typeof checkTasks==='function')checkTasks();
  function save(){
   const tasks=[...area.querySelectorAll('input[type="checkbox"][data-category]:checked')]
@@ -28,7 +30,7 @@
   try{localStorage.setItem(key,JSON.stringify({pdfMode:mode.value,sortMode:sort.value,seStrike:seStrike?.checked??true,tasks}));}
   catch(e){/* Browser erlaubt ggf. keine Speicherung; Anwendung bleibt nutzbar. */}
  }
- mode.addEventListener('change',save);
+ mode.addEventListener('change',()=>{if(blankoMode)blankoMode.value=mode.value;save();});
  sort.addEventListener('change',save);
  area.addEventListener('change',save);
  seStrike?.addEventListener('change',save);

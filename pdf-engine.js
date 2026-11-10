@@ -205,7 +205,7 @@ async function generateBlanko(){
    for(const skill of SKILLS[category])setCheck(form,skill);
    label+=' '+name;
   }
-  const editable=document.getElementById('pdfMode').value==='Bearbeitbar';
+  const editable=document.getElementById('blankoPdfMode').value==='Bearbeitbar';
   if(kind==='BBK'||kind==='SE'){
    if(editable)resetRadioStates(pdf);else removeRadioWidgets(pdf);
   }

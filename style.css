@@ -33,3 +33,8 @@ header .wrap{padding-bottom:12px}
 .theme-toggle{bottom:-12px;right:20px}
 @media(max-width:700px){.theme-toggle{position:static;margin-top:8px}}
 html[data-theme="dark"] .workflow-options button:not(.selected){background:#293d52;color:#e5edf7;border-color:#617b99}
+
+/* Arbeitswege klar voneinander absetzen; Blanko eigenständiger Dialog. */
+.workflow-options{gap:18px;row-gap:14px}
+.workflow-options button{margin:0;min-width:145px}
+.blanko-mode{margin:14px 0}

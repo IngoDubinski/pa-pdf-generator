@@ -30,3 +30,5 @@
 - Aufgabenprüfknopf entfernt; direkte Prüfung bleibt.
 - Eigene PDF-Vorlagen mit genauen Dateinamen erklärt.
 - Farbschalter tiefer; Versionsanzeige auf allen HTML-Seiten aktualisiert.
+
+- Bedienung: mehr Abstand zwischen Arbeitswegen; Blanko ohne Schülerdatenimport und ohne Klassen-Einstellungen, mit eigenem PDF-Modus. Versionsanzeige bleibt v1.5.0.
