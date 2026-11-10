@@ -42,3 +42,5 @@ Blanko-Erweiterung: BKB-Aufgabenauswahl direkt sichtbar, AC-Einheit optional, PA
 Blanko-BKB: optional 0 oder genau 6 Aufgaben (2 je AK I–III). Blanko-PA-Datum und AC-Einheit werden für BB/BKB lokal gemerkt. Version bleibt v1.5.0.
 
 Blanko BB/BKB: AC-Einheit direkt sichtbar, im Original-PDF-Feld „AC Einheit“ eingetragen und lokal gespeichert. Version weiterhin v1.5.0.
+
+Projektidee (noch nicht umgesetzt): PDF-Kompatibilität mit Adobe Acrobat Reader verbessern bzw. Darstellungs- und Druckprobleme beheben.

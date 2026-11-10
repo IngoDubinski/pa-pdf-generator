@@ -13,3 +13,5 @@ Stand v1.4.6: theme.js für Dark Mode, Blanko-BB-Erstellung in pdf-engine.js (ge
 
 
 v1.4.8: Einstellungen lokal in settings.js; Speicherung nur Aufgabenwahl, PDF-Modus, Sortierung; keine Schülerdaten.
+
+Projektidee (noch nicht umgesetzt): PDF-Kompatibilität mit Adobe Acrobat Reader verbessern bzw. Darstellungs- und Druckprobleme beheben.

@@ -37,3 +37,5 @@ Blanko-Optionen: SE-Kürzung als standardmäßig aktivierte Checkbox im ausklapp
 Blanko-Erweiterung: BKB-Aufgabenauswahl direkt sichtbar, AC-Einheit optional, PA-Datum lokal gespeichert. Versionsnummer bleibt v1.5.0.
 
 Blanko-BKB: optional 0 oder genau 6 Aufgaben (2 je AK I–III). Blanko-PA-Datum und AC-Einheit werden für BB/BKB lokal gemerkt. Version bleibt v1.5.0.
+
+Projektidee (noch nicht umgesetzt): PDF-Kompatibilität mit Adobe Acrobat Reader verbessern bzw. Darstellungs- und Druckprobleme beheben.
