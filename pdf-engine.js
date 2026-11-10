@@ -265,6 +265,13 @@ function updateBlankoBKBStatus(){
  status.className=valid?'ok':'err';
 }
 updateBlankoBKBStatus();
+// AC-Einheit nur für BB und BKB anzeigen; Eintrag bleibt auch beim Wechsel erhalten.
+const blankoACRow=document.getElementById('blankoACRow');
+function updateBlankoACVisibility(){
+ blankoACRow.style.display=['BB','BBK'].includes(document.getElementById('blankoKind').value)?'flex':'none';
+}
+document.getElementById('blankoKind').addEventListener('change',updateBlankoACVisibility);
+updateBlankoACVisibility();
 const blankoAC=document.getElementById('blankoAC');
 try{blankoAC.value=localStorage.getItem('pa-blanko-ac')||'';}catch(e){}
 blankoAC.addEventListener('input',()=>{
