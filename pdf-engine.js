@@ -177,52 +177,59 @@ async function generatePDFs(expert=false){
  }catch(e){console.error(e);setStatus('PDF-Erstellung fehlgeschlagen: '+e.message,true);}finally{btn.disabled=false;}
 }
 
-// Blanko-BB ohne Schülerliste, Namen, Gruppe, Datum oder AC-Einheit.
+// Blanko-PDF ohne Schülerdaten: BB mit Kriterien, BKB ohne Aufgabenliste, SE optional gekürzt.
 async function generateBlanko(){
  const button=document.getElementById('blankoGenerate'),status=document.getElementById('blankoStatus');
  button.disabled=true;
  try{
-  const category=document.getElementById('blankoCategory').value;
-  const name=document.getElementById('blankoTask').value;
-  if(!tasks[category]?.includes(name))throw Error('Bitte eine gültige Aufgabe wählen.');
-  const filename=templates.BB.split('/').pop();
+  const kind=document.getElementById('blankoKind').value;
+  if(!['BB','BBK','SE'].includes(kind))throw Error('Ungültiger Dokumenttyp.');
+  const filename=templates[kind].split('/').pop();
   const own=[...document.getElementById('templateFiles').files].find(f=>f.name===filename);
   let bytes;
   if(own)bytes=await own.arrayBuffer();
-  else{
-   const response=await fetch(templates.BB);
-   if(!response.ok)throw Error('BB-Vorlage konnte nicht geladen werden.');
-   bytes=await response.arrayBuffer();
-  }
+  else{const response=await fetch(templates[kind]);if(!response.ok)throw Error('PDF-Vorlage nicht gefunden.');bytes=await response.arrayBuffer();}
   const pdf=await PDFLib.PDFDocument.load(bytes,{updateMetadata:false});
   const form=pdf.getForm();
-  for(const key of ['Name Schüler/in','Name Schüler','Datum','AC Einheit','Name Beobachter/ in']){
-   setText(form,key,'');
+  // Explizit alle Textfelder leeren, nicht nur bekannte Namensfelder.
+  for(const field of form.getFields()){
+   if(field instanceof PDFLib.PDFTextField){field.setText('');}
+   else if(field instanceof PDFLib.PDFCheckBox){field.uncheck();}
   }
-  setText(form,'Aufgbe',name);
-  for(const skill of SKILLS[category])setCheck(form,skill);
+  let label=kind;
+  if(kind==='BB'){
+   const category=document.getElementById('blankoCategory').value;
+   const name=document.getElementById('blankoTask').value;
+   if(!tasks[category]?.includes(name))throw Error('Bitte eine gültige Aufgabe auswählen.');
+   setText(form,'Aufgbe',name);
+   for(const skill of SKILLS[category])setCheck(form,skill);
+   label+=' '+name;
+  }
   const editable=document.getElementById('pdfMode').value==='Bearbeitbar';
+  if(kind==='BBK'||kind==='SE'){
+   if(editable)resetRadioStates(pdf);else removeRadioWidgets(pdf);
+  }
   if(!editable)form.flatten({updateFieldAppearances:true});
+  if(kind==='SE'&&document.getElementById('blankoStrike').checked)strikeSE(pdf);
   const output=await pdf.save({useObjectStreams:false});
-  const blob=new Blob([output],{type:'application/pdf'});
-  const url=URL.createObjectURL(blob),a=document.createElement('a');
-  a.href=url;a.download=safeName('PA Blanko BB '+name)+'.pdf';
-  document.body.append(a);a.click();a.remove();
+  const blob=new Blob([output],{type:'application/pdf'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download=safeName('PA Blanko '+label)+'.pdf';document.body.append(a);a.click();a.remove();
   setTimeout(()=>URL.revokeObjectURL(url),60000);
-  status.textContent='Blanko-BB erstellt: '+name;
+  status.textContent='Blanko-PDF erstellt: '+label;
  }catch(e){status.textContent='Fehler: '+e.message;}
  finally{button.disabled=false;}
 }
 const blankoCategory=document.getElementById('blankoCategory'),blankoTask=document.getElementById('blankoTask');
 function updateBlankoTasks(){
  blankoTask.replaceChildren();
- for(const name of tasks[blankoCategory.value]||[]){
-  const option=document.createElement('option');option.value=name;option.textContent=name;blankoTask.append(option);
- }
+ for(const name of tasks[blankoCategory.value]||[]){const option=document.createElement('option');option.value=name;option.textContent=name;blankoTask.append(option);}
 }
 for(const cat of Object.keys(tasks)){const o=document.createElement('option');o.value=cat;o.textContent=cat;blankoCategory.append(o);}
-blankoCategory.addEventListener('change',updateBlankoTasks);
-updateBlankoTasks();
+blankoCategory.addEventListener('change',updateBlankoTasks);updateBlankoTasks();
+document.getElementById('blankoKind').addEventListener('change',function(){
+ document.getElementById('blankoBBOptions').style.display=this.value==='BB'?'flex':'none';
+ document.getElementById('blankoSEOptions').style.display=this.value==='SE'?'block':'none';
+});
 document.getElementById('blankoGenerate').addEventListener('click',generateBlanko);
 
 document.getElementById('generateButton').addEventListener('click',()=>generatePDFs(false));

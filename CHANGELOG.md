@@ -10,3 +10,7 @@
 - Optionaler Blanko-BB-Generator: Aufgabe/AK auswählen, Kriterien setzen, keine Namen/Datum/Gruppe; kein Excel-Import erforderlich.
 - Druck-Hinweis Firefox bzw. Adobe „Als Bild drucken“ in Anleitung.
 - Viewerübergreifende PDF-Druckkompatibilität weiterhin offen; kein behaupteter Bugfix.
+
+## v1.4.7 (10.11.2026)
+- Blanko-Vorlagen jetzt für BB, BKB und SE. BKB ohne Aufgaben und persönliche Angaben, SE mit optionaler Kürzung.
+- Dark-Mode-Schalter unverändert groß.
