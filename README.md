@@ -10,3 +10,6 @@ Excel-Import, SaxSVS-PDF-Import, BB/BKB/SE-Erzeugung, Einzeldruck, Klassenverbun
 
 ## Hinweise
 Die grafische Datenflussdarstellung wurde freigegeben und oben auf Anleitung und Transparenz eingebunden. Die früheren Dokumentationen sind unter `Archiv/` zur historischen Nachvollziehbarkeit enthalten. Die BKB-Anpassung wurde statisch geprüft; ein vollständiger Browser-Drucktest mit allen Eingabevarianten ist noch erforderlich.
+
+
+v1.4.6: Dark Mode, optional Blanko-BB ohne Schülerliste, Druckhinweise in Anleitung. PDF-Viewer-Kompatibilität bleibt zu prüfen.

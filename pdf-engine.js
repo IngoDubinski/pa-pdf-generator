@@ -176,5 +176,54 @@ async function generatePDFs(expert=false){
   setStatus(`Fertig: ${total} Sammel-PDFs im ZIP. Bearbeitbare Ausgabe bitte besonders sorgfältig testen.`);
  }catch(e){console.error(e);setStatus('PDF-Erstellung fehlgeschlagen: '+e.message,true);}finally{btn.disabled=false;}
 }
+
+// Blanko-BB ohne Schülerliste, Namen, Gruppe, Datum oder AC-Einheit.
+async function generateBlanko(){
+ const button=document.getElementById('blankoGenerate'),status=document.getElementById('blankoStatus');
+ button.disabled=true;
+ try{
+  const category=document.getElementById('blankoCategory').value;
+  const name=document.getElementById('blankoTask').value;
+  if(!tasks[category]?.includes(name))throw Error('Bitte eine gültige Aufgabe wählen.');
+  const filename=templates.BB.split('/').pop();
+  const own=[...document.getElementById('templateFiles').files].find(f=>f.name===filename);
+  let bytes;
+  if(own)bytes=await own.arrayBuffer();
+  else{
+   const response=await fetch(templates.BB);
+   if(!response.ok)throw Error('BB-Vorlage konnte nicht geladen werden.');
+   bytes=await response.arrayBuffer();
+  }
+  const pdf=await PDFLib.PDFDocument.load(bytes,{updateMetadata:false});
+  const form=pdf.getForm();
+  for(const key of ['Name Schüler/in','Name Schüler','Datum','AC Einheit','Name Beobachter/ in']){
+   setText(form,key,'');
+  }
+  setText(form,'Aufgbe',name);
+  for(const skill of SKILLS[category])setCheck(form,skill);
+  const editable=document.getElementById('pdfMode').value==='Bearbeitbar';
+  if(!editable)form.flatten({updateFieldAppearances:true});
+  const output=await pdf.save({useObjectStreams:false});
+  const blob=new Blob([output],{type:'application/pdf'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download=safeName('PA Blanko BB '+name)+'.pdf';
+  document.body.append(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),60000);
+  status.textContent='Blanko-BB erstellt: '+name;
+ }catch(e){status.textContent='Fehler: '+e.message;}
+ finally{button.disabled=false;}
+}
+const blankoCategory=document.getElementById('blankoCategory'),blankoTask=document.getElementById('blankoTask');
+function updateBlankoTasks(){
+ blankoTask.replaceChildren();
+ for(const name of tasks[blankoCategory.value]||[]){
+  const option=document.createElement('option');option.value=name;option.textContent=name;blankoTask.append(option);
+ }
+}
+for(const cat of Object.keys(tasks)){const o=document.createElement('option');o.value=cat;o.textContent=cat;blankoCategory.append(o);}
+blankoCategory.addEventListener('change',updateBlankoTasks);
+updateBlankoTasks();
+document.getElementById('blankoGenerate').addEventListener('click',generateBlanko);
+
 document.getElementById('generateButton').addEventListener('click',()=>generatePDFs(false));
 document.getElementById('expertGenerate').addEventListener('click',()=>generatePDFs(true));

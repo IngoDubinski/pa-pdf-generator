@@ -7,3 +7,6 @@ V1.4.5: automatische Schriftgrößenanpassung für Feld `Aufgaben` im BKB; freig
 Konventionen: Originalvorlagen möglichst unverändert lassen, SE-Durchstreichung nur optional im PDF, Flatten als Standard, kein Upload von Schülerdaten, keine Tokens/realen Schülerdaten in ZIP. Klassenverbund: 2 Aufgabenblöcke mit je 1 Aufgabe aus AK I/II/III, je Gruppe 2 Beobachter; bei Paaren 1/2, 3/4, 5/6 wechseln die Gruppen, Beobachter behalten ihre Aufgabenblöcke. Zuordnung muss auf BB erscheinen, BKB/SE unverändert. Bei fehlenden Beobachtern Feld leer.
 
 Nächste Arbeit: Browser-End-to-End-Test der BKB-Schriftgröße für sehr lange Aufgabenlisten und beide PDF-Modi. Offen: Schutz der öffentlich zugänglichen PDF-Vorlagen.
+
+
+Stand v1.4.6: theme.js für Dark Mode, Blanko-BB-Erstellung in pdf-engine.js (generateBlanko), Firefox/Adobe-Druckhinweis. PDF-Druckfehler bei Dritt-Viewern noch nicht behoben.
