@@ -13,3 +13,6 @@ Die grafische Datenflussdarstellung wurde freigegeben und oben auf Anleitung und
 
 
 v1.4.6: Dark Mode, optional Blanko-BB ohne Schülerliste, Druckhinweise in Anleitung. PDF-Viewer-Kompatibilität bleibt zu prüfen.
+
+
+v1.4.8: Einstellungen lokal in settings.js; Speicherung nur Aufgabenwahl, PDF-Modus, Sortierung; keine Schülerdaten.

@@ -10,3 +10,6 @@ Nächste Arbeit: Browser-End-to-End-Test der BKB-Schriftgröße für sehr lange 
 
 
 Stand v1.4.6: theme.js für Dark Mode, Blanko-BB-Erstellung in pdf-engine.js (generateBlanko), Firefox/Adobe-Druckhinweis. PDF-Druckfehler bei Dritt-Viewern noch nicht behoben.
+
+
+v1.4.8: Einstellungen lokal in settings.js; Speicherung nur Aufgabenwahl, PDF-Modus, Sortierung; keine Schülerdaten.

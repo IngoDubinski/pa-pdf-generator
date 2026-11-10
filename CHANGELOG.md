@@ -14,3 +14,8 @@
 ## v1.4.7 (10.11.2026)
 - Blanko-Vorlagen jetzt für BB, BKB und SE. BKB ohne Aufgaben und persönliche Angaben, SE mit optionaler Kürzung.
 - Dark-Mode-Schalter unverändert groß.
+
+## v1.4.8 (10.11.2026)
+- Letzte Aufgabenwahl, PDF-Modus und Sortierung lokal im Browser merken (localStorage). Keine Schülerdaten gespeichert.
+- Erledigte Ideen Blanko-Bögen und Letzte Einstellungen merken aus Projektideen entfernt.
+- PDF-Druckprobleme anderer Viewer werden später untersucht.
