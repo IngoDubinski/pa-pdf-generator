@@ -203,8 +203,20 @@ async function generateBlanko(){
    const [year,month,day]=rawDate.split('-');
    setText(form,'Datum',`${day}.${month}.${year}`);
   }
-  const acName=document.getElementById('blankoAC').value.trim();
-  if(acName)setText(form,'AC Einheit',acName);
+  // AC-Einheit ausdrücklich in das PDF-Formularfeld beider Originalvorlagen schreiben.
+  // Anders als setText() Fehler nicht stillschweigend verschlucken.
+  if(kind==='BB'||kind==='BBK'){
+   const acName=document.getElementById('blankoAC').value.trim();
+   if(acName){
+    let acField;
+    try{acField=form.getTextField('AC Einheit');}
+    catch(e){throw Error('PDF-Vorlage enthält kein Textfeld „AC Einheit“.');}
+    acField.setText(acName);
+    if(acField.getText()!==acName)throw Error('AC-Einheit konnte nicht ins PDF übertragen werden.');
+    // Aktualisiert die Darstellung des Formularfeldes auch vor dem Flatten.
+    acField.updateAppearances(PDFLib.StandardFonts.Helvetica ? await pdf.embedFont(PDFLib.StandardFonts.Helvetica) : undefined);
+   }
+  }
   if(kind==='BBK'){
    const selected=[...document.querySelectorAll('#blankoBKBTasks input:checked')].map(el=>el.value);
    const counts=Object.fromEntries(Object.keys(tasks).map(cat=>[cat,[...document.querySelectorAll('#blankoBKBTasks input:checked')].filter(el=>el.dataset.category===cat).length]));
