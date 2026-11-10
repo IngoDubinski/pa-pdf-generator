@@ -20,3 +20,16 @@ html[data-theme="dark"] .notice,html[data-theme="dark"] code,html[data-theme="da
 html[data-theme="dark"] footer{color:#acbcd0}
 html[data-theme="dark"] .ok{color:#8be5a6}
 html[data-theme="dark"] .err{color:#ff9b9b}
+
+/* v1.5.0: getrennte Arbeitswege und korrigierte Position des Farbschalters */
+[hidden]{display:none!important}
+.workflow-options{display:flex;flex-wrap:wrap;gap:10px}
+.workflow-options button{background:#e5edf7;color:#173957;border:1px solid #8ca7c4}
+.workflow-options button.selected{background:#164a83;color:#fff;border-color:#164a83}
+.workflow-help{margin:12px 0 0}
+body[data-workflow="blanko"] #settingsPanel > :not(h2):not(#commonSettings){display:none!important}
+body[data-workflow="blanko"] #commonSettings > label:not(:first-child){display:none!important}
+header .wrap{padding-bottom:12px}
+.theme-toggle{bottom:-12px;right:20px}
+@media(max-width:700px){.theme-toggle{position:static;margin-top:8px}}
+html[data-theme="dark"] .workflow-options button:not(.selected){background:#293d52;color:#e5edf7;border-color:#617b99}

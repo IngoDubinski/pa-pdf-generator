@@ -11,4 +11,4 @@ for(const [category,names] of Object.entries(tasks)){
  area.append(section);
 }
 function checkTasks(){const counts=Object.keys(tasks).map(cat=>[cat,area.querySelectorAll(`input[data-category="${cat}"]:checked`).length]);const ok=counts.every(([,n])=>n===2);const status=document.getElementById('taskStatus');status.textContent=counts.map(([cat,n])=>`${cat}: ${n}/2`).join(' · ')+(ok?' – Auswahl gültig.':' – Bitte genau 2 je Kategorie wählen.');status.className=ok?'ok':'err';return ok;}
-document.getElementById('validateTasks').addEventListener('click',checkTasks);checkTasks();
+checkTasks();

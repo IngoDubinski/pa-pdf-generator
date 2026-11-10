@@ -20,3 +20,10 @@ v1.4.8: Einstellungen lokal in settings.js; Speicherung nur Aufgabenwahl, PDF-Mo
 ## v1.4.9 (10.11.2026)
 - Hell/Dunkel wird wie bisher im Browser gespeichert.
 - Einheitliche Signatur und Version mit Datum auf allen Seiten mit Kopfbereich.
+
+## v1.5.0 (10.11.2026)
+- Drei Arbeitswege: Klassenweise, Einzeldruck, Blanko-Vorlagen.
+- SE-Kürzung wird lokal gemerkt.
+- Aufgabenprüfknopf entfernt; direkte Prüfung bleibt.
+- Eigene PDF-Vorlagen mit genauen Dateinamen erklärt.
+- Farbschalter tiefer; Versionsanzeige auf allen HTML-Seiten aktualisiert.

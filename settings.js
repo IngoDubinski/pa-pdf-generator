@@ -5,6 +5,7 @@
  const mode=document.getElementById('pdfMode');
  const sort=document.getElementById('sortMode');
  const area=document.getElementById('taskSelection');
+ const seStrike=document.getElementById('seStrike');
  if(!mode||!sort||!area)return;
  const allowed=(select,value)=>[...select.options].some(o=>o.value===value);
  let saved=null;
@@ -12,6 +13,7 @@
  if(saved&&typeof saved==='object'){
   if(typeof saved.pdfMode==='string'&&allowed(mode,saved.pdfMode))mode.value=saved.pdfMode;
   if(typeof saved.sortMode==='string'&&allowed(sort,saved.sortMode))sort.value=saved.sortMode;
+  if(typeof saved.seStrike==='boolean' && seStrike)seStrike.checked=saved.seStrike;
   if(Array.isArray(saved.tasks)){
    const choices=new Set(saved.tasks.filter(x=>typeof x==='string'));
    for(const input of area.querySelectorAll('input[type="checkbox"][data-category]')){
@@ -23,10 +25,11 @@
  function save(){
   const tasks=[...area.querySelectorAll('input[type="checkbox"][data-category]:checked')]
    .map(x=>JSON.stringify([x.dataset.category,x.value]));
-  try{localStorage.setItem(key,JSON.stringify({pdfMode:mode.value,sortMode:sort.value,tasks}));}
+  try{localStorage.setItem(key,JSON.stringify({pdfMode:mode.value,sortMode:sort.value,seStrike:seStrike?.checked??true,tasks}));}
   catch(e){/* Browser erlaubt ggf. keine Speicherung; Anwendung bleibt nutzbar. */}
  }
  mode.addEventListener('change',save);
  sort.addEventListener('change',save);
  area.addEventListener('change',save);
+ seStrike?.addEventListener('change',save);
 })();
