@@ -1,8 +1,8 @@
-# GitHub Pages – PA-Tools v1.6.3
+# GitHub Pages – PA-Tools v1.6.4
 
-1. ZIP `PA_Tools_Web_v1.6.3_KOMPLETT.zip` entpacken und den **Inhalt des Unterordners** `PA_Tools_Web_v1.6.3/` in das Root-Verzeichnis des vorhandenen GitHub-Pages-Repositories kopieren. `index.html`, `tool.html`, `ep-generator.html`, `.js`, `.css`, `Vorlagen/` und `js/` müssen im selben Verzeichnisaufbau liegen.
+1. ZIP `PA_Tools_Web_v1.6.4_KOMPLETT.zip` entpacken und den **Inhalt des Unterordners** `PA_Tools_Web_v1.6.4/` in das Root-Verzeichnis des vorhandenen GitHub-Pages-Repositories kopieren. `index.html`, `tool.html`, `ep-generator.html`, `.js`, `.css`, `Vorlagen/` und `js/` müssen im selben Verzeichnisaufbau liegen.
 2. Unter `index.html` liegen beide Anwendungen nebeneinander, mit den bisherigen freigegebenen Links bzw. Admin-Dauerlink. `tool.html` = PA-Drucktool, `ep-generator.html` = neuer EP Generator.
-3. Versionsangabe des Portals: **v1.6.3 / 14.11.2026**; EP Generator Web **v0.2.2**. Hard Reload (`Strg`+`F5`) nach Deployment.
+3. Versionsangabe des Portals: **v1.6.4 / 14.11.2026**; EP Generator Web **v0.2.3**. Hard Reload (`Strg`+`F5`) nach Deployment.
 4. **Nie ausgefüllte KP/PV, Schülerlisten, echte Unterschriftsbilder oder erzeugte EP ins Repository hochladen.** In `Vorlagen/` liegen nur nicht ausgefüllte Originale.
 5. **Wichtige Einschränkung:** Die Linkverwaltung auf statischem GitHub Pages ist keine sichere serverseitige Anmeldung. Schülerdaten bleiben auf dem Endgerät, aber der veröffentlichte Quellcode und die leeren Vorlagen sind öffentlich abrufbar.
 6. **Einschränkung v0.2.0:** Der EP-Webimport liest Excel-Klassenblätter (.xlsx). SaxSVS-Text-PDF-Import ist in der lokalen Thonny-Fassung verfügbar; für den Web-EP noch nicht eingebaut. Die vorhandene PA-Drucktool-SaxSVS-Funktion bleibt erhalten.
@@ -20,8 +20,13 @@ Vorhandenes `index.html` und `tool-nav.js` ersetzen. Ohne `?key` und im privaten
 - Webseite neu laden (`Strg+F5`), EP-PDFs neu erstellen; alte Downloads bleiben unverändert.
 - Prüfung in Firefox und Edge, **auch ausgedruckt**: BO-Tabelle Seite 2, alle Zeilen- und Spaltengrenzen, drei Ankreuzfelder pro Zeile; Nachtragen in Formularfeldern.
 
-## Update auf v1.6.3 – Ladeanzeige / neuer Browser-Tab
+## Update auf v1.6.4 – Ladeanzeige / neuer Browser-Tab
 - Vollständiges ZIP ausrollen (nicht nur `ep-app.js`), da neu auch `progress-ui.js` und `progress-ui.css` benötigt werden.
 - Website mit **Strg+F5** aktualisieren. Bei EP-Klassendruck wird kein leerer Tab mehr geöffnet. Stattdessen nach Abschluss auf **„PDF öffnen / drucken“** klicken.
 - Beide Werkzeuge zeigen beim Erzeugen von PDFs und ZIPs eine Fortschrittsanzeige.
 - Ein Netzwerktest auf GitHub Pages und Windows-Drucktest stehen aus; die Chromium-Offline-Integrationstests bestanden.
+
+## Update v1.6.4 (14.11.2026)
+EP Generator: Einzeldruck als ausklappbare Zusatzfunktion unterhalb des Klassendrucks; Mehrfachauswahl, Klassenauswahl, Suche, gemeinsame druckbare PDF. Zusätzliche Datei `ep-selection.js` unbedingt mit hochladen! Die beiden Profil-Uploads verwenden nun kurze Überschriften und kleinere Hinweise auf Einzel-/Sammel-PDFs.
+
+Tests: `node --test Tests/*.js`. GitHub Pages nach Upload mit Strg+F5 neu laden.

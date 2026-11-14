@@ -1,4 +1,4 @@
-# EP Generator Web – Testcheckliste v0.2.2
+# EP Generator Web – Testcheckliste v0.2.3
 
 - [ ] Über freigegebenen Link bzw. Admin-Dauerlink zum EP Generator navigieren
 - [ ] Excel-Schülerliste (7a/7b) einlesen; nur ausgewählte Klasse wird verarbeitet
@@ -13,7 +13,7 @@
 - [ ] EP-Formularfelder in Adobe Reader nach Speichern erneut bearbeiten
 - [ ] Firefox-Schnelltest und Windows-Druckdialog
 
-Hinweis: Automatischer Browser-End-to-End-Test war in dieser Erstellungsumgebung technisch nicht möglich; PDF-Engine separat auf realen Beispiel-PDFs geprüft.
+Hinweis: Vollständige Navigation zu HTTP-Seiten ist hier administrativ blockiert. Browser-Interaktion und PDF-Erzeugung wurden mit direkt geladener HTML/JS-Oberfläche und Dummy-Schülerlisten geprüft; ein Live-Test auf GitHub Pages bleibt erforderlich.
 
 ## Regression EP-PDF-Raster (v0.2.1 / 14.11.2026)
 - [ ] Klassendruck (mindestens 2 Schüler): EP Seite 2 mit **vollständigen schwarzen Rasterlinien** und sichtbaren 3 Kästchen pro BO-Zeile in Firefox und Edge öffnen.
@@ -24,7 +24,7 @@ Hinweis: Automatischer Browser-End-to-End-Test war in dieser Erstellungsumgebung
 - [x] Entwickler-Test: `node --test Tests/test_ep_form_transparency.js`
 
 
-## v1.6.3: Fortschrittsanzeige / Druckablauf (14.11.2026)
+## v1.6.4: Fortschrittsanzeige / Druckablauf (14.11.2026)
 - [ ] Nach „Ausgabe erstellen“ erscheint sofort die Sanduhr und **0 %**; der Prozentwert steigt mit der Bearbeitung.
 - [ ] EP-Klassen-PDF: Fortschritt für KP/PV-Seiten, bearbeitete Schüler, Zusammenführung; am Schluss **100 %**.
 - [ ] EP-ZIP: Fortschritt beim Packen bis **100 %**, Download vollständig und lesbar.
@@ -34,3 +34,15 @@ Hinweis: Automatischer Browser-End-to-End-Test war in dieser Erstellungsumgebung
 - [ ] Bei absichtlicher Fehlkonfiguration zeigt die Anzeige einen Fehler, nicht irreführend 100 %.
 - [x] Automatisierte Offline-Browserprüfung mit Dummy-Excel: EP-Klassen-PDF und EP-ZIP, PA-Einzeldruck-ZIP, keine zusätzlichen Tabs.
 - [x] JavaScript-Tests: `node --test Tests/*.js`.
+
+
+## v1.6.4 – Einzeldruck-Auswahl (EP v0.2.3)
+- [ ] Klassendruck standardmäßig geöffnet/ausgewählt, Einzeldruck darunter zunächst eingeklappt.
+- [ ] Einzelmodus aufklappen: Klasse wählen (7a/7b), nur Namen der Klasse sichtbar.
+- [ ] Nach Namen oder Schüler-ID suchen, einzeln und mehrfach auswählen, sichtbare auswählen, Auswahl zurücksetzen.
+- [ ] Zwei ausgewählte Kinder → vier EP-Seiten; ein Kind → zwei EP-Seiten; andere Klassen dürfen nicht auftauchen.
+- [ ] Einzeldruck-Dokumentwahl EP/KP/PV und A–Z/Z–A beachten; fehlende KP/PV nicht erzeugen.
+- [ ] Klassendruck danach erneut testen: trotz aktivierter Einzeldruck-Häkchen weiterhin alle Schüler der Klasse.
+- [ ] Profil-Uploads kurz beschriftet mit kleinem Einzel-/Sammel-PDF-Hinweis.
+- [x] Automatische Tests: `node --test Tests/*.js`.
+- [x] Browser-Dummytest über direkte Skriptinjektion (keine externe Navigation) mit 7a/7b, mehrfachem und einzelnem Druck sowie Formularprüfung.

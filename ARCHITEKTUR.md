@@ -17,5 +17,9 @@ Das Portal unterscheidet Gastlink, Admin-Dauerlink und fehlenden/abgelaufenen Li
 ## EP Web v0.2.1 / Portal v1.6.2 – Formular-Rendering (14.11.2026)
 `ep-core.js` führt PDF-Teile weiterhin mit `pdf-lib` zusammen. Zur Isolation der Formularfeldnamen werden PDF-Widgets je Schüler neu aufgebaut. **Pflicht:** Texteingabefelder bei `addToPage` mit `backgroundColor: undefined`, `borderColor: undefined`, `borderWidth: 0` anlegen; Checkboxen ebenfalls transparent, aber mit schwarzem Rand. Sonst erzeugt `pdf-lib` standardmäßig weiße Füllungen und verdeckt Linien der Original-PDF. Kein `flatten()` der EP-Formulare!
 
-## Web-Fortschritt (v1.6.3)
+## Web-Fortschritt (v1.6.4)
 Gemeinsame, DOM-basierte Anzeige in `progress-ui.js` und `progress-ui.css`, keine serverseitigen Requests. EP: optionaler Callback pro indizierter KP/PV-Seite und pro zusammengeführtem PDF, Zählung pro Schüler, JSZip-`generateAsync`-Prozentwerte. PA: Callback pro Schüler, pro Sammel-PDF und JSZip-`generateAsync`. Prozentwerte sind phasengewichtet; reale bearbeitete Dokumente und Packprozente, keine Restzeitprognose. Periodische `setTimeout(0)`-Yieldpunkte erlauben dem Browser Animation und Balken-Aktualisierung. Der PDF-Drucklink entsteht erst nach der Datei-Erzeugung. Der AcroForm-/PDF-Zusammenführungsalgorithmus ist unverändert.
+
+
+## EP-Einzeldruck v0.2.3 / Portal v1.6.4
+Die Web-Einzelauswahl ist **kein separater PDF-Algorithmus**, sondern verwendet `ep-app.js` mit `generate(single=true)` und `EPCore.buildEP/annotate/mergePdf`. Die gefilterten Excel-Schüler werden per Klassen-ID und **Schüler-ID** auf vorhandene KP/PV-PDF-Seiten abgeglichen, ohne die Seitenreihenfolge zu erraten. `ep-selection.js` filtert klassenweise und verwaltet keine persistenten Schülerdaten. Der optionale `<details>`-Abschnitt ist eingeklappt, während der bestehende Klassendruck alle Schüler der Klasse verwendet. Die gemeinsame EP/KP/PV-Dokumentwahl und A–Z/Z–A-Sortierung bleiben aktiv. Ausgabe ist eine PDF für ein oder mehrere ausgewählte Kinder. Tests: `Tests/test_ep_single_print.js` und die vorhandenen PDF-Formulartests.

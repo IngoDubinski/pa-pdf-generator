@@ -1,4 +1,4 @@
-# PA-Tools v1.6.3 · EP Web v0.2.2 (14.11.2026)
+# PA-Tools v1.6.4 · EP Web v0.2.3 (14.11.2026)
 # Weiterarbeit – PA-Tools Web v1.6.0, EP Generator Web v0.2.0
 
 **Ziel:** bestehende GitHub-Pages-Anwendung (PA-Drucktool) stabil halten und EP Generator lokal/browserintern weiterentwickeln. Aktuelle Dateien: `tool.html`, `ep-generator.html`, `ep-core.js`, `ep-app.js`, `js/pdf-lib.min.js`, `js/jszip.min.js`, `Vorlagen/`.
@@ -20,10 +20,15 @@ Bei fehlenden, ungültigen oder abgelaufenen Links nur einen öffentlichen Einf�
 ## Seit v1.6.2: Wichtige EP-PDF-Layoutkorrektur
 Die re-konstruierten AcroForm-Felder in `ep-core.js/mergePdf` müssen einen **transparenten Hintergrund** haben. Nur Checkboxen benötigen zusätzlich eine schwarze sichtbare Umrandung. Sonst verdeckt pdf-lib mit Standard-weiß wichtige Linien der EP-Vorlage (BO-Tabelle Seite 2). Regressionstest `node --test Tests/test_ep_form_transparency.js`; ausfüllbar lassen und benutzerspezifische Feldnamen sichern. Siehe `CHANGELOG.md`.
 
-## Neu v1.6.3 – Web-Fortschrittsanzeige und Drucktab
+## Neu v1.6.4 – Web-Fortschrittsanzeige und Drucktab
 - `progress-ui.js` + `progress-ui.css` sind für beide Tools verbindliche Abhängigkeiten. `PAProgress.connect('epProgress'|'paProgress')` erstellt Controller mit `.start()`, `.update()`, `.finish()`, `.fail()`.
 - EP `scan` meldet KP/PV-Seitenfortschritt; `ep-core.js` indexPdfs und mergePdf haben optionale Fortschrittscallbacks. EP-Ausfüllbarkeit und Transparenz der PDF-Widgetflächen nicht gefährden.
 - EP-Klassendruck ruft **kein `window.open`** mehr auf. Erst nach PDF-Erstellung wird der Blob-Link mit `target=_blank` **auf einen ausdrücklichen Klick** bereitgestellt. Lokales Download-Verhalten unverändert.
 - PA-Drucktool PDF-Erzeugung meldet Dokument-/Schülerfortschritt und den ZIP-Kompressionsfortschritt; Fachlogik (BB/BKB/SE) unverändert.
 - `Tests/test_progress_ui.js` plus `Tests/test_ep_form_transparency.js` testen wesentliche Eigenschaften. Chromium ohne Netzwerkzugriff erfolgreich auf Dummydateien, Live-GitHub-/Firefox-Drucktest weiter offen.
 - Webpaket immer vollständig einschließlich sämtlicher Vorlagen/Archiv/Quellcode/Prompts liefern; keine echten Schülerdaten auf GitHub.
+
+## Neu ab v1.6.4 / EP Web v0.2.3 (14.11.2026)
+Die Hauptausgabe erzeugt weiterhin eine komplette Klassen-PDF oder ZIP. **Zusätzlich** gibt es im EP Generator ein geschlossenes `<details id="epSingleDetails">` (Einzeldruck). Darin Klasse, Namens-/ID-Suche, einzelne/mehrere Schüler per Checkbox, alle angezeigten auswählen, Auswahl aufheben und einen eigenen PDF-Druckbutton. Klassenwahl im Einzeldruck ist mit der Hauptklasse gekoppelt. `ep-selection.js` definiert pure Hilfen `entries/selected/filename`; `ep-app.js` speichert Markierungen pro Klasse als `Map<Class, Set<StudentIndex>>` nur für die Sitzung. Bei Einzeldruck `generate(true)` wird **vor** der PDF-Erzeugung auf die ausgewählten Schüler gefiltert, und `scan(progress, targets)` prüft nur diese. `generate(false)` bleibt ungefiltert für alle Schüler der Klasse. EP/KP/PV-Dokumentauswahl und Sortierung gelten gemeinsam. Browser lädt Datei herunter, manuelles Öffnen/Drucken nach Abschluss; keine leeren Tabs. Fehlende KP/PV nicht erfinden; ID-Matching bleibt unverändert. `Tests/test_ep_single_print.js` ergänzt den Regressionstest. Beim Ausbau unbedingt beide Modi und die PDF-Formulartransparenz erhalten.
+
+Die Upload-Überschriften heißen „Kompetenzprofile“ und „Profilvergleiche“, darunter klein „Mehrere Einzel-PDFs oder Sammel-PDFs möglich“. Einheitliches Portal v1.6.4 / EP Web v0.2.3. Nur leere Vorlagen und Dummydateien ins GitHub-ZIP.

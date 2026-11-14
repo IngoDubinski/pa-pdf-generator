@@ -1,10 +1,10 @@
-# PA-Tools Web v1.6.3 – 14.11.2026
+# PA-Tools Web v1.6.4 – 14.11.2026
 
 Dieses ZIP ist das vollständige **GitHub-Pages-Root-Verzeichnis**. Inhalt direkt ins Repository `IngoDubinski/pa-pdf-generator` hochladen (kein Unterordner für die gesamte Website). `index.html` ist das gemeinsame Portal. Das bisherige `tool.html` bleibt das PA-Drucktool; `ep-generator.html` ist die neue EP-Anwendung.
 
 ## Inhalte
 - PA-Drucktool: BB, BKB, SE, Blanko (unveränderte PDF-Engine).
-- EP Generator Web v0.2.2: Excel-Schülerliste (erste Spalte Schüler-ID), importierte KP/PV-Sammel-PDFs, automatische ID-/Klassenprüfung, Fremdeinschätzung 4/5, ausfüllbarer zweitseitiger EP, Name/Unterschrift, A–Z/Z–A, Klassen-PDF und drei ZIP-Dateiablagen.
+- EP Generator Web v0.2.3: Excel-Schülerliste (erste Spalte Schüler-ID), importierte KP/PV-Sammel-PDFs, automatische ID-/Klassenprüfung, Fremdeinschätzung 4/5, ausfüllbarer zweitseitiger EP, Name/Unterschrift, A–Z/Z–A, Klassen-PDF, ausklappbarer Einzeldruck mit Schüler-Mehrfachauswahl und drei ZIP-Dateiablagen.
 - Leere EP-Originale (ausfüllbare PDF + Word-Referenz) in `Vorlagen/EP/`; BB/BKB/SE und Matrix in `Vorlagen/`.
 - Originale KP/PV sind **Ergebnisdokumente mit personenbezogenen Daten**, deshalb nicht enthalten und niemals ins Repository hochladen.
 
@@ -46,8 +46,8 @@ Beim Zusammenfügen von Entwicklungsplänen (Klassendruck, mehrere Dokumente in 
 - Nach GitHub-Upload die Website mit **Strg+F5** neu laden, um die neue `ep-core.js?v=201` zu laden.
 - **Bereits heruntergeladene PDFs werden nicht rückwirkend geändert**; die gewünschten Dokumente bitte neu erzeugen.
 
-## Neu in v1.6.3 (14.11.2026) – Fortschritt und Drucken
-- **EP Generator Web v0.2.2:** Animierte Sanduhr, Fortschrittsbalken mit Prozent und Arbeitsschritt (KP/PV-Scan, Schülerdokumente, PDF-Zusammenführung, ZIP-Packung).
+## Neu in v1.6.4 (14.11.2026) – Fortschritt und Drucken
+- **EP Generator Web v0.2.3:** Animierte Sanduhr, Fortschrittsbalken mit Prozent und Arbeitsschritt (KP/PV-Scan, Schülerdokumente, PDF-Zusammenführung, ZIP-Packung).
 - **PA-Drucktool:** Derselbe Fortschrittsbalken bei Klassen- und Einzeldruck-ZIP mit Schüler- und Dokumentzählung.
 - **Kein leerer neuer Tab:** Die Klassen-PDF wird heruntergeladen. Erst danach erscheint der Link **„PDF öffnen / drucken“**; der Browser öffnet die fertige PDF nur nach einem Klick.
 - Die Prozentwerte kombinieren tatsächliche Seiten-/Schüler-/Dokumentzähler und den von JSZip gemeldeten Packfortschritt zu einem phasengewichteten Gesamtablauf. Keine geschätzte Restzeit.
@@ -55,3 +55,12 @@ Beim Zusammenfügen von Entwicklungsplänen (Klassendruck, mehrere Dokumente in 
 - Tests mit anonymen Beispieldaten in Chromium ohne Netzwerkzugriff: EP-Klassen-PDF (8 Seiten, Formularfelder), EP-ZIP mit 4 PDFs, PA-Einzeldruck-ZIP, jeweils **100 %**. Kein automatisches Popup beim EP.
 - Laufende technische Tests: `node --test Tests/*.js`.
 - **Praxistest offen:** GitHub Pages mit Firefox/Edge sowie physischer Papierdruck.
+
+
+## Neu in v1.6.4 (14.11.2026) – EP-Einzeldruck
+- **Klassendruck bleibt Standard** (Klasse auswählen → normale PDF/ZIP-Ausgabe ohne Schülerfilter).
+- Unter „5. Prüfen & Ausgabe“ kann man den optionalen Abschnitt **„Einzeldruck – Schüler gezielt auswählen“** aufklappen. Dort Klasse auswählen, per Name/ID suchen und einzelne oder mehrere Schüler anklicken. „Angezeigte auswählen“ berücksichtigt den Suchfilter; „Auswahl aufheben“ leert die Auswahl der aktiven Klasse. Die Häkchen bleiben innerhalb der offenen Sitzung je Klasse erhalten.
+- Der Button **„Ausgewählte Schüler als Druck-PDF erstellen“** erzeugt eine einzige PDF ausschließlich für die markierten Schüler (EP/KP/PV gemäß angekreuzten Dokumentarten, Sortierung A–Z oder Z–A). Bei genau einem Schüler Dateiname z. B. `EP+KP Max Mustermann 7b.pdf`; bei mehreren `Einzeldruck Auswahl 7b 3 Schüler EP+KP.pdf`. Keine automatische Öffnung eines leeren Tabs. Fehlende KP/PV führen weiterhin nicht zu erfundenen Profilseiten.
+- **Upload-Beschriftungen:** „Kompetenzprofile“ und „Profilvergleiche“ ohne Abkürzung im Namen, jeweils mit dem Hinweis „Mehrere Einzel-PDFs oder Sammel-PDFs möglich“.
+- **Tests:** `node --test Tests/*.js` (13 Tests) sowie Browser-Dummytest ohne Seiten-Navigation: 7a, zwei Schüler = vierseitige editierbare EP-PDF; 7b, ein Schüler = zweiseitige EP-PDF; 7b-Klassendruck trotz Einzeldruck-Auswahl = vier Seiten.
+- Dateiausgabe und PA-Drucktool-Fachlogik bleiben unverändert. Schülerdaten bleiben vollständig im Browser.

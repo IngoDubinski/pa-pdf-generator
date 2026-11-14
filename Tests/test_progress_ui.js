@@ -49,7 +49,7 @@ test('EP: neues Fenster nur über den Link nach fertiger PDF, kein leeres Pop-up
  assert.match(app,/lastClassPdfUrl=save\(blob,filename,true\)/);
  assert.match(app,/epProgress\.finish/);
  assert.match(html,/id="epProgress"/);
- assert.match(html,/progress-ui\.js\?v=163/);
+ assert.match(html,/progress-ui\.js\?v=164/);
  assert.match(html,/PDF öffnen \/ drucken|PDF öffnen \/ drucken|zum Öffnen und Drucken/);
 });
 test('PA-Drucktool: Fortschrittsanzeige bei ZIP-Erstellung vorhanden',()=>{

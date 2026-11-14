@@ -1,5 +1,13 @@
 # Änderungsübersicht
 
+## v1.6.4 – 14.11.2026
+- **EP Generator Web v0.2.3:** Ausklappbarer Einzeldruckmodus mit eigener Klassenwahl, Suche nach Namen/ID, Checkboxen für einzelne/mehrere Schüler und gemeinsamer druckbarer Auswahl-PDF. Klassendruck bleibt Standard und druckt weiterhin immer die ganze Klasse.
+- Fachlogik gleich: EP/KP/PV wählbar, A–Z/Z–A, ID-basierte KP-/PV-Zuordnung, kein leerer neuer Tab, bearbeitbare EP-Formulare, lokale Datenverarbeitung.
+- Upload-Bezeichnungen „Kompetenzprofile“ und „Profilvergleiche“ ohne Kürzel, darunter klein „Mehrere Einzel-PDFs oder Sammel-PDFs möglich“.
+- Neu `ep-selection.js`, `Tests/test_ep_single_print.js`; insgesamt 13 Node-Regressionstests bestanden. Offline-Browser-Dummytest mit 7a und 7b (Einzel- und Klassendruck) bestanden.
+- Alle Web-Versionsangaben, Anleitungen, Weiterarbeit-Prompt und Cache-Parameter aktualisiert; PA-Drucktool selbst unverändert.
+
+
 - v1.4.5 (09.11.2026): BKB-Feld `Aufgaben` mit automatischer Schriftverkleinerung; freigegebene Datenflussgrafik auf Anleitung und Transparenz; Excel-Dummy-Vorlage als Download; erledigte Projektideen entfernt und Vorlagenschutz als Idee ergänzt; Dokumentation aktualisiert; lokales Thonny-Paket synchronisiert.
 - v1.4.4: automatische wechselnde Zuordnung der Gruppenpaare 1/2, 3/4, 5/6 zu Aufgabenblöcken.
 - v1.4.3: optionaler Klassenverbund mit Beobachter-/Aufgabenzuordnung.
