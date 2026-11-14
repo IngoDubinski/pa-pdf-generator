@@ -14,3 +14,11 @@
 - [ ] Firefox-Schnelltest und Windows-Druckdialog
 
 Hinweis: Automatischer Browser-End-to-End-Test war in dieser Erstellungsumgebung technisch nicht möglich; PDF-Engine separat auf realen Beispiel-PDFs geprüft.
+
+## Regression EP-PDF-Raster (v0.2.1 / 14.11.2026)
+- [ ] Klassendruck (mindestens 2 Schüler): EP Seite 2 mit **vollständigen schwarzen Rasterlinien** und sichtbaren 3 Kästchen pro BO-Zeile in Firefox und Edge öffnen.
+- [ ] Eine BO-Aktivität mit Datum und Ort, weitere Zeilen leer; Linien auch durch leere Formularfelder erkennbar.
+- [ ] Papierdruck prüfen: horizontale Trennlinien und Checkbox-Rahmen vollständig.
+- [ ] EP-Felder nach Ausgabe bearbeiten und speichern; getrennte Schüler dürfen keine Werte spiegeln.
+- [ ] Mit ZIP-Dateiausgabe „zusammengefasst je Schüler“ und Klassendruck dieselbe Darstellung prüfen.
+- [x] Entwickler-Test: `node --test Tests/test_ep_form_transparency.js`

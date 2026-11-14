@@ -147,13 +147,19 @@ async function mergePdf(parts){
     if(isText){
      const f=form.createTextField(name);
      if(field.isMultiline())f.enableMultiline();
-     f.addToPage(pp,{x:rect.x,y:rect.y,width:rect.width,height:rect.height,borderWidth:0});
+     // Explicit undefined prevents pdf-lib's opaque WHITE widget background.
+     // The PDF template already draws every table line and cell border.
+     f.addToPage(pp,{x:rect.x,y:rect.y,width:rect.width,height:rect.height,
+       backgroundColor:undefined,borderColor:undefined,borderWidth:0});
      f.setText(field.getText()||'');
      const size=+field.acroField.getDefaultAppearance()?.match(/\s([\d.]+) Tf/)?.[1]||9;
      f.setFontSize(Math.min(11,Math.max(6,size)));
     }else{
      const f=form.createCheckBox(name);
-     f.addToPage(pp,{x:rect.x,y:rect.y,width:rect.width,height:rect.height,borderWidth:0});
+     // Keep checkboxes legible when blank; omit the white fill so surrounding
+     // table/grid lines are never covered by PDF annotation appearances.
+     f.addToPage(pp,{x:rect.x,y:rect.y,width:rect.width,height:rect.height,
+       backgroundColor:undefined,borderColor:PDF.rgb(0,0,0),borderWidth:0.7});
      if(field.isChecked())f.check();
     }
    }

@@ -1,8 +1,8 @@
 [
   {
     "path": "ARCHITEKTUR.md",
-    "bytes": 2999,
-    "sha256": "d7ace72c751c86a735f107a4862860091fc4495ac0ceccb19913eddd5c1b29e0"
+    "bytes": 3538,
+    "sha256": "244d27db7018ba64ebb4fbec76160927ab886bf4226c299945ba30df119d8c89"
   },
   {
     "path": "Archiv/ANLEITUNG.txt",
@@ -71,8 +71,8 @@
   },
   {
     "path": "CHANGELOG.md",
-    "bytes": 4809,
-    "sha256": "1e095259bc215fed7d91feb483ab0c0fb0411c666393345bf3e2285ddf545c5d"
+    "bytes": 5394,
+    "sha256": "2531607135f937508ad451f022515a4ee28391e0f6f80a0dcf6fcdb4fb0b6ba5"
   },
   {
     "path": "DATENSCHUTZ_UND_GITHUB.md",
@@ -81,8 +81,8 @@
   },
   {
     "path": "DEPLOY_GITHUB_PAGES.md",
-    "bytes": 2412,
-    "sha256": "e5cfa8d732fc3f5624a6ddfb8992f110ff6795933c4b23809a57d0c286d9cbdf"
+    "bytes": 2956,
+    "sha256": "f5ad49ffa39fc8edbaa8e0125cfbec36a02595b6ec85ad349a1ff373a429514e"
   },
   {
     "path": "LICENSE-JSZIP.txt",
@@ -101,13 +101,13 @@
   },
   {
     "path": "PROJEKTKONTEXT.md",
-    "bytes": 2383,
-    "sha256": "93ad92fda6d295abb34fc5b8e54758d80d40587be0ee37e2957fcbd2b54179c0"
+    "bytes": 2663,
+    "sha256": "3ea14e33986eb7c13e857bb7b62cf3dbe610fe870478f7491b885d850fc15fb6"
   },
   {
     "path": "README.md",
-    "bytes": 4344,
-    "sha256": "6b044942de10d8b2d9690732143b65a75ffb1b43b116986f11848b153ddcb731"
+    "bytes": 5318,
+    "sha256": "31e7fe800992390a2ee313625374377095421eca3222a27e22f52cca1f3accef"
   },
   {
     "path": "README_SaxSVS.txt",
@@ -126,8 +126,13 @@
   },
   {
     "path": "TESTCHECKLISTE_EP_WEB.md",
-    "bytes": 1129,
-    "sha256": "2f652a6befad7e745abd215af7a20d3064a49dc46ea8a7481a610ab74b9eff39"
+    "bytes": 1834,
+    "sha256": "da780c9131a116c0a37382c61a6d0525892c1a1bc99bd843e56cb71f1d63a219"
+  },
+  {
+    "path": "Tests/test_ep_form_transparency.js",
+    "bytes": 3375,
+    "sha256": "3edbc75a97e164464ebb77dfd2f9e8645cc5955369b236013efe1e7164fe867b"
   },
   {
     "path": "Vorlagen/EP/Entwicklungsplan_Original_Word_nur_Referenz.docx",
@@ -161,8 +166,8 @@
   },
   {
     "path": "WEITERARBEIT_PROMPT.md",
-    "bytes": 3223,
-    "sha256": "4c58e2cb24610edf2145771c5325eb1561302c039e57b9f2c3f052f9af527bf4"
+    "bytes": 3751,
+    "sha256": "0f3c48b2a6ca35075e20ab4cff2ab4ead8aef4f665c994603125e13eae55e355"
   },
   {
     "path": "access.js",
@@ -172,7 +177,7 @@
   {
     "path": "admin.html",
     "bytes": 3494,
-    "sha256": "f1324ac9fae09e7e096d548e843b2ebbb48cba0ab5f9ed69ade3dbfc3ca7da1e"
+    "sha256": "4cfe97c89b57ac8b0f7b6cef6712f8c7cd1bd0506fa1b3555ac61e1dd8f4ce7f"
   },
   {
     "path": "admin.js",
@@ -182,7 +187,7 @@
   {
     "path": "antrag-be.html",
     "bytes": 1331,
-    "sha256": "a8ecb5c9b78b555d3951ba91c726e576184cb619b28660e65c83135b646178f7"
+    "sha256": "80634fef0eb13807f8919dae6053dd5f24dc4e423a48db0dd1bf2b64b264f222"
   },
   {
     "path": "app.js",
@@ -192,7 +197,7 @@
   {
     "path": "architektur.html",
     "bytes": 3092,
-    "sha256": "03716b11a2aa907305edb8c84b59cdb6d04dc0e3bd849d1b77385e2b3e9e87c0"
+    "sha256": "610f964a19d5c144008b722ad79650d3f87e423be0bd9c86935c7b3dcebee74a"
   },
   {
     "path": "captcha-beispiel.png",
@@ -216,28 +221,28 @@
   },
   {
     "path": "ep-core.js",
-    "bytes": 15509,
-    "sha256": "eb50693ccef8f8361a72d8aa7bc53a9e5ed15e512f487f220a2298174bcd9194"
+    "bytes": 15932,
+    "sha256": "252a03d00f20fd0039a3f2410f68d0bc9bac58d0f1e26e0e8faab28c64ea84df"
   },
   {
     "path": "ep-generator.html",
     "bytes": 8075,
-    "sha256": "79bdd357143876d3007b05677045fcb92612ca81ba40cb845a15d13a9582cb1a"
+    "sha256": "6d335a9a3515c9c0c32cb643afc644f0c895c9a9b9e566f5a74e03241bd79f31"
   },
   {
     "path": "ep-seite2.html",
     "bytes": 1357,
-    "sha256": "6c59dbe6bc47797c260d10174ffd13bee686fe161abf130ed8cd0ef3306f179b"
+    "sha256": "f659e3d2788684e4f70781578a8e4608a39c931b0aa64b56ebd29d66666b222d"
   },
   {
     "path": "excel-anleitung.html",
     "bytes": 7846,
-    "sha256": "65c4c3797ac12a6000d640c46e7e3c1896c3dab7f6a95e075dd28036a0c9a71f"
+    "sha256": "69a89963d026d0e285d7264add718986f17227509bb04915da41dacce008c4c4"
   },
   {
     "path": "index.html",
     "bytes": 3521,
-    "sha256": "b0d701709a7c26f328e72e279f01a8da3963fd488244bd1d0ce7291b514a8008"
+    "sha256": "1b54fba3970bbd7fc01d2b2212246b8dbe80f81352d44f07b66f079c12cf80cf"
   },
   {
     "path": "js/jszip.min.js",
@@ -262,12 +267,12 @@
   {
     "path": "projektideen.html",
     "bytes": 4277,
-    "sha256": "17d6027d88b268b12b2ae971e23a757795cfe94d82d288b9f0fb35f3d66937c7"
+    "sha256": "039c5f99d22531570d1974fb9931666d1c640588a0338949862ba32cb526b000"
   },
   {
     "path": "quellcode.html",
     "bytes": 3537,
-    "sha256": "b4a372e053b3d0a3ff304e224aaf22b117dd9d5081093ebf52a5c6466da4dfa0"
+    "sha256": "81398cdc234afbc669604f80bfa3707f55d5da38d22d216a77145a26b90bef74"
   },
   {
     "path": "robots.txt",
@@ -287,7 +292,7 @@
   {
     "path": "style.css",
     "bytes": 6622,
-    "sha256": "25030a08f408f9c130276cdbe6ccc4a0bcc9b1c2f5c81a0c0cd4de5bca3cd290"
+    "sha256": "9b691c5845825bc9822bbfd406a093ac5cdefdeb38ca542961e41ed69309ddd5"
   },
   {
     "path": "testdatei.js",
@@ -307,7 +312,7 @@
   {
     "path": "tipp.html",
     "bytes": 1901,
-    "sha256": "1494afc1f96cf82f91a03a66649876b50919a2bfe79286a8c961501c622b8fe8"
+    "sha256": "b1534fad35efe5fd18c9d6d1f875e0014c455928262e61464d613fb3e5cc626a"
   },
   {
     "path": "tool-nav.js",
@@ -317,12 +322,12 @@
   {
     "path": "tool.html",
     "bytes": 11494,
-    "sha256": "dadb518ef3c44d4a39189e1a3d862d089f9b735237ba4227e854be79bfa33d76"
+    "sha256": "ab2e00f9f2f2f6f307de6cc7dfb861ac47e46bbba256c883ca93c068e500cc31"
   },
   {
     "path": "vorlagen.html",
     "bytes": 1918,
-    "sha256": "4d22bf6dc4ad9bda94bfd50fb7027294feffdb9027896d3b1a712ffa7af1a75c"
+    "sha256": "e1106c93ca1675d1a5a505df6ecf8f13197e136eab12c03f8a942940e0867028"
   },
   {
     "path": "workflow.js",

@@ -1,10 +1,10 @@
-# PA-Tools Web v1.6.0 – 12.11.2026
+# PA-Tools Web v1.6.2 – 14.11.2026
 
 Dieses ZIP ist das vollständige **GitHub-Pages-Root-Verzeichnis**. Inhalt direkt ins Repository `IngoDubinski/pa-pdf-generator` hochladen (kein Unterordner für die gesamte Website). `index.html` ist das gemeinsame Portal. Das bisherige `tool.html` bleibt das PA-Drucktool; `ep-generator.html` ist die neue EP-Anwendung.
 
 ## Inhalte
 - PA-Drucktool: BB, BKB, SE, Blanko (unveränderte PDF-Engine).
-- EP Generator Web v0.2.0: Excel-Schülerliste (erste Spalte Schüler-ID), importierte KP/PV-Sammel-PDFs, automatische ID-/Klassenprüfung, Fremdeinschätzung 4/5, ausfüllbarer zweitseitiger EP, Name/Unterschrift, A–Z/Z–A, Klassen-PDF und drei ZIP-Dateiablagen.
+- EP Generator Web v0.2.1: Excel-Schülerliste (erste Spalte Schüler-ID), importierte KP/PV-Sammel-PDFs, automatische ID-/Klassenprüfung, Fremdeinschätzung 4/5, ausfüllbarer zweitseitiger EP, Name/Unterschrift, A–Z/Z–A, Klassen-PDF und drei ZIP-Dateiablagen.
 - Leere EP-Originale (ausfüllbare PDF + Word-Referenz) in `Vorlagen/EP/`; BB/BKB/SE und Matrix in `Vorlagen/`.
 - Originale KP/PV sind **Ergebnisdokumente mit personenbezogenen Daten**, deshalb nicht enthalten und niemals ins Repository hochladen.
 
@@ -34,3 +34,14 @@ Die komplette Python-Variante wird als eigenes ZIP bereitgestellt. `architektur.
 
 ### Sichtbarkeit der Landing-Page (v1.6.1 Korrektur)
 Ohne gültigen Link oder bei abgelaufenem Link zeigt `index.html` ausschließlich die neutrale öffentliche Projektinformation. **Keine Tool-Kacheln, internen Navigationseinträge oder Schaubilder.** Mit gültigem Freigabelink erscheinen die freigegebenen Werkzeuge, mit Admin-Dauerlink zusätzlich „Antrag BE“. Diese clientseitige Sichtbarkeitsregel ist **kein echter serverseitiger Zugriffsschutz**.
+
+## Neu in v1.6.2 (14.11.2026) – EP-PDF-Linien
+
+Beim Zusammenfügen von Entwicklungsplänen (Klassendruck, mehrere Dokumente in einer PDF) wurden die AcroForm-Textfelder durch pdf-lib mit **weißem, undurchsichtigem Hintergrund** neu erzeugt. Sie überdeckten Teile des Rasters, insbesondere BO-Aktivitäten auf Seite 2.
+
+- Neue Textfelder ausdrücklich **ohne Hintergrund und ohne Rand**; die Linien sind Bestandteil des PDF-Originals und bleiben sichtbar.
+- Checkboxen **ohne Hintergrund, aber mit schwarzer Umrandung**, damit die Bewertungs-Kästchen sichtbar bleiben.
+- Alle Felder weiterhin ausfüllbar; Feldnamen je Schüler eindeutig.
+- Regressionstest: `node --test Tests/test_ep_form_transparency.js` (Node.js optional nur für Entwicklung).
+- Nach GitHub-Upload die Website mit **Strg+F5** neu laden, um die neue `ep-core.js?v=201` zu laden.
+- **Bereits heruntergeladene PDFs werden nicht rückwirkend geändert**; die gewünschten Dokumente bitte neu erzeugen.

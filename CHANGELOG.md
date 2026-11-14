@@ -63,3 +63,9 @@ Projektidee (noch nicht umgesetzt): PDF-Kompatibilität mit Adobe Acrobat Reader
 - Ohne gültigen Freigabelink (auch bei abgelaufenen Links) enthält die sichtbare Landing-Page **nur** Projektbeschreibung, Hinweis auf persönliche Freigabelinks, lokale Datenverarbeitung und BulkPDF-Link.
 - Tool-Portal, interne Tool-Kacheln, Navigationslinks auf weitere Seiten und technisches Schaubild bleiben vor dem JavaScript-Start mittels HTML-Attribut `hidden` verborgen; sie werden nur bei gültigem Link eingeblendet.
 - Bestehendes Verhalten von PA-Drucktool, EP Generator, EP 2. Seite und Admin-Tool unverändert; Versionsnummer bleibt 1.6.1.
+
+## PA-Tools Web v1.6.2 · 14.11.2026
+- **EP Generator Web v0.2.1**: PDF-Formularfelder werden beim Zusammenführen transparent statt weiß rekonstruiert. Fehlerhaft verdeckte Tabellen- und Trennlinien (insbesondere Seite 2) sind wieder sichtbar.
+- Checkboxen behalten schwarze Umrandungen ohne verdeckende weiße Fläche. Ausfüllbarkeit und eindeutige Feldnamen bleiben erhalten.
+- Neue automatische Regressionstests für Einzel- und Mehrschüler-PDFs; Version und Skript-Cache auf allen Webseiten aktualisiert.
+- PA-Drucktool, Landing-Page und Linksteuerung ansonsten unverändert.

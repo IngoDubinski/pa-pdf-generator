@@ -1,3 +1,4 @@
+# PA-Tools v1.6.2 · EP Web v0.2.1 (14.11.2026)
 # Weiterarbeit – PA-Tools Web v1.6.0, EP Generator Web v0.2.0
 
 **Ziel:** bestehende GitHub-Pages-Anwendung (PA-Drucktool) stabil halten und EP Generator lokal/browserintern weiterentwickeln. Aktuelle Dateien: `tool.html`, `ep-generator.html`, `ep-core.js`, `ep-app.js`, `js/pdf-lib.min.js`, `js/jszip.min.js`, `Vorlagen/`.
@@ -15,3 +16,6 @@ Neue Seiten: `ep-seite2.html` (alle gültigen Freigabelinks) und `antrag-be.html
 
 ## Landing-Page-Korrektur in v1.6.1
 Bei fehlenden, ungültigen oder abgelaufenen Links nur einen öffentlichen Einführungstext anzeigen (Zweck der PA-Tools, persönliche Freigabelinks, lokale Datenverarbeitung, Open Source/BulkPDF). Portal, Schaubild und Navigation sind bereits im HTML `hidden` und werden erst durch `tool-nav.js` mit gültigem Link eingeblendet. Keine Kachel oder Admin-Information für Gäste anzeigen. Titel und bestehende Versionsnummer unverändert.
+
+## Seit v1.6.2: Wichtige EP-PDF-Layoutkorrektur
+Die re-konstruierten AcroForm-Felder in `ep-core.js/mergePdf` müssen einen **transparenten Hintergrund** haben. Nur Checkboxen benötigen zusätzlich eine schwarze sichtbare Umrandung. Sonst verdeckt pdf-lib mit Standard-weiß wichtige Linien der EP-Vorlage (BO-Tabelle Seite 2). Regressionstest `node --test Tests/test_ep_form_transparency.js`; ausfüllbar lassen und benutzerspezifische Feldnamen sichern. Siehe `CHANGELOG.md`.

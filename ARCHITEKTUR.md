@@ -13,3 +13,6 @@ GitHub enthält ausschließlich anonymisierte Beispiele und leere Vorlagen; niem
 
 ## Webportal v1.6.1
 Das Portal unterscheidet Gastlink, Admin-Dauerlink und fehlenden/abgelaufenen Link rein auf dem Client. `access.js` liefert `allowed()`, `isPermanent()` und `requireLink()`, `tool-nav.js` blendet die passenden Tool-Einträge ein. `index.html` bleibt öffentlich lesbar, auch bei abgelaufenen Links. Die beiden geplanten Module besitzen noch keine fachliche Funktion oder zusätzlichen Vorlagen. Ein Admin-Dauerlink in statischem Quellcode ersetzt **keine** sichere serverseitige Anmeldung; für echten exklusiven Zugriff ist später ein authentisierter Server nötig.
+
+## EP Web v0.2.1 / Portal v1.6.2 – Formular-Rendering (14.11.2026)
+`ep-core.js` führt PDF-Teile weiterhin mit `pdf-lib` zusammen. Zur Isolation der Formularfeldnamen werden PDF-Widgets je Schüler neu aufgebaut. **Pflicht:** Texteingabefelder bei `addToPage` mit `backgroundColor: undefined`, `borderColor: undefined`, `borderWidth: 0` anlegen; Checkboxen ebenfalls transparent, aber mit schwarzem Rand. Sonst erzeugt `pdf-lib` standardmäßig weiße Füllungen und verdeckt Linien der Original-PDF. Kein `flatten()` der EP-Formulare!

@@ -18,3 +18,6 @@ Projektidee (noch nicht umgesetzt): PDF-Kompatibilität mit Adobe Acrobat Reader
 
 ## Stand v1.6.1 (14.11.2026)
 GitHub-Pages-Portal `index.html` öffentlich mit Erklärung und BulkPDF-Verweis; GitHub lädt ausschließlich leere Vorlagen und Programmdateien. Funktionen: PA-Drucktool + EP Generator; neue Platzhalter „EP 2. Seite“ (alle Berechtigten) und „Antrag BE“ (nur Admin-Dauerlink in Navigation und Portal). Weitere Inhalte werden später besprochen. Word-/DOCX-Ausgabe ist Projektidee, nicht implementiert. Aktuelle Zugangssteuerung nur clientseitig; nicht sicher.
+
+## Stand v1.6.2 / EP Web v0.2.1 (14.11.2026)
+Browser-EP-PDF-Zusammenführung korrigiert: formularfeldbedingte weiße Überdeckung von Tabellenlinien beseitigt, Kästchen bleiben schwarz umrandet, Formularfelder editierbar. Haupt-Regression: `Tests/test_ep_form_transparency.js`.
