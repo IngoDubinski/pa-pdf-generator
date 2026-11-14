@@ -5,7 +5,14 @@
     const authorized=!!access?.allowed();
     const admin=!!access?.isPermanent();
     const token=authorized ? access.currentToken() : '';
+    // Portal und Zusatzinfos sind bereits im HTML verborgen: kein Aufblitzen
+    // von Werkzeugen bei fehlendem, ungueltigem oder abgelaufenem Link.
+    const portal=document.getElementById('toolPortal');
+    if(portal)portal.hidden=!authorized;
+    const flow=document.getElementById('localFlowDetails');
+    if(flow)flow.hidden=!authorized;
     const nav=document.querySelector('header nav');
+    if(nav && nav.id==='mainNavigation')nav.hidden=!authorized;
     const links=[
       ['index.html','PA-Tools','public'],
       ['tool.html','PA-Drucktool','user'],

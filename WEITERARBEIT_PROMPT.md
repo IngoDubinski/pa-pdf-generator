@@ -12,3 +12,6 @@
 
 ## Weiterarbeit ab v1.6.1 · 14.11.2026
 Neue Seiten: `ep-seite2.html` (alle gültigen Freigabelinks) und `antrag-be.html` (nur Admin-Dauerlink, clientseitige Sichtbarkeit). Inhalte noch offen; nichts selbst erfinden. `index.html` ist die öffentliche Landing-Page auch für abgelaufene/fehlende Links, mit Produktinfos, Datenschutz und BulkPDF-Inspiration. `access.js` und `tool-nav.js` regeln clientseitig die Sichtbarkeit (niemals als sichere Authentisierung bezeichnen). Projektideen enthalten Word-Varianten. Die Fachlogik des PA-Drucktools und EP Generators bleibt gegenüber v1.6.0 unverändert. Nächster Schritt: Nutzer testet GitHub Pages, insbesondere Gastlink/Adminlink/abgelaufenen Link und die EP-PDF-Ausgabe.
+
+## Landing-Page-Korrektur in v1.6.1
+Bei fehlenden, ungültigen oder abgelaufenen Links nur einen öffentlichen Einführungstext anzeigen (Zweck der PA-Tools, persönliche Freigabelinks, lokale Datenverarbeitung, Open Source/BulkPDF). Portal, Schaubild und Navigation sind bereits im HTML `hidden` und werden erst durch `tool-nav.js` mit gültigem Link eingeblendet. Keine Kachel oder Admin-Information für Gäste anzeigen. Titel und bestehende Versionsnummer unverändert.

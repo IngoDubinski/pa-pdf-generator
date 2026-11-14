@@ -31,3 +31,6 @@ Die komplette Python-Variante wird als eigenes ZIP bereitgestellt. `architektur.
 - Word-/DOCX-Varianten in Projektideen aufgenommen.
 - Die öffentlich lesbare Startseite beschreibt die lokalen Datenschutzprinzipien und verweist auf BulkPDF als Inspiration.
 - **Es sind keinerlei Schülerdaten enthalten**. Alle PDF- und Word-Originalvorlagen für aktuell funktionierende Module sind im Ordner `Vorlagen/` enthalten.
+
+### Sichtbarkeit der Landing-Page (v1.6.1 Korrektur)
+Ohne gültigen Link oder bei abgelaufenem Link zeigt `index.html` ausschließlich die neutrale öffentliche Projektinformation. **Keine Tool-Kacheln, internen Navigationseinträge oder Schaubilder.** Mit gültigem Freigabelink erscheinen die freigegebenen Werkzeuge, mit Admin-Dauerlink zusätzlich „Antrag BE“. Diese clientseitige Sichtbarkeitsregel ist **kein echter serverseitiger Zugriffsschutz**.

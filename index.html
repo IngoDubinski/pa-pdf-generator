@@ -1,14 +1,14 @@
 <!doctype html>
-<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>PA-Tools · Potenzialanalyse und Entwicklungspläne</title><link rel="stylesheet" href="style.css?v=161"><script src="access.js?v=161"></script><script src="theme.js?v=161"></script><script defer src="tool-nav.js?v=161"></script></head>
-<body><header><div class="wrap"><h1>PA-Tools <small>v1.6.1 · 14.11.2026</small></h1><span class="signature">made with ❤️ in Klotzsche</span><nav><a href="index.html">PA-Tools</a><a href="projektideen.html">Projektideen</a></nav></div></header>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>PA-Tools · Potenzialanalyse und Entwicklungspläne</title><link rel="stylesheet" href="style.css?v=161"><script src="access.js?v=161"></script><script src="theme.js?v=161"></script><script defer src="tool-nav.js?v=161-landing-fix"></script></head>
+<body><header><div class="wrap"><h1>PA-Tools <small>v1.6.1 · 14.11.2026</small></h1><span class="signature">made with ❤️ in Klotzsche</span><nav id="mainNavigation" hidden></nav></div></header>
 <main class="wrap">
-<section class="panel" id="publicInformation"><h2>Werkzeuge für Potenzialanalyse und Berufsorientierung</h2>
-<p>Die PA-Tools helfen beim <strong>Beschriften und Befüllen von Potenzialanalyse-Unterlagen</strong> – etwa Beobachtungsbögen, Beobachterkonferenzbögen und Selbsteinschätzungen – sowie beim <strong>Anlegen und Ausfüllen von Entwicklungsplänen</strong>.</p>
-<p><strong>Lokale Datenverarbeitung:</strong> Schülerlisten, Kompetenzprofile, Profilvergleiche und Unterschriftsbilder werden auf deinem Gerät verarbeitet. Personenbezogene Eingabedateien und erzeugte Unterlagen werden vom Programm nicht an einen Server hochgeladen. GitHub Pages liefert nur Programmdateien und leere Vorlagen.</p>
-<p>Der Quellcode ist einsehbar und das Projekt orientiert sich an Open-Source-Werkzeugen. Inspiriert von <a href="https://opensource.bulkpdf.de/de" target="_blank" rel="noopener noreferrer">BulkPDF (Open Source)</a>.</p>
-<p><a href="quellcode.html">Quellcode und Datenschutz</a> · <a href="vorlagen.html">Leere Vorlagen</a> · <a href="projektideen.html">Projektideen</a></p>
+<section class="panel" id="publicInformation">
+<h2>Werkzeuge für Potenzialanalyse und Entwicklungsplan</h2>
+<p>Die PA-Tools helfen beim automatisierten Beschriften und Befüllen von Potenzialanalyse-Unterlagen – etwa Beobachtungsbögen, Beobachterkonferenzbögen und Selbsteinschätzungen nach Klassenliste – sowie beim Anlegen und Ausfüllen von Entwicklungsplänen.</p>
+<p>Der Zugang erfolgt über einen persönlichen, zeitlich befristeten Link, den du vom Administrator erhältst.</p>
+<p>Die Datenverarbeitung erfolgt lokal im Browser. GitHub Pages liefert nur die Programmdateien und leeren Vorlagen; Excel- und PDF-Daten werden nicht an einen Server übertragen. Der Quellcode ist einsehbar. Das Projekt ist inspiriert von <a href="https://opensource.bulkpdf.de/de" target="_blank" rel="noopener noreferrer">BulkPDF (Open Source)</a>.</p>
 </section>
-<section class="panel" id="toolPortal"><h2>Die Werkzeuge</h2><p id="portalStatus" role="status" aria-live="polite" class="portal-status">Zum Öffnen ist ein freigegebener Link erforderlich.</p>
+<section class="panel" id="toolPortal" hidden><h2>Die Werkzeuge</h2><p id="portalStatus" role="status" aria-live="polite" class="portal-status">Zum Öffnen ist ein freigegebener Link erforderlich.</p>
 <div class="tool-cards">
 <article class="tool-card"><h3>PA-Drucktool</h3><p>Beobachtungsbogen (BB), Beobachterkonferenzbogen (BKB), Selbsteinschätzung (SE) und Blanko-Vorlagen.</p><a data-key-link href="tool.html">PA-Drucktool öffnen</a></article>
 <article class="tool-card"><h3>EP Generator</h3><p>Ausfüllbare Entwicklungspläne erstellen und vorhandene KP/PV-PDFs über die Schüler-ID beschriften und zuordnen.</p><a data-key-link href="ep-generator.html">EP Generator öffnen</a></article>
@@ -17,5 +17,5 @@
 </div>
 <p class="access-note">Der Zugriff über Freigabelinks ist bei GitHub Pages nur eine clientseitige Sichtbarkeitskontrolle und kein serverseitiger Zugangsschutz.</p>
 </section>
-<section class="panel"><h2>So bleiben deine Dateien lokal</h2><div class="flow-diagram"><span>Excel / PDF lokal auswählen</span><span>Verarbeitung im Browser</span><span>PDF / ZIP lokal speichern</span></div><p>Die Originalvorlagen sind öffentlich verfügbar; ausgefüllte Schülerdokumente gehören niemals ins GitHub-Repository.</p><p><a href="architektur.html">Technisches Schaubild ansehen</a></p></section>
+<section class="panel" id="localFlowDetails" hidden><h2>So bleiben deine Dateien lokal</h2><div class="flow-diagram"><span>Excel / PDF lokal auswählen</span><span>Verarbeitung im Browser</span><span>PDF / ZIP lokal speichern</span></div><p>Die Originalvorlagen sind öffentlich verfügbar; ausgefüllte Schülerdokumente gehören niemals ins GitHub-Repository.</p><p><a href="architektur.html">Technisches Schaubild ansehen</a></p></section>
 </main><footer class="wrap">PA-Tools · v1.6.1 · 14.11.2026 · made with ❤️ in Klotzsche</footer></body></html>

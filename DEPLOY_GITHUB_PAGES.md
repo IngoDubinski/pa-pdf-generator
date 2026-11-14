@@ -10,3 +10,6 @@
 
 ## Hinweis v1.6.1
 Beide neuen Platzhalter-Dateien `ep-seite2.html` und `antrag-be.html` hochladen; `access.js`, `tool-nav.js`, `style.css` und `index.html` aktualisieren. Öffentliche Startseite `index.html` ohne `?key=` sowie mit einem abgelaufenen Gastlink testen; Gastlink soll „EP 2. Seite“, aber **nicht** „Antrag BE“ zeigen. Admin-Dauerlink soll beide Platzhalter zeigen. Browser-Cache bei Bedarf mit Strg+F5 aktualisieren. Der „Antrag BE“-Bereich ist nur clientseitig verborgen; echte Admin-Zugriffssicherheit erfordert eine Serverlösung.
+
+### Test: öffentliche Landing-Page
+Vorhandenes `index.html` und `tool-nav.js` ersetzen. Ohne `?key` und im privaten Browserfenster dürfen **keine Tool-Kacheln, Diagramme oder internen Navigationslinks** erscheinen. Danach mit gültigem Freigabelink und Admin-Dauerlink testen: Werkzeuge sichtbar, „Antrag BE“ nur für Admin. Nach Upload ggf. Strg+F5.

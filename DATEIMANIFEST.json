@@ -71,8 +71,8 @@
   },
   {
     "path": "CHANGELOG.md",
-    "bytes": 4185,
-    "sha256": "9a1e0f53b6f5d810bc5e6ca0430efb331c3e31943d0f301e7bed39274cb10b42"
+    "bytes": 4809,
+    "sha256": "1e095259bc215fed7d91feb483ab0c0fb0411c666393345bf3e2285ddf545c5d"
   },
   {
     "path": "DATENSCHUTZ_UND_GITHUB.md",
@@ -81,8 +81,8 @@
   },
   {
     "path": "DEPLOY_GITHUB_PAGES.md",
-    "bytes": 2054,
-    "sha256": "85f8555234e75f02d03dd01a5d3b74571b1cfedad1ce90d019629242c9330417"
+    "bytes": 2412,
+    "sha256": "e5cfa8d732fc3f5624a6ddfb8992f110ff6795933c4b23809a57d0c286d9cbdf"
   },
   {
     "path": "LICENSE-JSZIP.txt",
@@ -106,8 +106,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 3884,
-    "sha256": "8a5321d808e59313829bcc08ca4c154a163635ce21c853561841cf06b89230c8"
+    "bytes": 4344,
+    "sha256": "6b044942de10d8b2d9690732143b65a75ffb1b43b116986f11848b153ddcb731"
   },
   {
     "path": "README_SaxSVS.txt",
@@ -161,8 +161,8 @@
   },
   {
     "path": "WEITERARBEIT_PROMPT.md",
-    "bytes": 2748,
-    "sha256": "bc0f3779b23f674e79b63e2d867afc7d4d6d30ea635062e7768716cee6cce542"
+    "bytes": 3223,
+    "sha256": "4c58e2cb24610edf2145771c5325eb1561302c039e57b9f2c3f052f9af527bf4"
   },
   {
     "path": "access.js",
@@ -236,8 +236,8 @@
   },
   {
     "path": "index.html",
-    "bytes": 3764,
-    "sha256": "74e82f1521665617d998cc43ee54b64f012f00163b52b5825698728c50d82016"
+    "bytes": 3521,
+    "sha256": "b0d701709a7c26f328e72e279f01a8da3963fd488244bd1d0ce7291b514a8008"
   },
   {
     "path": "js/jszip.min.js",
@@ -311,8 +311,8 @@
   },
   {
     "path": "tool-nav.js",
-    "bytes": 3168,
-    "sha256": "767d39bfd40405e2b682f3f2aa2cf2077f9c1fbaf869f3ef2a1a3b8c049a2903"
+    "bytes": 3577,
+    "sha256": "edc491a8fb2cd3fd2cf8cf4b24e3413e4e3f5d512b79e3a72bc6fec99041adc9"
   },
   {
     "path": "tool.html",

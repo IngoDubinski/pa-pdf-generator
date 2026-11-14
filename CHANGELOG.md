@@ -58,3 +58,8 @@ Projektidee (noch nicht umgesetzt): PDF-Kompatibilität mit Adobe Acrobat Reader
 - Tool-Platzhalter „EP 2. Seite“ für gültige Freigabelinks und „Antrag BE“ für Admin-Dauerlink ergänzt; fachliche Funktionen bleiben in Vorbereitung.
 - Word-/DOCX-Ausgabe als Projektidee ergänzt.
 - Einheitliche Versionsangaben und Browser-Cache-Busting aktualisiert. Keine Änderungen an der bestehenden PDF-Erzeugung.
+
+### v1.6.1 – Korrektur der öffentlichen Startseite (14.11.2026)
+- Ohne gültigen Freigabelink (auch bei abgelaufenen Links) enthält die sichtbare Landing-Page **nur** Projektbeschreibung, Hinweis auf persönliche Freigabelinks, lokale Datenverarbeitung und BulkPDF-Link.
+- Tool-Portal, interne Tool-Kacheln, Navigationslinks auf weitere Seiten und technisches Schaubild bleiben vor dem JavaScript-Start mittels HTML-Attribut `hidden` verborgen; sie werden nur bei gültigem Link eingeblendet.
+- Bestehendes Verhalten von PA-Drucktool, EP Generator, EP 2. Seite und Admin-Tool unverändert; Versionsnummer bleibt 1.6.1.
