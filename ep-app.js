@@ -7,8 +7,8 @@ window.addEventListener('pagehide',()=>{if(lastClassPdfUrl)URL.revokeObjectURL(l
 const classDrafts=new Map(),selectedByClass=new Map();let lastDraft=null;const dkey='pa-ep-web-v020-', dbname='pa-ep-signature';
 const localGet=(key,def='')=>{try{return localStorage.getItem(dkey+key)??def;}catch{return def;}};
 const localSet=(key,v)=>{try{localStorage.setItem(dkey+key,v);}catch{}};
-$('epSchool').value=localGet('school','');$('epStaff').value=localGet('staff','');$('epSort').value=localGet('sort','az');
-$('epSchool').addEventListener('input',()=>localSet('school',$('epSchool').value));$('epStaff').addEventListener('input',()=>localSet('staff',$('epStaff').value));$('epSort').addEventListener('change',()=>localSet('sort',$('epSort').value));
+$('epSchool').value=localGet('school','');$('epStaff').value=localGet('staff','');$('epSort').value=localGet('sort-v2','nr');
+$('epSchool').addEventListener('input',()=>localSet('school',$('epSchool').value));$('epStaff').addEventListener('input',()=>localSet('staff',$('epStaff').value));$('epSort').addEventListener('change',()=>{localSet('sort-v2',$('epSort').value);renderPicker();});
 $('epGoals').value=C.GOALS;
 for(const name of C.EVENTS){const l=document.createElement('label');l.textContent=name;const i=document.createElement('input');i.type='date';i.dataset.event=name;l.append(i);$('epEvents').append(l);}
 function snapshot(){return {goals:$('epGoals').value,events:Object.fromEntries([...document.querySelectorAll('[data-event]')].map(x=>[x.dataset.event,x.value]))};}
@@ -16,7 +16,7 @@ function restore(draft){$('epGoals').value=draft.goals;for(const i of document.q
 function selectedIndexSet(){if(!selectedByClass.has(activeClass))selectedByClass.set(activeClass,new Set());return selectedByClass.get(activeClass);}
 function renderPicker(){
  const list=$('epSingleList'),selection=selectedIndexSet();
- const visible=S.entries(students,activeClass,$('epSingleSearch').value);
+ const visible=S.entries(students,activeClass,$('epSingleSearch').value,$('epSort').value);
  list.replaceChildren();
  for(const {student,index} of visible){
   const label=document.createElement('label'),checkbox=document.createElement('input'),name=document.createElement('span'),id=document.createElement('small');
@@ -83,7 +83,7 @@ async function generate(single=false){
   await pause(); // Browser darf Balken und Sanduhr malen, bevor die CPU-lastige PDF-Verarbeitung beginnt.
   const targets=single?S.selected(students,activeClass,selectedIndexSet()):null;
   const {selected,warnings}=await scan((pct,msg)=>epProgress.update(pct,msg),targets);
-  const chosen=[...selected].sort((a,b)=>a.name.localeCompare(b.name,'de')*($('epSort').value==='za'?-1:1));
+  const chosen=S.sortStudents(selected,$('epSort').value);
   if(!chosen.length)throw Error('Keine Schüler für diese Klasse.');
   epProgress.update(31,'EP-Vorlage laden und Dokumente vorbereiten …');await pause();
   const tpl=docs.includes('EP')?await getTemplate():null,sign=$('epUseSign').checked?signBytes:null,zip=new JSZip(),parts=[],skipped=[],realizedTypes=new Set();
