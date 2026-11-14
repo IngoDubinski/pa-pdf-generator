@@ -12,6 +12,64 @@ const cls=s=>(String(s||'').replace(/\s+/g,'').match(/^\d{1,2}[a-z]$/i)?.[0]||''
 const colNo=s=>[...(s.match(/^[A-Z]+/i)?.[0]||'').toUpperCase()].reduce((x,c)=>x*26+c.charCodeAt(0)-64,0)-1;
 const date=s=>{if(s===null||s===undefined||s==='')return '';if(typeof s==='number'&&s>0){const d=new Date(Date.UTC(1899,11,30)+Math.round(s)*86400000);return `${String(d.getUTCDate()).padStart(2,'0')}.${String(d.getUTCMonth()+1).padStart(2,'0')}.${d.getUTCFullYear()}`;}let m=String(s).trim().match(/^(\d{1,2})\.(\d{1,2})\.(\d{2,4})$/);if(m){let y=+m[3];if(y<100)y+=y<80?2000:1900;return `${m[1].padStart(2,'0')}.${m[2].padStart(2,'0')}.${y}`;}m=String(s).trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);return m?`${m[3]}.${m[2]}.${m[1]}`:'';};
 const shortDate=s=>{let v=date(s);return v?v.slice(0,6)+v.slice(-2):'';};
+// Die Original-EP-Vorlage hat 14 ausfüllbare BO-Zeilen. Zusätzliche Einträge
+// werden ggf. auf ausfüllbare Fortsetzungsseiten verteilt – niemals abgeschnitten.
+const BO_TEMPLATE_ROWS=14,BO_CONTINUATION_ROWS=16;
+const BO_LOCATIONS=['Schule','Betrieb','BSZ','Bildungsträger'];
+function boActivities(student,settings){
+ const rows=[];let order=0;
+ const push=(rawDate,name,place='Schule')=>{
+  const fullDate=date(rawDate),label=String(name||'').trim();
+  if(!fullDate||!label)return;
+  const parts=fullDate.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+  if(!parts)return;
+  const yyyy=+parts[3],mm=+parts[2],dd=+parts[1];
+  const verify=new Date(Date.UTC(yyyy,mm-1,dd));
+  if(verify.getUTCFullYear()!==yyyy||verify.getUTCMonth()!==mm-1||verify.getUTCDate()!==dd)return;
+  rows.push({date:fullDate,name:label,place:BO_LOCATIONS.includes(place)?place:'Schule',
+   sortKey:yyyy*10000+mm*100+dd,order:order++});
+ };
+ for(const name of EVENTS){let d=settings.events?.[name]||'';
+  if(name==='Potenzialanalyse'&&!d)d=student.paDate;
+  if(d)push(d,name);
+ }
+ for(const extra of settings.extraEvents||[])push(extra.date,extra.name,extra.place);
+ return rows.sort((a,b)=>a.sortKey-b.sortKey||a.order-b.order);
+}
+async function appendBOContinuation(pdf,form,overflow,student){
+ const regular=await pdf.embedFont(PDF.StandardFonts.Helvetica);
+ const bold=await pdf.embedFont(PDF.StandardFonts.HelveticaBold);
+ const blue=PDF.rgb(.91,.94,1),ink=PDF.rgb(.08,.15,.25),rule=PDF.rgb(.38,.46,.56);
+ const x=[32,110,331,430,563],rHeight=35,topRow=716;
+ for(let start=0;start<overflow.length;start+=BO_CONTINUATION_ROWS){
+  const page=pdf.addPage(PDF.PageSizes.A4);
+  page.drawText('Entwicklungsplan – BO-Aktivitäten (Fortsetzung)',{x:34,y:796,size:15,font:bold,color:ink});
+  const sub=`${student.name} · Klasse ${student.cls} · zusätzliche Veranstaltungen`;
+  page.drawText(sub.slice(0,100),{x:34,y:773,size:9,font:regular,color:ink});
+  page.drawRectangle({x:x[0],y:728,width:x[4]-x[0],height:32,color:blue,borderColor:rule,borderWidth:.6});
+  for(let j=1;j<x.length-1;j++)page.drawLine({start:{x:x[j],y:728},end:{x:x[j],y:760},color:rule,thickness:.5});
+  ['Datum','BO-Aktivität','Umsetzungsort','Notizen'].forEach((name,i)=>page.drawText(name,{x:x[i]+4,y:741,size:9,font:bold,color:ink}));
+  const section=overflow.slice(start,start+BO_CONTINUATION_ROWS);
+  for(let n=0;n<section.length;n++){
+   const entry=section[n],hi=topRow-n*rHeight,lo=hi-rHeight;
+   if(n%2===0)page.drawRectangle({x:x[0],y:lo,width:x[4]-x[0],height:rHeight,color:PDF.rgb(.975,.985,1)});
+   page.drawRectangle({x:x[0],y:lo,width:x[4]-x[0],height:rHeight,borderWidth:.55,borderColor:rule});
+   for(let j=1;j<x.length-1;j++)page.drawLine({start:{x:x[j],y:lo},end:{x:x[j],y:hi},color:rule,thickness:.5});
+   const nr=BO_TEMPLATE_ROWS+start+n+1;
+   const fields=[['Datum',shortDate(entry.date)],['',entry.name],['Ort',entry.place],['Notizen','']];
+   fields.forEach(([suffix,val],i)=>{
+    const key=`BO_extra_${nr}_${suffix||'Aktivitaet'}`;
+    const f=form.createTextField(key);
+    if(i===1||i===3)f.enableMultiline();
+    f.addToPage(page,{x:x[i]+2,y:lo+2,width:x[i+1]-x[i]-4,height:rHeight-4,
+     backgroundColor:undefined,borderColor:undefined,borderWidth:0});
+    f.setText(val);f.setFontSize(i===0?8:i===1?9:8.5);
+   });
+  }
+  page.drawText(`Fortsetzung · ${Math.floor(start/BO_CONTINUATION_ROWS)+1}`,{x:34,y:98,size:8,font:regular,color:rule});
+ }
+}
+
 const bytes=async file=>new Uint8Array(await file.arrayBuffer());
 const xml=s=>new DOMParser().parseFromString(s,'application/xml');
 const nodes=(root,name)=>[...root.getElementsByTagNameNS('*',name)];
@@ -109,7 +167,12 @@ function drawImage(page,img,x,top,width,height){if(!img)return;const scale=Math.
 async function buildEP(student,settings,assessment,template,signBytes){
  const pdf=await PDF.PDFDocument.load(template),form=pdf.getForm();
  for(const [key,value] of Object.entries({'Name Schülerin Schüler':student.name,'Klasse':student.cls,'Name Schule':settings.school,'Geburtsdatum':student.birth,'persönliche Stärken Start':assessment?.hasValues?assessment.strengths.join(', '):FALLBACK,'BO Ziele Start':settings.goals||''}))adjustField(form,key,value);
- let row=0;for(const name of EVENTS){let val=settings.events?.[name]||'';if(name==='Potenzialanalyse'&&!val)val=student.paDate;if(!val)continue;row++;adjustField(form,`BO${row} Datum`,shortDate(val));adjustField(form,`BO${row}`,name);adjustField(form,`BO${row} Ort`,'Schule');}
+ const activities=boActivities(student,settings);
+ for(const [i,entry] of activities.slice(0,BO_TEMPLATE_ROWS).entries()){
+  const row=i+1;adjustField(form,`BO${row} Datum`,shortDate(entry.date));
+  adjustField(form,`BO${row}`,entry.name);adjustField(form,`BO${row} Ort`,entry.place);
+ }
+ if(activities.length>BO_TEMPLATE_ROWS)await appendBOContinuation(pdf,form,activities.slice(BO_TEMPLATE_ROWS),student);
  const first=pdf.getPages()[0];if(settings.staff||signBytes){
   // Keep line visible; printed name below the line next to original label.
   first.drawRectangle({x:69,y:first.getHeight()-448.8,width:252,height:12.8,color:PDF.rgb(1,1,1)});
@@ -170,5 +233,5 @@ async function mergePdf(parts,onProgress=null){
  }
  form.updateFieldAppearances();return out.save({useObjectStreams:false});
 }
-return {GOALS,EVENTS,FALLBACK,excel,pageSegments,ident,green,indexPdfs,buildEP,annotate,mergePdf,shortDate,safe,cls,bytes};
+return {GOALS,EVENTS,BO_LOCATIONS,BO_TEMPLATE_ROWS,boActivities,FALLBACK,excel,pageSegments,ident,green,indexPdfs,buildEP,annotate,mergePdf,shortDate,safe,cls,bytes};
 })();

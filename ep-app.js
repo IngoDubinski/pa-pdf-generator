@@ -11,8 +11,33 @@ $('epSchool').value=localGet('school','');$('epStaff').value=localGet('staff',''
 $('epSchool').addEventListener('input',()=>localSet('school',$('epSchool').value));$('epStaff').addEventListener('input',()=>localSet('staff',$('epStaff').value));$('epSort').addEventListener('change',()=>{localSet('sort-v2',$('epSort').value);renderPicker();});
 $('epGoals').value=C.GOALS;
 for(const name of C.EVENTS){const l=document.createElement('label');l.textContent=name;const i=document.createElement('input');i.type='date';i.dataset.event=name;l.append(i);$('epEvents').append(l);}
-function snapshot(){return {goals:$('epGoals').value,events:Object.fromEntries([...document.querySelectorAll('[data-event]')].map(x=>[x.dataset.event,x.value]))};}
-function restore(draft){$('epGoals').value=draft.goals;for(const i of document.querySelectorAll('[data-event]'))i.value=draft.events?.[i.dataset.event]||'';}
+const extraList=$('epExtraList');
+function renderExtraCount(){
+ const count=extraList.querySelectorAll('.ep-extra-row').length;
+ $('epExtraCount').textContent=`${count} zusätzliche Veranstaltung${count===1?'':'en'} erfasst.`;
+}
+function addExtraEvent({date='',name='',place='Schule'}={}){
+ const row=document.createElement('div');row.className='ep-extra-row';
+ const datelabel=document.createElement('label');datelabel.textContent='Datum';
+ const inputDate=document.createElement('input');inputDate.type='date';inputDate.className='ep-extra-date';inputDate.value=/^\d{4}-\d{2}-\d{2}$/.test(date)?date:'';datelabel.append(inputDate);
+ const eventlabel=document.createElement('label');eventlabel.textContent='Veranstaltung';
+ const inputName=document.createElement('input');inputName.type='text';inputName.className='ep-extra-name';inputName.placeholder='z. B. Betriebserkundung';inputName.maxLength=150;inputName.value=name;eventlabel.append(inputName);
+ const placelabel=document.createElement('label');placelabel.textContent='Ort';
+ const select=document.createElement('select');select.className='ep-extra-place';
+ for(const item of C.BO_LOCATIONS)select.append(new Option(item,item));
+ select.value=C.BO_LOCATIONS.includes(place)?place:'Schule';placelabel.append(select);
+ const del=document.createElement('button');del.type='button';del.className='ep-extra-delete';del.textContent='Entfernen';del.setAttribute('aria-label','Zusätzliche Veranstaltung entfernen');
+ del.addEventListener('click',()=>{row.remove();renderExtraCount();});
+ row.append(datelabel,eventlabel,placelabel,del);extraList.append(row);renderExtraCount();
+}
+function extraEvents(){return [...extraList.querySelectorAll('.ep-extra-row')].map(row=>({
+ date:row.querySelector('.ep-extra-date').value,
+ name:row.querySelector('.ep-extra-name').value.trim(),
+ place:row.querySelector('.ep-extra-place').value
+}));}
+$('epAddExtra').addEventListener('click',()=>addExtraEvent());
+function snapshot(){return {goals:$('epGoals').value,events:Object.fromEntries([...document.querySelectorAll('[data-event]')].map(x=>[x.dataset.event,x.value])),extraEvents:extraEvents()};}
+function restore(draft){$('epGoals').value=draft.goals;for(const i of document.querySelectorAll('[data-event]'))i.value=draft.events?.[i.dataset.event]||'';extraList.replaceChildren();for(const item of draft.extraEvents||[])addExtraEvent(item);renderExtraCount();}
 function selectedIndexSet(){if(!selectedByClass.has(activeClass))selectedByClass.set(activeClass,new Set());return selectedByClass.get(activeClass);}
 function renderPicker(){
  const list=$('epSingleList'),selection=selectedIndexSet();
@@ -35,7 +60,8 @@ function updateSelectionCount(){
 }
 function switchClass(to){
  if(activeClass){const d=snapshot();classDrafts.set(activeClass,d);lastDraft=d;}
- activeClass=to;restore(classDrafts.get(to)||lastDraft||{goals:C.GOALS,events:{}});
+ else if(!lastDraft)lastDraft=snapshot();
+ activeClass=to;restore(classDrafts.get(to)||lastDraft||{goals:C.GOALS,events:{},extraEvents:[]});
  const members=students.filter(x=>x.cls===to);
  $('epClassInfo').textContent=to?`${to.toUpperCase()}: ${members.length} Schüler`:'Keine Klasse gewählt';
  $('epOutputStatus').textContent='Klasse '+to+' gewählt. Vor Ausgabe bitte Zuordnung prüfen.';
@@ -70,12 +96,14 @@ async function scan(onProgress=null,onlyStudents=null){if(!students.length||!act
 $('epCheck').addEventListener('click',async()=>{const out=$('epOutputStatus');out.textContent='Prüfe IDs in den PDF-Dateien …';try{const {selected,warnings}=await scan();out.textContent=`Klasse ${activeClass}: ${selected.length} Schüler, ${selected.filter(x=>indexKP.get(`${x.cls}:${x.id}`)).length} KP, ${selected.filter(x=>indexPV.get(`${x.cls}:${x.id}`)).length} PV.\n${warnings.length?warnings.slice(0,40).join('\n'):'Alle vorhandenen IDs sind zugeordnet.'}`;}catch(e){out.textContent='Prüfung fehlgeschlagen: '+e.message;}});
 function save(blob,name,keepForPrint=false){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();if(!keepForPrint)setTimeout(()=>URL.revokeObjectURL(url),90000);return url;}
 const pick=()=>['EP','KP','PV'].filter(d=>$('epDoc'+d).checked);
-const settings=()=>({school:$('epSchool').value.trim(),staff:$('epStaff').value.trim(),goals:$('epGoals').value,events:Object.fromEntries([...document.querySelectorAll('[data-event]')].map(x=>[x.dataset.event,x.value]))});
+const settings=()=>({school:$('epSchool').value.trim(),staff:$('epStaff').value.trim(),goals:$('epGoals').value,events:Object.fromEntries([...document.querySelectorAll('[data-event]')].map(x=>[x.dataset.event,x.value])),extraEvents:extraEvents()});
 async function getTemplate(){if(!template){const r=await fetch('Vorlagen/EP/Entwicklungsplan_ausfuellbar.pdf');if(!r.ok)throw Error('EP-PDF-Vorlage nicht verfügbar.');template=new Uint8Array(await r.arrayBuffer());}return template;}
 async function generate(single=false){
  if(generating)return;
  const btn=single?$('epGenerateSelected'):$('epGenerate'),out=$('epOutputStatus'),s=settings(),docs=pick(),mode=single?'single':$('epMode').value,folder=$('epFolder').value;
  if(!activeClass){out.textContent='Bitte zuerst Klasse wählen.';return;}if(single&&!S.selected(students,activeClass,selectedIndexSet()).length){out.textContent='Bitte mindestens einen Schüler für den Einzeldruck auswählen.';return;}if(!s.school){out.textContent='Schulname fehlt (Pflichtangabe).';return;}if(!docs.length){out.textContent='Bitte mindestens einen Dokumenttyp auswählen.';return;}
+ const incomplete=s.extraEvents.filter(e=>(e.date||e.name)&&(!e.date||!e.name));
+ if(docs.includes('EP')&&incomplete.length){out.textContent='Zusätzliche BO-Aktivität unvollständig: Bitte jeweils Datum und Veranstaltung eintragen oder die Zeile entfernen.';return;}
  generating=true;$('epGenerate').disabled=true;$('epGenerateSelected').disabled=true;$('epClass').disabled=true;$('epSingleClass').disabled=true;out.textContent='Verarbeitung startet …';$('epResultLinks').replaceChildren();
  if(lastClassPdfUrl){URL.revokeObjectURL(lastClassPdfUrl);lastClassPdfUrl=null;}
  epProgress.start('Vorbereitung: ausgewählte Klasse '+activeClass.toUpperCase());
