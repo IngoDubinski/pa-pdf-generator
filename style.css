@@ -46,3 +46,14 @@ html[data-theme="dark"] .workflow-options button:not(.selected){background:#293d
 
 /* PA-Tools Portal v1.6.0 */
 .tool-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:17px;margin:20px 0}.tool-card{padding:23px;border:1px solid #bad1e4;border-radius:14px;background:#f5f9ff}.tool-card h3{margin-top:0}.tool-card a{display:inline-block;border-radius:9px;background:#164a83;color:#fff;padding:10px 16px;text-decoration:none;font-weight:600}.tool-card a:hover{background:#0d3768}.flow-diagram{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:18px 0}.flow-diagram span{padding:10px;border:1px solid #c8d7eb;background:#f2f7fe;border-radius:9px}.flow-diagram span:not(:last-child):after{content:' →';color:#28577f;margin-left:7px}html[data-theme="dark"] .tool-card,html[data-theme="dark"] .flow-diagram span{background:#24364a;color:#e5edf7;border-color:#526d8a}html[data-theme="dark"] .tool-card a{color:white}header .signature{padding-right:5px}
+
+/* PA-Tools Portal v1.6.1: public info and distinct access levels */
+.portal-status{padding:12px 15px;border-radius:9px;background:#e8f1fa;border-left:4px solid #507daa;margin:15px 0}
+.portal-status.portal-warning{background:#fff4df;border-color:#b8852f;color:#48350b}
+.tool-card .planned-note{font-size:.87rem;font-weight:600;color:#556981;margin:6px 0 13px}
+.tool-card a.tool-link-disabled{cursor:not-allowed;background:#a5b2c0;color:#152738;pointer-events:none}
+.access-note{font-size:.89rem;color:#576c82;margin-top:12px}
+html[data-theme="dark"] .portal-status{background:#263a50;color:#f2f6ff}
+html[data-theme="dark"] .portal-status.portal-warning{background:#463b24;color:#fff0c4}
+html[data-theme="dark"] .tool-card .planned-note,html[data-theme="dark"] .access-note{color:#b3c7da}
+html[data-theme="dark"] .tool-card a.tool-link-disabled{background:#52647a;color:#f0f4fa}

@@ -23,3 +23,11 @@ Dieses ZIP ist das vollständige **GitHub-Pages-Root-Verzeichnis**. Inhalt direk
 - Nicht aus öffentlichen URLs auf echten Datenschutz durch Link-Geheimhaltung schließen; der gesamte Website-Quellcode ist öffentlich.
 
 Die komplette Python-Variante wird als eigenes ZIP bereitgestellt. `architektur.html`, `quellcode.html` und `WEITERARBEIT_PROMPT.md` dokumentieren die Arbeitsweise.
+
+## Neues in v1.6.1 (14.11.2026)
+- Gemeinsame **öffentliche Landing-Page** `index.html` auch ohne Freigabelink oder nach Ablauf; direkte Links auf die Tools führen bei ungültigen Links dorthin zurück und nennen den Grund.
+- **EP 2. Seite**: Platzhalter `ep-seite2.html` für alle Nutzer mit gültigem Gast- oder Admin-Link; noch keine Verarbeitung.
+- **Antrag BE**: Platzhalter `antrag-be.html` ausschließlich bei aktivem Admin-Dauerlink sichtbar. Andere Besucher sehen weder Portal-Kachel noch Navigationseintrag; die Platzhalterseite leitet sie zur Landing-Page weiter. **Dies ist kein sicherer serverseitiger Zugriffsschutz.**
+- Word-/DOCX-Varianten in Projektideen aufgenommen.
+- Die öffentlich lesbare Startseite beschreibt die lokalen Datenschutzprinzipien und verweist auf BulkPDF als Inspiration.
+- **Es sind keinerlei Schülerdaten enthalten**. Alle PDF- und Word-Originalvorlagen für aktuell funktionierende Module sind im Ordner `Vorlagen/` enthalten.

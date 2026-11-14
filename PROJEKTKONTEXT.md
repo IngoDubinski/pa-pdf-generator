@@ -15,3 +15,6 @@ Stand v1.4.6: theme.js für Dark Mode, Blanko-BB-Erstellung in pdf-engine.js (ge
 v1.4.8: Einstellungen lokal in settings.js; Speicherung nur Aufgabenwahl, PDF-Modus, Sortierung; keine Schülerdaten.
 
 Projektidee (noch nicht umgesetzt): PDF-Kompatibilität mit Adobe Acrobat Reader verbessern bzw. Darstellungs- und Druckprobleme beheben.
+
+## Stand v1.6.1 (14.11.2026)
+GitHub-Pages-Portal `index.html` öffentlich mit Erklärung und BulkPDF-Verweis; GitHub lädt ausschließlich leere Vorlagen und Programmdateien. Funktionen: PA-Drucktool + EP Generator; neue Platzhalter „EP 2. Seite“ (alle Berechtigten) und „Antrag BE“ (nur Admin-Dauerlink in Navigation und Portal). Weitere Inhalte werden später besprochen. Word-/DOCX-Ausgabe ist Projektidee, nicht implementiert. Aktuelle Zugangssteuerung nur clientseitig; nicht sicher.

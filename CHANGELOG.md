@@ -52,3 +52,9 @@ Projektidee (noch nicht umgesetzt): PDF-Kompatibilität mit Adobe Acrobat Reader
 - Alle leeren Vorlagen öffentlich verfügbar (BB/BKB/SE/EP PDF und EP Word-Referenz); keine echten KP/PV oder Schülerdaten.
 - Gemeinsames Portal, Quellcode, Datenschutzhinweise, Datenfluss-Schaubild und Versionsangabe aktualisiert.
 - Offene Einschränkung: SaxSVS-PDF-Import weiterhin nur im lokalen Python-Programm; JavaScript-KP/PV-Parser auf bereitgestellte Profil-AC-PDFs zugeschnitten.
+
+## PA-Tools v1.6.1 · 14.11.2026
+- Öffentliche Landing-Page wiederhergestellt und als Einführung ausgebaut (auch nach Linkablauf), mit lokalen Datenschutzhinweisen und BulkPDF-Inspiration.
+- Tool-Platzhalter „EP 2. Seite“ für gültige Freigabelinks und „Antrag BE“ für Admin-Dauerlink ergänzt; fachliche Funktionen bleiben in Vorbereitung.
+- Word-/DOCX-Ausgabe als Projektidee ergänzt.
+- Einheitliche Versionsangaben und Browser-Cache-Busting aktualisiert. Keine Änderungen an der bestehenden PDF-Erzeugung.

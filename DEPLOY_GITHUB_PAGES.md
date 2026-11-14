@@ -7,3 +7,6 @@
 5. **Wichtige Einschränkung:** Die Linkverwaltung auf statischem GitHub Pages ist keine sichere serverseitige Anmeldung. Schülerdaten bleiben auf dem Endgerät, aber der veröffentlichte Quellcode und die leeren Vorlagen sind öffentlich abrufbar.
 6. **Einschränkung v0.2.0:** Der EP-Webimport liest Excel-Klassenblätter (.xlsx). SaxSVS-Text-PDF-Import ist in der lokalen Thonny-Fassung verfügbar; für den Web-EP noch nicht eingebaut. Die vorhandene PA-Drucktool-SaxSVS-Funktion bleibt erhalten.
 7. Nach dem Upload `ep-generator.html` mit einer **anonymisierten** Excel-Probeliste, KP/PV-Testdokumenten und Adobe Reader unter Windows prüfen.
+
+## Hinweis v1.6.1
+Beide neuen Platzhalter-Dateien `ep-seite2.html` und `antrag-be.html` hochladen; `access.js`, `tool-nav.js`, `style.css` und `index.html` aktualisieren. Öffentliche Startseite `index.html` ohne `?key=` sowie mit einem abgelaufenen Gastlink testen; Gastlink soll „EP 2. Seite“, aber **nicht** „Antrag BE“ zeigen. Admin-Dauerlink soll beide Platzhalter zeigen. Browser-Cache bei Bedarf mit Strg+F5 aktualisieren. Der „Antrag BE“-Bereich ist nur clientseitig verborgen; echte Admin-Zugriffssicherheit erfordert eine Serverlösung.
