@@ -1,41 +1,25 @@
-# PA-Drucktool – GitHub-Pages-Webversion v1.4.5
+# PA-Tools Web v1.6.0 – 12.11.2026
 
-Stand 09.11.2026. Browseranwendung für die Potenzialanalyse (BB, BKB, SE). Vollständige Original-PDF-Vorlagen im Ordner `Vorlagen/`. Programmcode und Bibliotheken sind im Projekt enthalten. Die Schul-/Schülerdaten werden ausschließlich im Browser eingelesen und zu PDFs verarbeitet; es gibt keinen vorgesehenen Upload dieser Daten. Beim Laden der Seite werden Programmdateien und PDF-Vorlagen vom GitHub-Server heruntergeladen. Das öffentliche Repository und clientseitige Gastlinks bieten **keinen echten Zugriffsschutz** auf die Vorlagen.
+Dieses ZIP ist das vollständige **GitHub-Pages-Root-Verzeichnis**. Inhalt direkt ins Repository `IngoDubinski/pa-pdf-generator` hochladen (kein Unterordner für die gesamte Website). `index.html` ist das gemeinsame Portal. Das bisherige `tool.html` bleibt das PA-Drucktool; `ep-generator.html` ist die neue EP-Anwendung.
 
-## Installation
-Den gesamten Inhalt dieses Verzeichnisses in das GitHub-Pages-Repository kopieren; GitHub Pages mit `index.html` im Repository-Root betreiben. `tool.html` enthält das Drucktool, `excel-anleitung.html` die Anleitung, `quellcode.html` Transparenzhinweise. `admin.html` ist ausschließlich für die Online-Verwaltung der Gastlinks gedacht. Keine GitHub-Tokens oder realen Schülerdaten ins Repository übernehmen.
+## Inhalte
+- PA-Drucktool: BB, BKB, SE, Blanko (unveränderte PDF-Engine).
+- EP Generator Web v0.2.0: Excel-Schülerliste (erste Spalte Schüler-ID), importierte KP/PV-Sammel-PDFs, automatische ID-/Klassenprüfung, Fremdeinschätzung 4/5, ausfüllbarer zweitseitiger EP, Name/Unterschrift, A–Z/Z–A, Klassen-PDF und drei ZIP-Dateiablagen.
+- Leere EP-Originale (ausfüllbare PDF + Word-Referenz) in `Vorlagen/EP/`; BB/BKB/SE und Matrix in `Vorlagen/`.
+- Originale KP/PV sind **Ergebnisdokumente mit personenbezogenen Daten**, deshalb nicht enthalten und niemals ins Repository hochladen.
 
-## Funktionen
-Excel-Import, SaxSVS-PDF-Import, BB/BKB/SE-Erzeugung, Einzeldruck, Klassenverbund (Aufgabenblöcke/Beobachterzuordnung), automatische SE-Durchstreichung (optional), BKB-Schriftverkleinerung bei langen Aufgabenlisten, Flatten/Editable, ZIP-Ausgabe, Beispiel-Excel-Datei und lokale Testdaten. Zuordnung nach Gruppen 1/2, 3/4 und 5/6 ist vorbelegt und kann korrigiert werden.
+## Bedienung
+1. Über `admin.html` Freigabelink oder Admin-Dauerlink erstellen. Bei GitHub Pages sind die Links nur eine clientseitige Zugangshürde, **kein serverseitiger Authentisierungsschutz**.
+2. `index.html` mit dem Link öffnen; beide Werkzeuge sind über die Portal-Kacheln und Navigationsleiste erreichbar.
+3. EP: Excel mit Klassenreitern und eindeutigen Nummern in Spalte A wählen; vorhandene KP/PV-PDFs laden; genau eine Klasse auswählen; Schule angeben, optional Mitarbeitername und Unterschrift; Ziele/BO-Daten anpassen; prüfen; PDFs erstellen.
+4. Sofortdruck: das Klassen-Sammel-PDF wird heruntergeladen und – falls der Browser Pop-ups zulässt – in neuem Tab geöffnet; dort STRG+P. Direkte Druckerauswahl ohne Browser-Dialog ist nicht möglich.
+5. Dateiausgabe: ZIP wird im Downloadordner abgelegt; darin ein Klassenordner und die ausgewählte Ordner-/Zusammenführungsstruktur. Browser dürfen nicht beliebig automatisch Verzeichnisse im Downloads-Ordner anlegen.
 
-## Hinweise
-Die grafische Datenflussdarstellung wurde freigegeben und oben auf Anleitung und Transparenz eingebunden. Die früheren Dokumentationen sind unter `Archiv/` zur historischen Nachvollziehbarkeit enthalten. Die BKB-Anpassung wurde statisch geprüft; ein vollständiger Browser-Drucktest mit allen Eingabevarianten ist noch erforderlich.
+## Aktuelle Grenzen
+- SaxSVS-**PDF**-Import im EP Generator derzeit nur in der lokalen Python-/Thonny-Version, nicht in der Webversion.
+- Der Web-Parser wurde mit den bereitgestellten Profil-AC-Sachsen-PDFs getestet. Bei anderen PDF-Exportvarianten IDs, Zuordnung und Stärken vor produktiver Nutzung stichprobenartig überprüfen.
+- Die erzeugten EP-PDF-Formularfelder bleiben bearbeitbar; Adobe Reader muss im echten Windows-Test geprüft werden.
+- Studenteninformationen werden im Browser nur während der geöffneten Sitzung verarbeitet. Schulname und Mitarbeitername lokal gespeichert; optionales Unterschriftsbild lokal in IndexedDB. Keine Schülerdaten-Uploads.
+- Nicht aus öffentlichen URLs auf echten Datenschutz durch Link-Geheimhaltung schließen; der gesamte Website-Quellcode ist öffentlich.
 
-
-v1.4.6: Dark Mode, optional Blanko-BB ohne Schülerliste, Druckhinweise in Anleitung. PDF-Viewer-Kompatibilität bleibt zu prüfen.
-
-
-v1.4.8: Einstellungen lokal in settings.js; Speicherung nur Aufgabenwahl, PDF-Modus, Sortierung; keine Schülerdaten.
-
-## v1.4.9 (10.11.2026)
-- Hell/Dunkel wird wie bisher im Browser gespeichert.
-- Einheitliche Signatur und Version mit Datum auf allen Seiten mit Kopfbereich.
-
-## v1.5.0 (10.11.2026)
-- Drei Arbeitswege: Klassenweise, Einzeldruck, Blanko-Vorlagen.
-- SE-Kürzung wird lokal gemerkt.
-- Aufgabenprüfknopf entfernt; direkte Prüfung bleibt.
-- Eigene PDF-Vorlagen mit genauen Dateinamen erklärt.
-- Farbschalter tiefer; Versionsanzeige auf allen HTML-Seiten aktualisiert.
-
-- Bedienung: mehr Abstand zwischen Arbeitswegen; Blanko ohne Schülerdatenimport und ohne Klassen-Einstellungen, mit eigenem PDF-Modus. Versionsanzeige bleibt v1.5.0.
-
-Blanko-Optionen (v1.5.0): Ausklappbereich für PDF-Modus, optionales PA-Datum und optionale BKB-Aufgabenliste. Keine Schülerliste erforderlich.
-
-Blanko-Optionen: SE-Kürzung als standardmäßig aktivierte Checkbox im ausklappbaren Bereich „Optionale Angaben“.
-
-Blanko-Erweiterung: BKB-Aufgabenauswahl direkt sichtbar, AC-Einheit optional, PA-Datum lokal gespeichert. Versionsnummer bleibt v1.5.0.
-
-Blanko-BKB: optional 0 oder genau 6 Aufgaben (2 je AK I–III). Blanko-PA-Datum und AC-Einheit werden für BB/BKB lokal gemerkt. Version bleibt v1.5.0.
-
-Projektidee (noch nicht umgesetzt): PDF-Kompatibilität mit Adobe Acrobat Reader verbessern bzw. Darstellungs- und Druckprobleme beheben.
+Die komplette Python-Variante wird als eigenes ZIP bereitgestellt. `architektur.html`, `quellcode.html` und `WEITERARBEIT_PROMPT.md` dokumentieren die Arbeitsweise.

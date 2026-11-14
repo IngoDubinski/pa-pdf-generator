@@ -44,3 +44,11 @@ Blanko-BKB: optional 0 oder genau 6 Aufgaben (2 je AK I–III). Blanko-PA-Datum 
 Blanko BB/BKB: AC-Einheit direkt sichtbar, im Original-PDF-Feld „AC Einheit“ eingetragen und lokal gespeichert. Version weiterhin v1.5.0.
 
 Projektidee (noch nicht umgesetzt): PDF-Kompatibilität mit Adobe Acrobat Reader verbessern bzw. Darstellungs- und Druckprobleme beheben.
+
+
+## PA-Tools v1.6.0 · 12.11.2026
+- PA-Drucktool bleibt funktional erhalten; EP Generator v0.2.0 als eigener GitHub-Pages-Bereich hinzugefügt.
+- EP: browserlokaler Excel-Import, KP-/PV-ID-Abgleich, grüne Fremdeinschätzungswerte 4–5, bearbeitbare EP-PDF, optional signierte Namenszeilen, Klassendruck und ZIP-Dateiausgabe.
+- Alle leeren Vorlagen öffentlich verfügbar (BB/BKB/SE/EP PDF und EP Word-Referenz); keine echten KP/PV oder Schülerdaten.
+- Gemeinsames Portal, Quellcode, Datenschutzhinweise, Datenfluss-Schaubild und Versionsangabe aktualisiert.
+- Offene Einschränkung: SaxSVS-PDF-Import weiterhin nur im lokalen Python-Programm; JavaScript-KP/PV-Parser auf bereitgestellte Profil-AC-PDFs zugeschnitten.
