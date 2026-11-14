@@ -61,3 +61,25 @@ test('auch ein einzelner EP beim Klassendruck bleibt transparent',async()=>{
  assert.equal(widget.getAppearanceCharacteristics()?.getBackgroundColor(),undefined);
  assert.equal(pdf.getForm().getTextField('s0_BO1_Datum_0').getText(),'04.11.26');
 });
+
+test('Zusammenführen liefert echten Fortschritt pro Dokument',async()=>{
+ const a=await make('Kind A');const b=await make('Kind B');
+ const events=[];const output=await Core.mergePdf([a,b],p=>events.push(p));
+ assert.equal(events.length,2);
+ assert.equal(events[0].done,1);
+ assert.equal(events[1].done,2);
+ assert.equal(events[1].total,2);
+ assert.equal((await PDFLib.PDFDocument.load(output)).getPageCount(),4);
+});
+test('KP-/PV-Seitenscan meldet Seitenfortschritt, auch ohne zuordenbare IDs',async()=>{
+ const pdf=await PDFLib.PDFDocument.create();pdf.addPage().drawText('Ohne ID');pdf.addPage().drawText('Auch ohne ID');
+ const fileBytes=await pdf.save({useObjectStreams:false});
+ const file={name:'test_ohne_ids.pdf',async arrayBuffer(){return fileBytes.buffer.slice(fileBytes.byteOffset,fileBytes.byteOffset+fileBytes.byteLength)}};
+ const progress=[];
+ const scan=await Core.indexPdfs([file],'KP','7a',p=>progress.push(p));
+ assert.equal(scan.index.size,0);
+ assert.equal(scan.warnings.length,2);
+ assert.equal(progress.length,2);
+ assert.equal(progress[1].page,2);
+ assert.equal(progress[1].pageCount,2);
+});

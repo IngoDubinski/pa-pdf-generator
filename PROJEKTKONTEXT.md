@@ -21,3 +21,6 @@ GitHub-Pages-Portal `index.html` öffentlich mit Erklärung und BulkPDF-Verweis;
 
 ## Stand v1.6.2 / EP Web v0.2.1 (14.11.2026)
 Browser-EP-PDF-Zusammenführung korrigiert: formularfeldbedingte weiße Überdeckung von Tabellenlinien beseitigt, Kästchen bleiben schwarz umrandet, Formularfelder editierbar. Haupt-Regression: `Tests/test_ep_form_transparency.js`.
+
+## Stand v1.6.3 / EP Web v0.2.2 – 14.11.2026
+Die Web-Programme (EP Generator und PA-Drucktool) zeigen jetzt einen phasengewichteten Prozentfortschritt mit animierter Sanduhr. Der EP-Klassendruck lädt die fertig erzeugte PDF herunter und zeigt dann einen ausdrücklichen Druck-/Öffnen-Link. Keine automatische leere Registerkarte. Ziel: Funktionsprüfung auf GitHub Pages (Firefox, Edge), insbesondere Fortschritt bei großen Klassen und Papierdruck.

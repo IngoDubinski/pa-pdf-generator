@@ -71,13 +71,15 @@ function green(pageinfo){
  }
  return {hasValues:values.length>0,strengths:strong,values};
 }
-async function indexPdfs(files,kind,onlyClass=''){
+async function indexPdfs(files,kind,onlyClass='',onProgress=null){
  const index=new Map(),warnings=[];
- for(const file of files){const doc=await PDF.PDFDocument.load(await bytes(file));for(let n=0;n<doc.getPageCount();n++){
+ for(let fidx=0;fidx<files.length;fidx++){const file=files[fidx],doc=await PDF.PDFDocument.load(await bytes(file)),pageCount=doc.getPageCount();for(let n=0;n<pageCount;n++){
   const page=doc.getPages()[n],p=pageSegments(page),klass=cls(p.text.match(/AC\s*[-–]?\s*Einheit\s*:\s*[^\n]*?\b(\d{1,2}[a-z])\b/i)?.[1]),id=ident(p.text,kind);
-  if(onlyClass&&klass&&klass!==onlyClass)continue;
-  if(!klass||!id){warnings.push(`${kind} ${file.name} Seite ${n+1}: Klasse/ID nicht eindeutig – Seite nicht zugeordnet.`);continue;}
+  if(onlyClass&&klass&&klass!==onlyClass){if(onProgress)onProgress({kind,file:file.name,fileIndex:fidx,fileCount:files.length,page:n+1,pageCount});if(onProgress&&n%5===0)await new Promise(r=>setTimeout(r,0));continue;}
+  if(!klass||!id){warnings.push(`${kind} ${file.name} Seite ${n+1}: Klasse/ID nicht eindeutig – Seite nicht zugeordnet.`);if(onProgress)onProgress({kind,file:file.name,fileIndex:fidx,fileCount:files.length,page:n+1,pageCount});if(onProgress&&n%5===0)await new Promise(r=>setTimeout(r,0));continue;}
   const key=`${klass}:${id}`;if(index.has(key)){index.set(key,null);warnings.push(`${kind} ${klass} ID ${id}: doppelt, nicht zugeordnet.`);}else index.set(key,{file,page:n,info:p,assessment:kind==='KP'?green(p):null});
+  if(onProgress)onProgress({kind,file:file.name,fileIndex:fidx,fileCount:files.length,page:n+1,pageCount});
+  if(onProgress&&n%5===0)await new Promise(r=>setTimeout(r,0));
  }}
  return {index,warnings};
 }
@@ -130,7 +132,7 @@ async function annotate(item,kind,student,settings,signBytes){
  if(signBytes){const r=labelPosition(info,'Unterschrift Projektmitarbeiter/in');if(r){const p=ptsFromRaw(r);drawImage(page,await signature(pdf,signBytes),p.x+2,p.top-39,125,30);}}
  return pdf.save({useObjectStreams:false});
 }
-async function mergePdf(parts){
+async function mergePdf(parts,onProgress=null){
  const out=await PDF.PDFDocument.create(),form=out.getForm();
  for(let i=0;i<parts.length;i++){
   const src=await PDF.PDFDocument.load(parts[i]),copied=await out.copyPages(src,src.getPageIndices());copied.forEach(p=>{p.node.set(PDF.PDFName.of('Annots'),out.context.obj([]));out.addPage(p);});
@@ -164,6 +166,7 @@ async function mergePdf(parts){
     }
    }
   }
+  if(onProgress){onProgress({done:i+1,total:parts.length});if(i%3===0)await new Promise(r=>setTimeout(r,0));}
  }
  form.updateFieldAppearances();return out.save({useObjectStreams:false});
 }

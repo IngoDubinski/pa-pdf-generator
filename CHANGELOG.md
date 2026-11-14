@@ -69,3 +69,10 @@ Projektidee (noch nicht umgesetzt): PDF-Kompatibilität mit Adobe Acrobat Reader
 - Checkboxen behalten schwarze Umrandungen ohne verdeckende weiße Fläche. Ausfüllbarkeit und eindeutige Feldnamen bleiben erhalten.
 - Neue automatische Regressionstests für Einzel- und Mehrschüler-PDFs; Version und Skript-Cache auf allen Webseiten aktualisiert.
 - PA-Drucktool, Landing-Page und Linksteuerung ansonsten unverändert.
+
+
+## v1.6.3 – 14.11.2026
+- PA-Drucktool und EP Generator Web: neue Fortschrittsanzeige mit Prozent, animierter Sanduhr, aktuell bearbeiteter Schüler-/Dokumentphase und ZIP-Kompressionsfortschritt; automatisch auf 100 % erst nach erfolgreichem Downloadstart.
+- EP Generator Web jetzt v0.2.2; kein automatisch geöffnetes leeres Druckfenster mehr. PDF nach Abschluss als Download plus Button „PDF öffnen / drucken“.
+- Neue browserseitige Tests ohne Webzugriff: 8-seitige EP-Klassen-PDF, EP-ZIP (4 PDFs), PA-Einzeldruck-ZIP jeweils erfolgreich; alle ohne personenbezogene Echtdaten.
+- Node.js-Regressionstests für Fortschritt, Fehlzustand, PDF-Seiten- und Dokumentmeldungen ergänzt. Keine Änderung an der PDF-Formular-/Rasterkorrektur aus v1.6.2.

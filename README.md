@@ -1,10 +1,10 @@
-# PA-Tools Web v1.6.2 – 14.11.2026
+# PA-Tools Web v1.6.3 – 14.11.2026
 
 Dieses ZIP ist das vollständige **GitHub-Pages-Root-Verzeichnis**. Inhalt direkt ins Repository `IngoDubinski/pa-pdf-generator` hochladen (kein Unterordner für die gesamte Website). `index.html` ist das gemeinsame Portal. Das bisherige `tool.html` bleibt das PA-Drucktool; `ep-generator.html` ist die neue EP-Anwendung.
 
 ## Inhalte
 - PA-Drucktool: BB, BKB, SE, Blanko (unveränderte PDF-Engine).
-- EP Generator Web v0.2.1: Excel-Schülerliste (erste Spalte Schüler-ID), importierte KP/PV-Sammel-PDFs, automatische ID-/Klassenprüfung, Fremdeinschätzung 4/5, ausfüllbarer zweitseitiger EP, Name/Unterschrift, A–Z/Z–A, Klassen-PDF und drei ZIP-Dateiablagen.
+- EP Generator Web v0.2.2: Excel-Schülerliste (erste Spalte Schüler-ID), importierte KP/PV-Sammel-PDFs, automatische ID-/Klassenprüfung, Fremdeinschätzung 4/5, ausfüllbarer zweitseitiger EP, Name/Unterschrift, A–Z/Z–A, Klassen-PDF und drei ZIP-Dateiablagen.
 - Leere EP-Originale (ausfüllbare PDF + Word-Referenz) in `Vorlagen/EP/`; BB/BKB/SE und Matrix in `Vorlagen/`.
 - Originale KP/PV sind **Ergebnisdokumente mit personenbezogenen Daten**, deshalb nicht enthalten und niemals ins Repository hochladen.
 
@@ -12,7 +12,7 @@ Dieses ZIP ist das vollständige **GitHub-Pages-Root-Verzeichnis**. Inhalt direk
 1. Über `admin.html` Freigabelink oder Admin-Dauerlink erstellen. Bei GitHub Pages sind die Links nur eine clientseitige Zugangshürde, **kein serverseitiger Authentisierungsschutz**.
 2. `index.html` mit dem Link öffnen; beide Werkzeuge sind über die Portal-Kacheln und Navigationsleiste erreichbar.
 3. EP: Excel mit Klassenreitern und eindeutigen Nummern in Spalte A wählen; vorhandene KP/PV-PDFs laden; genau eine Klasse auswählen; Schule angeben, optional Mitarbeitername und Unterschrift; Ziele/BO-Daten anpassen; prüfen; PDFs erstellen.
-4. Sofortdruck: das Klassen-Sammel-PDF wird heruntergeladen und – falls der Browser Pop-ups zulässt – in neuem Tab geöffnet; dort STRG+P. Direkte Druckerauswahl ohne Browser-Dialog ist nicht möglich.
+4. Klassendruck: Das Klassen-Sammel-PDF wird heruntergeladen. **Kein Tab wird automatisch geöffnet.** Nach der Erstellung auf „PDF öffnen / drucken“ klicken; im PDF-Viewer anschließend STRG+P. Direkte Druckerauswahl ohne Browser-Dialog ist nicht möglich.
 5. Dateiausgabe: ZIP wird im Downloadordner abgelegt; darin ein Klassenordner und die ausgewählte Ordner-/Zusammenführungsstruktur. Browser dürfen nicht beliebig automatisch Verzeichnisse im Downloads-Ordner anlegen.
 
 ## Aktuelle Grenzen
@@ -45,3 +45,13 @@ Beim Zusammenfügen von Entwicklungsplänen (Klassendruck, mehrere Dokumente in 
 - Regressionstest: `node --test Tests/test_ep_form_transparency.js` (Node.js optional nur für Entwicklung).
 - Nach GitHub-Upload die Website mit **Strg+F5** neu laden, um die neue `ep-core.js?v=201` zu laden.
 - **Bereits heruntergeladene PDFs werden nicht rückwirkend geändert**; die gewünschten Dokumente bitte neu erzeugen.
+
+## Neu in v1.6.3 (14.11.2026) – Fortschritt und Drucken
+- **EP Generator Web v0.2.2:** Animierte Sanduhr, Fortschrittsbalken mit Prozent und Arbeitsschritt (KP/PV-Scan, Schülerdokumente, PDF-Zusammenführung, ZIP-Packung).
+- **PA-Drucktool:** Derselbe Fortschrittsbalken bei Klassen- und Einzeldruck-ZIP mit Schüler- und Dokumentzählung.
+- **Kein leerer neuer Tab:** Die Klassen-PDF wird heruntergeladen. Erst danach erscheint der Link **„PDF öffnen / drucken“**; der Browser öffnet die fertige PDF nur nach einem Klick.
+- Die Prozentwerte kombinieren tatsächliche Seiten-/Schüler-/Dokumentzähler und den von JSZip gemeldeten Packfortschritt zu einem phasengewichteten Gesamtablauf. Keine geschätzte Restzeit.
+- Beide Werkzeuge bleiben vollständig lokal; an der PDF-Formularlogik und dem zuletzt korrigierten EP-Tabellenraster wurde nichts geändert.
+- Tests mit anonymen Beispieldaten in Chromium ohne Netzwerkzugriff: EP-Klassen-PDF (8 Seiten, Formularfelder), EP-ZIP mit 4 PDFs, PA-Einzeldruck-ZIP, jeweils **100 %**. Kein automatisches Popup beim EP.
+- Laufende technische Tests: `node --test Tests/*.js`.
+- **Praxistest offen:** GitHub Pages mit Firefox/Edge sowie physischer Papierdruck.

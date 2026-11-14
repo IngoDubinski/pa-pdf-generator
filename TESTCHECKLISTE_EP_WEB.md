@@ -1,4 +1,4 @@
-# EP Generator Web – Testcheckliste v0.2.0
+# EP Generator Web – Testcheckliste v0.2.2
 
 - [ ] Über freigegebenen Link bzw. Admin-Dauerlink zum EP Generator navigieren
 - [ ] Excel-Schülerliste (7a/7b) einlesen; nur ausgewählte Klasse wird verarbeitet
@@ -22,3 +22,15 @@ Hinweis: Automatischer Browser-End-to-End-Test war in dieser Erstellungsumgebung
 - [ ] EP-Felder nach Ausgabe bearbeiten und speichern; getrennte Schüler dürfen keine Werte spiegeln.
 - [ ] Mit ZIP-Dateiausgabe „zusammengefasst je Schüler“ und Klassendruck dieselbe Darstellung prüfen.
 - [x] Entwickler-Test: `node --test Tests/test_ep_form_transparency.js`
+
+
+## v1.6.3: Fortschrittsanzeige / Druckablauf (14.11.2026)
+- [ ] Nach „Ausgabe erstellen“ erscheint sofort die Sanduhr und **0 %**; der Prozentwert steigt mit der Bearbeitung.
+- [ ] EP-Klassen-PDF: Fortschritt für KP/PV-Seiten, bearbeitete Schüler, Zusammenführung; am Schluss **100 %**.
+- [ ] EP-ZIP: Fortschritt beim Packen bis **100 %**, Download vollständig und lesbar.
+- [ ] Kein neuer Tab beim Klick auf „Ausgabe erstellen“; nur nach Fertigstellung über den Link „PDF öffnen / drucken“.
+- [ ] EP-Formularfelder und BO-Rasterlinien in Firefox, Edge und nach dem Drucken weiterhin intakt.
+- [ ] PA-Drucktool Klassen- und Einzeldruck-ZIP: sichtbarer Prozentfortschritt und Datei korrekt.
+- [ ] Bei absichtlicher Fehlkonfiguration zeigt die Anzeige einen Fehler, nicht irreführend 100 %.
+- [x] Automatisierte Offline-Browserprüfung mit Dummy-Excel: EP-Klassen-PDF und EP-ZIP, PA-Einzeldruck-ZIP, keine zusätzlichen Tabs.
+- [x] JavaScript-Tests: `node --test Tests/*.js`.

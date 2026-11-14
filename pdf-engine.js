@@ -115,7 +115,7 @@ async function makeOne(templateBytes,record,sheet,kind,task,selected,editable,se
  if(kind==='SE'&&document.getElementById('seStrike')?.checked)strikeSE(pdf);
  return pdf;
 }
-async function joinStudents(bytes,records,sheet,kind,task,selected,editable){
+async function joinStudents(bytes,records,sheet,kind,task,selected,editable,onProgress=null){
  const output=await PDFLib.PDFDocument.create();
  const {PDFName,PDFDict}=PDFLib;
  const seen=new Set();
@@ -141,6 +141,7 @@ async function joinStudents(bytes,records,sheet,kind,task,selected,editable){
     output.catalog.getOrCreateAcroForm().addField(fieldRef);
    }
   }
+  if(onProgress){onProgress((i+1)/records.length,i+1,records.length);if(i%3===0)await new Promise(r=>setTimeout(r,0));}
  }
  if(editable){
   // Prüfen, ob die kopierten Felddefinitionen weiterhin erreichbar sind.
@@ -151,30 +152,38 @@ async function joinStudents(bytes,records,sheet,kind,task,selected,editable){
 }
 async function generatePDFs(expert=false){
  const btn=document.getElementById(expert?'expertGenerate':'generateButton');
+ const progress=PAProgress.connect('paProgress');
  if(!window.PDFLib){setStatus('Die mitgelieferte PDF-Bibliothek fehlt (js/pdf-lib.min.js). Bitte ZIP vollständig entpacken.',true);return;}
  if(!currentReport.length){setStatus('Bitte zuerst eine Schülerliste auswählen.',true);return;}
  if(!expert&&!checkTasks()){setStatus('Bitte genau zwei Aufgaben je Kategorie wählen.',true);return;}
  let selection;try{if(expert)selection=expertSelection();}catch(e){setStatus(e.message,true);document.getElementById('expertStatus').textContent=e.message;return;}
  const classes=expert?[selection.sheet]:selectedClasses(),docs=expert?selection.docs:checkedDocs(),selected=expert?selection.selected:taskList(),editable=document.getElementById('pdfMode').value==='Bearbeitbar';
  if(!classes.length||!docs.length){setStatus('Bitte mindestens eine Klasse und Dokumentart wählen.',true);return;}
- btn.disabled=true;
+ btn.disabled=true;progress.start('PDF-Vorlagen werden geladen …');
  try{
+  await new Promise(r=>setTimeout(r,0));
   const loaded={};const files=[...document.getElementById('templateFiles').files];for(const kind of docs){const filename=templates[kind].split('/').pop();const f=files.find(f=>f.name===filename);if(f){loaded[kind]=await f.arrayBuffer();}else{try{const response=await fetch(templates[kind]);if(!response.ok)throw Error('HTTP '+response.status);loaded[kind]=await response.arrayBuffer();}catch(e){throw Error('Vorlage nicht automatisch ladbar: '+filename+'. Bei lokalem Start (file://) bitte die Vorlagen unten auswählen oder die GitHub-Pages-Version verwenden.');}}}
+  progress.update(13,'Vorlagen geladen. Sammel-PDFs werden erzeugt …');
   const archive=new JSZip();let completed=0;const total=classes.length*(docs.includes('BB')?selected.length:0)+classes.length*Number(docs.includes('BBK'))+classes.length*Number(docs.includes('SE'));
   for(const sheet of classes){
    const rows=expert?selection.rows:sortedStudents(sheet);const year=rows[0].date.slice(-4)||'ohne Datum',folder=archive.folder(`PA ${year} ${sheet.toUpperCase()}`);
    const jobs=[...(docs.includes('BB')?selected.map(task=>({kind:'BB',task})):[]),...(docs.includes('BBK')?[{kind:'BBK',task:null}]:[]),...(docs.includes('SE')?[{kind:'SE',task:null}]:[])];
    for(const {kind,task} of jobs){
-    setStatus(`${++completed}/${total}: ${sheet.toUpperCase()} – ${task?.name||fileLabel[kind]}`);
+    const stepLabel=`${sheet.toUpperCase()} – ${task?.name||fileLabel[kind]}`;
+    setStatus(`${completed+1}/${total}: ${stepLabel}`);
+    progress.update(13+72*completed/total,`${completed+1}/${total} PDF-Dateien: ${stepLabel}`);
     await new Promise(resolve=>setTimeout(resolve,0));
-    const pdf=await joinStudents(loaded[kind],rows,sheet,kind,task,selected,editable);
+    const pdf=await joinStudents(loaded[kind],rows,sheet,kind,task,selected,editable,(fraction,done,all)=>progress.update(13+72*(completed+fraction)/total,`${completed+1}/${total} PDF-Dateien: ${stepLabel} – ${done}/${all} Schüler`));
+    completed++;
     folder.file(safeName(`PA ${year} ${task?.name||fileLabel[kind]} ${sheet.toUpperCase()} komplett`)+'.pdf',pdf);
    }
   }
-  setStatus('ZIP wird lokal erstellt …');const blob=await archive.generateAsync({type:'blob',compression:'DEFLATE'});
+  setStatus('ZIP wird lokal erstellt …');progress.update(87,'Sammel-PDFs fertig – ZIP wird gepackt …');await new Promise(r=>setTimeout(r,0));
+  const blob=await archive.generateAsync({type:'blob',compression:'DEFLATE'},meta=>progress.update(87+12*meta.percent/100,`ZIP wird gepackt: ${Math.round(meta.percent)} %`));
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=expert?'PA-PDF-Expertenmodus.zip':'PA-PDF-Ausgabe.zip';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+  progress.finish(`Fertig: ${total} Sammel-PDFs als ZIP heruntergeladen.`);
   setStatus(`Fertig: ${total} Sammel-PDFs im ZIP. Bearbeitbare Ausgabe bitte besonders sorgfältig testen.`);
- }catch(e){console.error(e);setStatus('PDF-Erstellung fehlgeschlagen: '+e.message,true);}finally{btn.disabled=false;}
+ }catch(e){console.error(e);progress.fail('PDF-Erstellung fehlgeschlagen: '+e.message);setStatus('PDF-Erstellung fehlgeschlagen: '+e.message,true);}finally{btn.disabled=false;}
 }
 
 // Blanko-PDF ohne Schülerdaten: BB mit Kriterien, BKB ohne Aufgabenliste, SE optional gekürzt.

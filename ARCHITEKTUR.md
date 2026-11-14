@@ -16,3 +16,6 @@ Das Portal unterscheidet Gastlink, Admin-Dauerlink und fehlenden/abgelaufenen Li
 
 ## EP Web v0.2.1 / Portal v1.6.2 – Formular-Rendering (14.11.2026)
 `ep-core.js` führt PDF-Teile weiterhin mit `pdf-lib` zusammen. Zur Isolation der Formularfeldnamen werden PDF-Widgets je Schüler neu aufgebaut. **Pflicht:** Texteingabefelder bei `addToPage` mit `backgroundColor: undefined`, `borderColor: undefined`, `borderWidth: 0` anlegen; Checkboxen ebenfalls transparent, aber mit schwarzem Rand. Sonst erzeugt `pdf-lib` standardmäßig weiße Füllungen und verdeckt Linien der Original-PDF. Kein `flatten()` der EP-Formulare!
+
+## Web-Fortschritt (v1.6.3)
+Gemeinsame, DOM-basierte Anzeige in `progress-ui.js` und `progress-ui.css`, keine serverseitigen Requests. EP: optionaler Callback pro indizierter KP/PV-Seite und pro zusammengeführtem PDF, Zählung pro Schüler, JSZip-`generateAsync`-Prozentwerte. PA: Callback pro Schüler, pro Sammel-PDF und JSZip-`generateAsync`. Prozentwerte sind phasengewichtet; reale bearbeitete Dokumente und Packprozente, keine Restzeitprognose. Periodische `setTimeout(0)`-Yieldpunkte erlauben dem Browser Animation und Balken-Aktualisierung. Der PDF-Drucklink entsteht erst nach der Datei-Erzeugung. Der AcroForm-/PDF-Zusammenführungsalgorithmus ist unverändert.
