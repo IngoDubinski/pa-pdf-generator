@@ -64,3 +64,10 @@ Beim Zusammenfügen von Entwicklungsplänen (Klassendruck, mehrere Dokumente in 
 - **Upload-Beschriftungen:** „Kompetenzprofile“ und „Profilvergleiche“ ohne Abkürzung im Namen, jeweils mit dem Hinweis „Mehrere Einzel-PDFs oder Sammel-PDFs möglich“.
 - **Tests:** `node --test Tests/*.js` (13 Tests) sowie Browser-Dummytest ohne Seiten-Navigation: 7a, zwei Schüler = vierseitige editierbare EP-PDF; 7b, ein Schüler = zweiseitige EP-PDF; 7b-Klassendruck trotz Einzeldruck-Auswahl = vier Seiten.
 - Dateiausgabe und PA-Drucktool-Fachlogik bleiben unverändert. Schülerdaten bleiben vollständig im Browser.
+
+
+### Web v1.6.5 – 15.11.2026
+
+- Hauptnavigation bündelt Vorlagen, Anleitung, Quellcode, Schaubild, Projektideen und Tipp unter **Info/Hilfe** (mobil und Desktop). Die Gast-Landingpage bleibt ohne interne Navigation.
+- EP-Hinweis: Auch für nicht teilnehmende Schüler im Profil-AC-System Einmalcodes/Passwörter erstellen. Die laufende Excel-Nr. und Profil-AC-Schüler-ID müssen durchgehend übereinstimmen.
+- Die Erweiterung EP Web v0.2.4 (zusätzliche BO-Aktivitäten, Datumssortierung, Fortsetzungsseiten) und Nr.-Sortierung bleiben enthalten.

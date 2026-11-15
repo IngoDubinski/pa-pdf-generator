@@ -38,6 +38,6 @@ test('Einzeldruck bleibt optional und verwendet bestehende PDF- und Dokumentausw
  assert.match(app,/const targets=single\?S\.selected/);
  assert.match(app,/scan\(\(pct,msg\)=>epProgress\.update\(pct,msg\),targets\)/);
  assert.match(app,/if\(mode==='class'\|\|mode==='single'\)/);
- assert.match(app,/const chosen=\[\.\.\.selected\]\.sort/);
+ assert.match(app,/const chosen=S\.sortStudents\(selected,\$\('epSort'\)\.value\)/);
  assert.doesNotMatch(app,/window\.open\s*\(/);
 });

@@ -1,3 +1,9 @@
+## PA-Tools Web v1.6.5 / EP Generator Web v0.2.5 (15.11.2026)
+
+- Info/Hilfe als aufklappbares Menü (Vorlagen, Anleitung, Quellcode, Schaubild, Projektideen, Tipp) statt sechs einzelner Links.
+- Hinweise auf Einmalcodes/Passwörter auch für nicht teilnehmende Schüler; sichere ID-Zuordnung zu Excel.
+- Enthält die vorherige BO-Zusatzeinträge-Erweiterung v0.2.4 und die Nr.-Sortierung aus den Mini-Updates.
+
 # Änderungsübersicht
 
 ## v1.6.4 – 14.11.2026

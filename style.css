@@ -57,3 +57,21 @@ html[data-theme="dark"] .portal-status{background:#263a50;color:#f2f6ff}
 html[data-theme="dark"] .portal-status.portal-warning{background:#463b24;color:#fff0c4}
 html[data-theme="dark"] .tool-card .planned-note,html[data-theme="dark"] .access-note{color:#b3c7da}
 html[data-theme="dark"] .tool-card a.tool-link-disabled{background:#52647a;color:#f0f4fa}
+
+/* PA-Tools v1.6.5: Info/Hilfe statt sechs einzelner Navigationslinks */
+header nav{align-items:center;gap:10px 18px}
+header nav>a,header .nav-info-help>summary{color:#dcecff;text-decoration:none;font-size:1rem;padding:4px 0}
+header nav>a:hover,header .nav-info-help>summary:hover{text-decoration:underline}
+header .nav-info-help{position:relative;flex:0 0 auto;border:0;margin:0;padding:0}
+header .nav-info-help>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px}
+header .nav-info-help>summary::-webkit-details-marker{display:none}
+header .nav-info-help>summary:after{content:'▾';font-size:.76em}
+header .nav-info-help[open]>summary:after{content:'▴'}
+header .nav-info-help>summary:focus-visible,header .nav-info-help a:focus-visible{outline:2px solid #9ed1ff;outline-offset:4px}
+header .nav-info-links{position:absolute;top:calc(100% + 8px);right:0;z-index:30;min-width:220px;max-width:calc(100vw - 32px);padding:7px;background:#fff;color:#172e48;border:1px solid #a8bed4;border-radius:10px;box-shadow:0 12px 28px #0a203d48;display:flex;flex-direction:column;gap:2px}
+header .nav-info-links a,html[data-theme="dark"] header .nav-info-links a{display:block;color:#173d68;text-decoration:none;padding:9px 11px;border-radius:6px;white-space:nowrap}
+header .nav-info-links a:hover,header .nav-info-links a[aria-current="page"]{background:#e4f0ff}
+html[data-theme="dark"] header .nav-info-links{background:#24364a;color:#e5edf7;border-color:#6d839a}
+html[data-theme="dark"] header .nav-info-links a{color:#e7f1ff}
+html[data-theme="dark"] header .nav-info-links a:hover,html[data-theme="dark"] header .nav-info-links a[aria-current="page"]{background:#395572}
+@media(max-width:700px){header .nav-info-links{right:auto;left:0}}
