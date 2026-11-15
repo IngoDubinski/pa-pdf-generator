@@ -90,3 +90,11 @@ Projektidee (noch nicht umgesetzt): PDF-Kompatibilität mit Adobe Acrobat Reader
 - EP Generator Web jetzt v0.2.2; kein automatisch geöffnetes leeres Druckfenster mehr. PDF nach Abschluss als Download plus Button „PDF öffnen / drucken“.
 - Neue browserseitige Tests ohne Webzugriff: 8-seitige EP-Klassen-PDF, EP-ZIP (4 PDFs), PA-Einzeldruck-ZIP jeweils erfolgreich; alle ohne personenbezogene Echtdaten.
 - Node.js-Regressionstests für Fortschritt, Fehlzustand, PDF-Seiten- und Dokumentmeldungen ergänzt. Keine Änderung an der PDF-Formular-/Rasterkorrektur aus v1.6.2.
+
+## PA-Tools Web v1.6.6 / EP 2. Seite v0.1.0 (15.11.2026)
+
+- Platzhalter EP 2. Seite durch lokal arbeitenden Fortschreibungseditor ersetzt.
+- Einzel- und Ordner-PDF-Import, Klassenmodus oder freie klassenübergreifende Mehrfachauswahl, Pflichtfelder Datum/Titel, Ort Schule, Smiley, Notizen.
+- Sicherheitsregel: letzte belegte BO-Zeile bestimmen, ausschließlich in die *nächste* freie Zeile schreiben; keine früheren Lücken auffüllen, keine Originaldateien verändern.
+- ZIP- oder unterstützte Ordnerausgabe mit Kollisionsschutz; ausfüllbare Einzel-PDFs. Separater Sammeldruck für neue Einträge oder alle eingelesenen Dokumente.
+- Microsoft-Forms-/Excel-Import für spätere Version vorgesehen.

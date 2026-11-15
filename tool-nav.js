@@ -1,4 +1,4 @@
-/* PA-Tools v1.6.5: Hauptnavigation mit ausklappbarem Info/Hilfe-Menue.
+/* PA-Tools v1.6.6: Hauptnavigation mit ausklappbarem Info/Hilfe-Menue.
  * Github Pages bietet nur clientseitige Sichtbarkeitskontrolle, keinen echten Zugangsschutz.
  */
 (() => {
