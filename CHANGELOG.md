@@ -1,3 +1,9 @@
+## PA-Tools v1.6.7 / Antrag BE v0.1.0 (15.11.2026)
+
+- Admin-exklusives Werkzeug für Betriebserkundungen: Eingabemaske, Excel-Schülerauswahl, bearbeitbare DOCX/XLSX-Unterlagen, Original-Schulleitungsantrag, separate TN-Anlage, Gesamtdruck-PDF und Veranstaltung.json.
+- Alle Schülerdaten lokal im Browser; ZIP-Ausgabe je Veranstaltung; nicht automatisch in festen Windows-Ordner.
+- Microsoft Forms bleibt spätere Ausbaustufe; Praxistest noch offen. Siehe ANTRAG_BE_V010_ANLEITUNG.md.
+
 ## PA-Tools Web v1.6.5 / EP Generator Web v0.2.5 (15.11.2026)
 
 - Info/Hilfe als aufklappbares Menü (Vorlagen, Anleitung, Quellcode, Schaubild, Projektideen, Tipp) statt sechs einzelner Links.
