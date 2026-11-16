@@ -85,19 +85,22 @@ async function feedbackXlsx(d,students){
  put(top[3],'C',[d.field,d.jobs].filter(Boolean).join(' · '));
  const date=new Date(d.date+'T12:00:00Z');const serial=Math.floor((date.getTime()-Date.UTC(1899,11,30))/86400000);
  put(top[4],'C',serial);put(top[5],'C',d.company);
- const count=Math.max(6,students.length),delta=count-8;
- // Die beiden ursprünglichen Leerzeilen werden als Teil der Liste genutzt.
- const existing=rows.filter(r=>{const n=+r.getAttribute('r');return n>=7&&n<=14;});
- for(const r of existing)ss.removeChild(r);
+ // Mindestens die acht Vorlagenzeilen erhalten; danach lückenlos erweitern.
+ const count=Math.max(8,students.length),delta=count-8;
+ // Wichtig: Zuerst alle Folgezeilen verschieben, erst dann neue Teilnehmerzeilen einfügen.
+ // Sonst findet insertBefore bereits eingefügte Zeilen (>=15) und kehrt deren Reihenfolge um.
+ const tail=rows.filter(r=>+r.getAttribute('r')>=15);
+ for(const row of tail){const n=+row.getAttribute('r')+delta;row.setAttribute('r',String(n));for(const c of [...row.childNodes])if(c.localName==='c')c.setAttribute('r',c.getAttribute('r').replace(/\d+$/,n));}
+ for(const row of rows.filter(r=>{const n=+r.getAttribute('r');return n>=7&&n<=14;}))ss.removeChild(row);
+ const anchor=tail[0]||null;
  for(let i=0;i<count;i++){
-   const no=7+i, row=src.cloneNode(true);row.setAttribute('r',String(no));
-   for(const c of [...row.childNodes])if(c.localName==='c'){const col=c.getAttribute('r').replace(/\d+/g,'');c.setAttribute('r',col+no);}
+   const no=7+i,row=src.cloneNode(true);row.setAttribute('r',String(no));
+   for(const c of [...row.childNodes])if(c.localName==='c')c.setAttribute('r',c.getAttribute('r').replace(/\d+$/,no));
    const st=students[i],parts=st?nameParts(st.name):['',''];
    for(const [col,value] of [['A',st?i+1:''],['B',st?st.cls.toUpperCase():''],['C',parts[0]],['D',parts[1]],['E',''],['F',''],['G','J'],['H','K'],['I','L'],['J','']])put(row,col,value);
-   const before=[...ss.childNodes].find(e=>e.localName==='row'&&+e.getAttribute('r')>=15);ss.insertBefore(row,before||null);
+   ss.insertBefore(row,anchor);
  }
- for(const row of rows.filter(r=>+r.getAttribute('r')>=15)){const n=+row.getAttribute('r')+delta;row.setAttribute('r',String(n));for(const c of [...row.childNodes])if(c.localName==='c')c.setAttribute('r',c.getAttribute('r').replace(/\d+$/,n));}
- const dim=doc.getElementsByTagNameNS(ns,'dimension')[0];if(dim)dim.setAttribute('ref',`A1:J${14+count-6}`);
+ const dim=doc.getElementsByTagNameNS(ns,'dimension')[0];if(dim)dim.setAttribute('ref',`A1:J${16+delta}`);
  const sort=doc.getElementsByTagNameNS(ns,'sortState')[0];if(sort){sort.setAttribute('ref',`B7:D${6+count}`);for(const condition of [...sort.childNodes])if(condition.localName==='sortCondition'){const s=condition.getAttribute('ref');if(s)condition.setAttribute('ref',s.replace(/\d+$/,6+count));}}
  z.file(path,new XMLSerializer().serializeToString(doc));
  const tp='xl/tables/table1.xml';if(z.file(tp)){const td=new DOMParser().parseFromString(await z.file(tp).async('string'),'application/xml');const table=td.documentElement;table.setAttribute('ref',`A6:J${6+count}`);const af=[...table.childNodes].find(e=>e.localName==='autoFilter');if(af)af.setAttribute('ref',`A6:J${6+count}`);z.file(tp,new XMLSerializer().serializeToString(td));}

@@ -109,3 +109,7 @@ Projektidee (noch nicht umgesetzt): PDF-Kompatibilität mit Adobe Acrobat Reader
 - Antrag BE v0.1.2: EV-Rücklauf pro Teilnehmer, JSON-Sicherung und Wiederherstellung, einheitliche Feedback-Zeilen und Korrektur des Seitenumbruchs der TN-Anlage.
 - EP-Generator: optionaler aktualisierter Zieltext und ausführliche Beschriftungen für Kompetenzprofile und Profilvergleiche.
 - Gemeinsame aktuelle Excel-Testliste 7a–8c: direkt laden oder herunterladen in PA-Drucktool, EP-Generator und Antrag BE.
+
+## v1.6.10 – Antrag BE v0.1.3 (16.11.2026)
+- Feedback-Excel: Fehler bei mehr als acht ausgewählten Schülern behoben. Vor dem Einfügen werden Folgezeilen verschoben; die Teilnehmerzeilen werden anschließend in aufsteigender Reihenfolge und ohne doppelte Zelladressen eingefügt.
+- Bestehende Originalvorlage und ihre Formatierung bleiben erhalten.
