@@ -1,3 +1,10 @@
+## v1.6.12 (16.11.2026)
+
+- Antrag BE v0.1.5: Auswahl- und EV-Zähler über der Klassen-/Schülerauswahl.
+- Nur Kerndaten direkt in der Veranstaltungsmaske; übrige Felder unter „Weitere Angaben (optional)“.
+- Antragsdatum immer automatisch heutiges lokales Datum zum Zeitpunkt der DOCX-Erstellung; ältere JSON-Antragsdaten werden ignoriert.
+- Originalvorlage, Feedback-XLSX, Teilnehmeranlage und übrige Werkzeuge unverändert.
+
 ## v1.6.11 (16.11.2026)
 
 - Antrag BE v0.1.4 mit aktueller fünfseitiger Schulfahrtvorlage, separater TN-Anlage, einheitlichen Kleinbuchstabenklassen und zweistufiger Sortierung.

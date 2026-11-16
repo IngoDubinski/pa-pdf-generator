@@ -4,3 +4,5 @@
 .be-students label{min-width:0}
 .be-students label>span{overflow-wrap:anywhere}
 .be-students label input[type=checkbox]{width:17px;height:17px;vertical-align:middle}
+
+.be-more{margin:14px 0;border:1px solid #aab5c577;border-radius:8px;padding:12px}.be-more summary{font-weight:700;cursor:pointer}.be-more[open] summary{margin-bottom:12px}.be-counter{display:flex;gap:5px;flex-wrap:wrap;flex-direction:column;margin:14px 0 6px;padding:12px;border:1px solid #aab5c577;border-radius:8px;background:var(--panel,#fff)}

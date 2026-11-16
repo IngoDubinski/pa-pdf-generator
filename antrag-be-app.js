@@ -2,7 +2,7 @@
 (()=>{
 const $=id=>document.getElementById(id), Z=window.JSZip, P=window.PDFLib;
 let roster=[],selected=new Set(),evReceived=new Set(),pendingSaved=null,printUrl='',busy=false;
-const FIELDS=['company','date','address','from','to','meeting','meettime','returnPlace','returnTime','deadline','evdeadline','field','jobs','capacity','transport','leader','companions','signup','hints','program','remarks','applicationDate','eventType','departureDate','returnDate','pedagogical','risk','studentCost','daysTotal','daysUsed','daysRequested','daysRemaining','nonParticipants','leaderFullName','leaderRole','leaderAddress','replacement','travelCosts','weekends'];
+const FIELDS=['company','date','address','from','to','meeting','meettime','returnPlace','returnTime','deadline','evdeadline','field','jobs','capacity','transport','leader','companions','signup','hints','program','remarks','eventType','departureDate','returnDate','pedagogical','risk','studentCost','daysTotal','daysUsed','daysRequested','daysRemaining','nonParticipants','leaderFullName','leaderRole','leaderAddress','replacement','travelCosts','weekends'];
 const val=id=>$(id).value.trim(), data=()=>Object.fromEntries(FIELDS.map(x=>[x,val(x)]));
 const esc=x=>String(x??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;');
 const clean=x=>String(x||'').replace(/[\\/:*?"<>|\x00-\x1f]/g,'_').trim().slice(0,95)||'Unbekannt';
@@ -57,7 +57,7 @@ async function schoolDoc(d,students){
  if(ps.length<240||!ps[9].textContent.includes('Antrag auf Genehmigung'))throw Error('Unerwartete Formularfassung – keine Daten geändert.');
  function pText(i,t){const p=ps[i];if(!p)throw Error('Formularfeld '+i+' fehlt.');let ts=[...p.getElementsByTagNameNS(W,'t')];if(!ts.length){let run=[...p.childNodes].find(n=>n.localName==='r');if(!run){run=doc.createElementNS(W,'w:r');p.append(run);}const node=doc.createElementNS(W,'w:t');run.append(node);ts=[node];}ts[0].textContent=String(t??'');ts[0].setAttribute('xml:space','preserve');for(const x of ts.slice(1))x.textContent='';}
  function shortDate(v){return /^\d{4}-\d\d-\d\d$/.test(v||'')?v.slice(8)+'.'+v.slice(5,7)+'.'+v.slice(0,4):'';}
- const today=new Date().toISOString().slice(0,10),submission=shortDate(d.applicationDate||today),date=shortDate(d.date);
+ const now=new Date(),today=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`,submission=shortDate(today),date=shortDate(d.date);
  const classes=[...new Set(students.map(s=>normClass(s.cls)))].sort((a,b)=>a.localeCompare(b,'de',{numeric:true}));
  // Auflage vom Januar 2025: nur bekannte Eingabefelder beschriften, kein fiktives Geschlecht/Volljährigkeit.
  const pmap={
