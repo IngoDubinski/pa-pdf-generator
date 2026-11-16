@@ -1,3 +1,7 @@
+## v1.6.11 (16.11.2026)
+
+- Antrag BE v0.1.4 mit aktueller fünfseitiger Schulfahrtvorlage, separater TN-Anlage, einheitlichen Kleinbuchstabenklassen und zweistufiger Sortierung.
+
 ## PA-Tools v1.6.7 / Antrag BE v0.1.0 (15.11.2026)
 
 - Admin-exklusives Werkzeug für Betriebserkundungen: Eingabemaske, Excel-Schülerauswahl, bearbeitbare DOCX/XLSX-Unterlagen, Original-Schulleitungsantrag, separate TN-Anlage, Gesamtdruck-PDF und Veranstaltung.json.

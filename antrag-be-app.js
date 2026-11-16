@@ -2,14 +2,17 @@
 (()=>{
 const $=id=>document.getElementById(id), Z=window.JSZip, P=window.PDFLib;
 let roster=[],selected=new Set(),evReceived=new Set(),pendingSaved=null,printUrl='',busy=false;
-const FIELDS=['company','date','address','from','to','meeting','meettime','returnPlace','returnTime','deadline','evdeadline','field','jobs','capacity','transport','leader','companions','signup','hints','program','remarks'];
+const FIELDS=['company','date','address','from','to','meeting','meettime','returnPlace','returnTime','deadline','evdeadline','field','jobs','capacity','transport','leader','companions','signup','hints','program','remarks','applicationDate','eventType','departureDate','returnDate','pedagogical','risk','studentCost','daysTotal','daysUsed','daysRequested','daysRemaining','nonParticipants','leaderFullName','leaderRole','leaderAddress','replacement','travelCosts','weekends'];
 const val=id=>$(id).value.trim(), data=()=>Object.fromEntries(FIELDS.map(x=>[x,val(x)]));
 const esc=x=>String(x??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;');
 const clean=x=>String(x||'').replace(/[\\/:*?"<>|\x00-\x1f]/g,'_').trim().slice(0,95)||'Unbekannt';
 const fmt=x=>{if(!/^\d{4}-\d\d-\d\d$/.test(x||''))return '';const [y,m,d]=x.split('-');const dt=new Date(`${x}T12:00:00Z`);return `${d}.${m}.${y} (${['So','Mo','Di','Mi','Do','Fr','Sa'][dt.getUTCDay()]})`;};
 const compact=x=>{const bits=String(x||'').split(/[,;\n]/).map(x=>x.trim()).filter(Boolean);return bits;};
-function got(){return roster.filter((x,i)=>selected.has(i));}
-const studentKey=st=>st.cls.toLowerCase()+'|'+st.name.trim().toLocaleLowerCase('de');
+function normClass(x){return String(x||'').trim().replace(/^([0-9]+)([a-z])$/i,(_,n,l)=>n+l.toLowerCase());}
+function getNameParts(name){const a=String(name||'').trim().split(/\s+/).filter(Boolean);return a.length<2?['',a[0]||'']:[a.slice(0,-1).join(' '),a.at(-1)];}
+function compareStudents(a,b){const cs=normClass(a.cls).localeCompare(normClass(b.cls),'de',{numeric:true,sensitivity:'base'});if(cs)return cs;const an=getNameParts(a.name),bn=getNameParts(b.name);return an[1].localeCompare(bn[1],'de',{sensitivity:'base'})||an[0].localeCompare(bn[0],'de',{sensitivity:'base'});}
+function got(){return roster.filter((x,i)=>selected.has(i)).sort(compareStudents).map(x=>({...x,cls:normClass(x.cls)}));}
+const studentKey=st=>normClass(st.cls)+'|'+st.name.trim().toLocaleLowerCase('de');
 function selectedStatus(){const n=selected.size,c=+val('capacity');$('selection').textContent=`${n} Schüler ausgewählt${c?' · '+Math.max(0,c-n)+' von '+c+' Plätzen frei':''}${c&&n>c?' · ACHTUNG: Kapazität überschritten':''}`;
  const received=[...selected].filter(i=>evReceived.has(i)).length;
  $('evSummary').textContent=`Einverständniserklärungen erhalten: ${received} von ${n} · Offen: ${n-received}`;
@@ -24,10 +27,10 @@ function render(){const filter=val('classFilter'),q=val('search').toLowerCase(),
  const head=document.createElement('div');head.style.cssText='display:grid;grid-template-columns:minmax(150px,1fr) 95px;gap:12px;padding:7px 6px;font-weight:700';head.innerHTML='<span>Teilnahme</span><span>EV erhalten</span>';target.append(head);
  roster.forEach((st,i)=>{if(filter&&st.cls!==filter||q&&!st.name.toLowerCase().includes(q))return;visible++;
  const label=document.createElement('label');label.style.cssText='display:grid;grid-template-columns:minmax(150px,1fr) 95px;gap:12px;align-items:center';
- const first=document.createElement('span'),cb=document.createElement('input');cb.type='checkbox';cb.checked=selected.has(i);cb.onchange=()=>{cb.checked?selected.add(i):selected.delete(i);selectedStatus();};first.append(cb,document.createTextNode(' '+st.cls.toUpperCase()+' · '+st.name));
+ const first=document.createElement('span'),cb=document.createElement('input');cb.type='checkbox';cb.checked=selected.has(i);cb.onchange=()=>{cb.checked?selected.add(i):selected.delete(i);selectedStatus();};first.append(cb,document.createTextNode(' '+normClass(st.cls)+' · '+st.name));
  const ev=document.createElement('input');ev.type='checkbox';ev.title='Unterschriebene Einverständniserklärung liegt vor';ev.setAttribute('aria-label','Einverständniserklärung erhalten: '+st.name);ev.checked=evReceived.has(i);ev.onchange=()=>{ev.checked?evReceived.add(i):evReceived.delete(i);selectedStatus();};
  label.append(first,ev);target.append(label);});if(!visible)target.textContent='Keine passenden Schüler.';selectedStatus();}
-$('excel').addEventListener('change',async()=>{const file=$('excel').files[0];if(!file)return;try{const r=await EPCore.excel(file);roster=r.students;selected.clear();evReceived.clear();applySaved();const classes=[...new Set(roster.map(x=>x.cls))].sort();$('classFilter').replaceChildren(new Option('Alle Klassen',''),...classes.map(x=>new Option(x.toUpperCase(),x)));$('excelStatus').textContent=`${roster.length} Schüler aus ${classes.length} Klassen. `+(r.warnings.length?r.warnings.slice(0,3).join(' · '):'');render();}catch(e){roster=[];selected.clear();evReceived.clear();render();$('excelStatus').textContent='Importfehler: '+e.message;}});
+$('excel').addEventListener('change',async()=>{const file=$('excel').files[0];if(!file)return;try{const r=await EPCore.excel(file);roster=r.students.map(x=>({...x,cls:normClass(x.cls)})).sort(compareStudents);selected.clear();evReceived.clear();applySaved();const classes=[...new Set(roster.map(x=>x.cls))].sort();$('classFilter').replaceChildren(new Option('Alle Klassen',''),...classes.map(x=>new Option(x,x)));$('excelStatus').textContent=`${roster.length} Schüler aus ${classes.length} Klassen. `+(r.warnings.length?r.warnings.slice(0,3).join(' · '):'');render();}catch(e){roster=[];selected.clear();evReceived.clear();render();$('excelStatus').textContent='Importfehler: '+e.message;}});
 $('classFilter').onchange=render;$('search').oninput=render;
 for(const [id,on] of [['all',true],['none',false]])$(id).onclick=()=>{const f=val('classFilter'),q=val('search').toLowerCase();roster.forEach((s,i)=>{if((!f||s.cls===f)&&(!q||s.name.toLowerCase().includes(q)))on?selected.add(i):selected.delete(i);});render();};
 function download(content,name,type='application/octet-stream'){const u=URL.createObjectURL(new Blob([content],{type}));const a=document.createElement('a');a.href=u;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000);}
@@ -43,25 +46,68 @@ function setCell(tc,text){if(!tc)return;const ts=[...tc.getElementsByTagNameNS('
 function tableCells(row){return [...row.childNodes].filter(e=>e.localName==='tc');}
 function setAt(table,ri,ci,text){const rows=[...table.childNodes].filter(x=>x.localName==='tr'),cells=tableCells(rows[ri]);if(!cells[ci])throw Error('Die Exkursionsantrag-Vorlage hat eine unerwartete Tabellenstruktur.');setCell(cells[ci],text);}
 function desc(d){return `Betriebserkundung ${d.company}`;}
-async function schoolDoc(d,students){const response=await fetch('Vorlagen/BE/Exkursionsantrag_Original.docx');if(!response.ok)throw Error('Originalvorlage Exkursionsantrag fehlt.');const zip=await Z.loadAsync(await response.arrayBuffer());const doc=new DOMParser().parseFromString(await zip.file('word/document.xml').async('string'),'application/xml');if(doc.querySelector('parsererror'))throw Error('Vorlage ist kein gültiges Word-XML.');const tables=[...doc.getElementsByTagNameNS('*','tbl')];if(tables.length<2)throw Error('Exkursionsantrag: Tabellen nicht gefunden.');const t=tables[0],g=tables[tables.length-1],adult=1+compact(d.companions).length,classes=[...new Set(students.map(x=>x.cls.toUpperCase()))].join(', ')||'keine Teilnehmer';const cl=`Interessierte Schüler aus Klassen ${classes} (siehe TN-Liste)`;
- for(const [row,col,value] of [[0,1,cl],[1,1,desc(d)],[2,1,fmt(d.date)],[3,1,d.leader],[4,1,`Gesamt: ${students.length+adult}`],[4,2,`Kinder: ${students.length}`],[4,3,`Erwachsene: ${adult}`],[5,1,[d.leader,d.companions].filter(Boolean).join(', ')],[6,1,d.transport]])setAt(t,row,col,value);
- for(const [row,col,value] of [[0,1,cl],[1,1,desc(d)],[2,1,fmt(d.date)],[3,1,d.leader]])setAt(g,row,col,value);
- setAt(t,12,0,`Datum ${fmt(new Date().toISOString().slice(0,10))}`);
- // Word-Datumsfeld vollständig entfernen, damit Word nicht zusätzlich seinen alten Feldwert anzeigt.
- const dateCell=tableCells([...t.childNodes].filter(x=>x.localName==='tr')[12])[0];
- for(const run of [...dateCell.getElementsByTagNameNS('*','r')])if(run.getElementsByTagNameNS('*','fldChar').length||run.getElementsByTagNameNS('*','instrText').length)run.remove();
- // Die beiden Tabellenzellen für Treff und Ende enthalten verschachtelte Ort/Uhrzeit-Tabellen.
- const rows=[...t.childNodes].filter(e=>e.localName==='tr');const travel=[[7,d.meeting,d.meettime],[8,d.returnPlace,d.returnTime]];
- for(const [i,place,time] of travel){const cells=tableCells(rows[i]),nested=cells[1]?.getElementsByTagNameNS('*','tbl')[0];if(!nested)continue;const nr=[...nested.childNodes].filter(x=>x.localName==='tr');if(nr.length>=2){setCell(tableCells(nr[0]).at(-1),place);setCell(tableCells(nr[1]).at(-1),time?time+' Uhr':'');}}
- // Hinweis bleibt im Antrag, Unterschriften/Genehmigung werden nie vorausgefüllt.
- if(d.remarks){const note=tableCells(rows[9])[1];if(note)setCell(note,d.remarks);}
- // Original-Antrag bewahren; die Schülerliste als zweite Seite im gleichen bearbeitbaren DOCX anhängen.
- const body=doc.getElementsByTagNameNS('*','body')[0],sect=[...body.childNodes].find(x=>x.localName==='sectPr');
- for(const node of [...body.childNodes].reverse()){if(node.localName==='sectPr')continue;if(node.localName!=='p')break;const txt=[...node.getElementsByTagNameNS('*','t')].map(t=>t.textContent).join('').trim();if(txt)break;body.removeChild(node);}
- const appendix=`<w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:pPr><w:pageBreakBefore/></w:pPr><w:r><w:rPr><w:b/></w:rPr><w:t>Anlage zum Exkursionsantrag – Teilnehmerliste</w:t></w:r></w:p>${wP('Betriebserkundung: '+d.company+' · '+fmt(d.date))}${wP('Teilnehmende Schülerinnen und Schüler: '+students.length)}${wTable([['Nr.','Klasse','Vorname','Nachname'],...students.map((s,i)=>[String(i+1),s.cls.toUpperCase(),...nameParts(s.name)])])}`;
- const parsed=new DOMParser().parseFromString(`<root xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">${appendix}</root>`,'application/xml');if(parsed.querySelector('parsererror'))throw Error('Anlage konnte nicht erstellt werden.');
- for(const node of [...parsed.documentElement.childNodes])body.insertBefore(doc.importNode(node,true),sect||null);
- zip.file('word/document.xml',new XMLSerializer().serializeToString(doc));return zip.generateAsync({type:'uint8array'});}
+async function schoolDoc(d,students){
+ const response=await fetch('Vorlagen/BE/Antrag_Schulleitung_Original_2026.docx');
+ if(!response.ok)throw Error('Die neue Originalvorlage für den Schulleitungsantrag fehlt.');
+ const zip=await Z.loadAsync(await response.arrayBuffer()),file=zip.file('word/document.xml');
+ if(!file)throw Error('Word-Vorlage ohne Dokumentinhalt.');
+ const doc=new DOMParser().parseFromString(await file.async('string'),'application/xml');
+ if(doc.querySelector('parsererror'))throw Error('Word-Vorlage ist nicht lesbar.');
+ const ps=[...doc.getElementsByTagNameNS('*','p')],W='http://schemas.openxmlformats.org/wordprocessingml/2006/main';
+ if(ps.length<240||!ps[9].textContent.includes('Antrag auf Genehmigung'))throw Error('Unerwartete Formularfassung – keine Daten geändert.');
+ function pText(i,t){const p=ps[i];if(!p)throw Error('Formularfeld '+i+' fehlt.');let ts=[...p.getElementsByTagNameNS(W,'t')];if(!ts.length){let run=[...p.childNodes].find(n=>n.localName==='r');if(!run){run=doc.createElementNS(W,'w:r');p.append(run);}const node=doc.createElementNS(W,'w:t');run.append(node);ts=[node];}ts[0].textContent=String(t??'');ts[0].setAttribute('xml:space','preserve');for(const x of ts.slice(1))x.textContent='';}
+ function shortDate(v){return /^\d{4}-\d\d-\d\d$/.test(v||'')?v.slice(8)+'.'+v.slice(5,7)+'.'+v.slice(0,4):'';}
+ const today=new Date().toISOString().slice(0,10),submission=shortDate(d.applicationDate||today),date=shortDate(d.date);
+ const classes=[...new Set(students.map(s=>normClass(s.cls)))].sort((a,b)=>a.localeCompare(b,'de',{numeric:true}));
+ // Auflage vom Januar 2025: nur bekannte Eingabefelder beschriften, kein fiktives Geschlecht/Volljährigkeit.
+ const pmap={
+  1:'Dresden, '+submission,
+  16:date, 20:[d.company,d.address].filter(Boolean).join(' – '),
+  24:'Interessierte Schüler aus '+(classes.length===1?'Klasse ':'Klassen ')+classes.join(', ')+' (siehe Teilnehmeranlage)',
+  27:String(students.length),
+  39:d.nonParticipants||'',
+  44:d.daysTotal||'',47:d.daysUsed||'',49:d.daysRequested||'',52:d.daysRemaining||'',
+  73:shortDate(d.departureDate||d.date).slice(0,6),75:d.meettime||d.from,78:d.meeting||'Schuleingang',
+  80:shortDate(d.returnDate||d.date).slice(0,6),82:d.returnTime||d.to,85:d.returnPlace||'',
+  92:d.pedagogical||'Kennenlernen von Berufsfeldern und Ausbildungsberufen durch eine Betriebserkundung',
+  103:d.studentCost!==''?d.studentCost:'',
+  117:d.leaderFullName||d.leader||'',122:d.leaderRole||'Praxisberater',128:d.leaderAddress||'',
+  118:compact(d.companions)[0]||'',119:compact(d.companions)[1]||'',120:d.replacement||'',
+  193:submission,
+  // Unterschrifts-/Genehmigungsdatum der Schulleitung wird bewusst freigelassen.
+  226:'Dresden, '
+ };
+ for(const [i,value] of Object.entries(pmap))pText(+i,value);
+ // Kontrollkästchen der amtlichen Word-Vorlage als echte Formularfelder erhalten.
+ function check(i,on){const cb=ps[i].getElementsByTagNameNS(W,'checkBox')[0];if(!cb)return;let state=cb.getElementsByTagNameNS(W,'checked')[0];if(!state){state=doc.createElementNS(W,'w:checked');cb.append(state);}state.setAttributeNS(W,'w:val',on?'1':'0');}
+ const et=d.eventType||'Bildungsveranstaltung';check(11,et==='Schulwanderung');check(12,et==='Bildungsveranstaltung');check(13,et==='Schullandheimaufenthalt');
+ const tr=(d.transport||'').toLowerCase();check(62,/bus|öpnv|oepnv/.test(tr));check(63,/bahn|zug|s-bahn|tram|straßenbahn/.test(tr));check(64,/fuß|fuss|auto|taxi|sonstig/.test(tr));
+ check(95,d.risk!=='Ja');check(96,d.risk==='Ja');
+ // Elterneinverständnis erst nach vollständigem Rücklauf als pauschal vorhanden markieren.
+ check(98,students.length>0&&students.every(s=>{const i=roster.findIndex(r=>studentKey(r)===studentKey(s));return i>=0&&evReceived.has(i);}));
+ // Die ausgefüllten Demonstrationswerte der alten Vorlage dürfen nicht übernommen werden.
+ for(const i of [31,33,35,37])pText(i,'');
+ // Formular-Checkboxen werden bewusst nicht automatisch gesetzt: je nach Veranstaltung prüfen.
+ // Kostenfelder nur füllen, wenn ausdrücklich angegeben; ansonsten leer lassen.
+ if(d.travelCosts){const prices=String(d.travelCosts).split(/[;\n]/).map(x=>x.trim());[151,156,161,166,171].forEach((i,k)=>{if(prices[k])pText(i,prices[k]+' €');});}
+ if(d.remarks)pText(191,d.remarks);
+ // Vorhandene Namen/Adressen der Demonstrations-Begleitpersonen entfernen.
+ for(const i of [123,124,125,129,130,131])pText(i,'');
+ zip.file('word/document.xml',new XMLSerializer().serializeToString(doc));
+ return zip.generateAsync({type:'uint8array'});
+}
+function appendixDoc(d,students){
+ return docx('Teilnehmeranlage zum Schulleitungsantrag',[
+  'Betriebserkundung: '+d.company,
+  'Datum: '+fmt(d.date)+' · Veranstaltungszeit: '+[d.from,d.to].filter(Boolean).join('–')+' Uhr',
+  'Ort: '+[d.company,d.address].filter(Boolean).join(', '),
+  'Treffpunkt / Abfahrt: '+(d.meeting||'')+' '+(d.meettime||'')+' Uhr',
+  'Rückkehr / Entlassung: '+(d.returnPlace||'')+' '+(d.returnTime||'')+' Uhr',
+  'Verantwortlich: '+(d.leaderFullName||d.leader||''),
+  'Teilnehmende Schülerinnen und Schüler: '+students.length
+ ],[[['Nr.','Klasse','Vorname','Nachname'],...students.map((s,i)=>[String(i+1),normClass(s.cls),...nameParts(s.name)])]]);
+}
+
 const full=d=>`${fmt(d.date)}, ${d.from}–${d.to} Uhr`;
 function pdfLines(text,size,font,width){const parts=String(text||'').split(/\n/),lines=[];for(const para of parts){let line='';for(const word of (para.split(/\s+/).filter(Boolean))){const test=line?line+' '+word:word;if(font.widthOfTextAtSize(test,size)>width&&line){lines.push(line);line=word;}else line=test;}lines.push(line);}return lines;}
 async function printPDF(documents){const pdf=await P.PDFDocument.create(),regular=await pdf.embedFont(P.StandardFonts.Helvetica),bold=await pdf.embedFont(P.StandardFonts.HelveticaBold),W=595,H=842;
@@ -97,7 +143,7 @@ async function feedbackXlsx(d,students){
    const no=7+i,row=src.cloneNode(true);row.setAttribute('r',String(no));
    for(const c of [...row.childNodes])if(c.localName==='c')c.setAttribute('r',c.getAttribute('r').replace(/\d+$/,no));
    const st=students[i],parts=st?nameParts(st.name):['',''];
-   for(const [col,value] of [['A',st?i+1:''],['B',st?st.cls.toUpperCase():''],['C',parts[0]],['D',parts[1]],['E',''],['F',''],['G','J'],['H','K'],['I','L'],['J','']])put(row,col,value);
+   for(const [col,value] of [['A',st?i+1:''],['B',st?normClass(st.cls):''],['C',parts[0]],['D',parts[1]],['E',''],['F',''],['G','J'],['H','K'],['I','L'],['J','']])put(row,col,value);
    ss.insertBefore(row,anchor);
  }
  const dim=doc.getElementsByTagNameNS(ns,'dimension')[0];if(dim)dim.setAttribute('ref',`A1:J${16+delta}`);
@@ -116,12 +162,12 @@ async function generate(){if(busy)return;
  busy=true;$('generate').disabled=true;$('status').textContent='Originalvorlagen werden lokal mit den gewählten Angaben ausgefüllt …';
  try{
  const zip=new Z(),folder=`BE ${clean(d.company)} ${d.date.slice(0,4)}/`;
- if(chosen.has('antrag'))zip.file(folder+'01 Exkursionsantrag mit TN-Anlage.docx',await schoolDoc(d,students));
- if(chosen.has('feedback'))zip.file(folder+'02 TN-Liste mit Feedback.xlsx',await feedbackXlsx(d,students));
+ if(chosen.has('antrag')){zip.file(folder+'01 Antrag Schulleitung.docx',await schoolDoc(d,students));zip.file(folder+'02 Teilnehmeranlage.docx',await appendixDoc(d,students));}
+ if(chosen.has('feedback'))zip.file(folder+'03 TN-Liste mit Feedback.xlsx',await feedbackXlsx(d,students));
  zip.file(folder+'Veranstaltung.json',JSON.stringify({version:2,event:d,selected:[...selected].map(i=>studentKey(roster[i])),evReceived:[...evReceived].map(i=>studentKey(roster[i]))},null,2));
- zip.file(folder+'BITTE LESEN.txt','Bearbeitbare Originalvorlagen: Exkursionsantrag (Word) mit TN-Anlage und Feedbackliste (Excel).\nDruck: Originale in Word/LibreOffice beziehungsweise Excel öffnen, vor dem Ausdruck prüfen und dort ausdrucken.\nBeim Antrag Duplexdruck aktivieren; die TN-Anlage beginnt auf einer neuen Seite.\nEine originalgetreue Sammeldruck-PDF ist in dieser Version bewusst nicht enthalten.\n');
+ zip.file(folder+'BITTE LESEN.txt','Bearbeitbare Originalvorlagen: fünfseitiger Schulleitungsantrag (Word), Teilnehmeranlage (Word) und Feedbackliste (Excel).\nDruck: Originale in Word/LibreOffice beziehungsweise Excel öffnen, vor dem Ausdruck prüfen und dort ausdrucken.\nSchulleitungsantrag 5 Seiten: Duplexdruck beachten. Die separate Teilnehmeranlage kann direkt angehängt werden.\nEine originalgetreue Sammeldruck-PDF ist in dieser Version bewusst nicht enthalten.\n');
  const blob=await zip.generateAsync({type:'blob'});download(blob,clean(`BE ${d.company} ${d.date.slice(0,4)}`)+'.zip','application/zip');
- $('status').textContent=`Fertig: ${students.length} Schüler. Original-Word-Antrag inklusive TN-Anlage und Original-Excel-Feedbackliste sind im ZIP. Beide Dateien bleiben bearbeitbar. Bitte Druckbild vor Nutzung prüfen.`;
+ $('status').textContent=`Fertig: ${students.length} Schüler. fünfseitiger Original-Word-Antrag, separate Teilnehmeranlage und Original-Excel-Feedbackliste sind im ZIP. Beide Dateien bleiben bearbeitbar. Bitte Druckbild vor Nutzung prüfen.`;
  }catch(e){console.error(e);$('status').textContent='Erstellung fehlgeschlagen: '+e.message;}finally{busy=false;$('generate').disabled=false;}
 }
 $('generate').onclick=generate;
