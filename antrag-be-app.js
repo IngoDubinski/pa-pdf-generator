@@ -1,7 +1,7 @@
 'use strict';
 (()=>{
 const $=id=>document.getElementById(id), Z=window.JSZip, P=window.PDFLib;
-let roster=[],selected=new Set(),printUrl='',busy=false;
+let roster=[],selected=new Set(),evReceived=new Set(),pendingSaved=null,printUrl='',busy=false;
 const FIELDS=['company','date','address','from','to','meeting','meettime','returnPlace','returnTime','deadline','evdeadline','field','jobs','capacity','transport','leader','companions','signup','hints','program','remarks'];
 const val=id=>$(id).value.trim(), data=()=>Object.fromEntries(FIELDS.map(x=>[x,val(x)]));
 const esc=x=>String(x??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;');
@@ -9,15 +9,32 @@ const clean=x=>String(x||'').replace(/[\\/:*?"<>|\x00-\x1f]/g,'_').trim().slice(
 const fmt=x=>{if(!/^\d{4}-\d\d-\d\d$/.test(x||''))return '';const [y,m,d]=x.split('-');const dt=new Date(`${x}T12:00:00Z`);return `${d}.${m}.${y} (${['So','Mo','Di','Mi','Do','Fr','Sa'][dt.getUTCDay()]})`;};
 const compact=x=>{const bits=String(x||'').split(/[,;\n]/).map(x=>x.trim()).filter(Boolean);return bits;};
 function got(){return roster.filter((x,i)=>selected.has(i));}
-function selectedStatus(){const n=selected.size,c=+val('capacity');$('selection').textContent=`${n} Schüler ausgewählt${c?' · '+Math.max(0,c-n)+' von '+c+' Plätzen frei':''}${c&&n>c?' · ACHTUNG: Kapazität überschritten':''}`;}
+const studentKey=st=>st.cls.toLowerCase()+'|'+st.name.trim().toLocaleLowerCase('de');
+function selectedStatus(){const n=selected.size,c=+val('capacity');$('selection').textContent=`${n} Schüler ausgewählt${c?' · '+Math.max(0,c-n)+' von '+c+' Plätzen frei':''}${c&&n>c?' · ACHTUNG: Kapazität überschritten':''}`;
+ const received=[...selected].filter(i=>evReceived.has(i)).length;
+ $('evSummary').textContent=`Einverständniserklärungen erhalten: ${received} von ${n} · Offen: ${n-received}`;
+}
+function applySaved(){if(!pendingSaved||!roster.length)return;
+ selected.clear();evReceived.clear();const selectedKeys=new Set(pendingSaved.selected||[]),receivedKeys=new Set(pendingSaved.evReceived||[]);
+ roster.forEach((st,i)=>{const k=studentKey(st);if(selectedKeys.has(k))selected.add(i);if(receivedKeys.has(k))evReceived.add(i);});
+ $('status').textContent=`Veranstaltung geladen: ${selected.size} zugeordnete Teilnehmer, ${evReceived.size} EV-Häkchen. Bitte Schülerliste prüfen.`;
+ pendingSaved=null;
+}
 function render(){const filter=val('classFilter'),q=val('search').toLowerCase(),target=$('students');target.replaceChildren();let visible=0;
- roster.forEach((st,i)=>{if(filter&&st.cls!==filter||q&&!st.name.toLowerCase().includes(q))return;visible++;const label=document.createElement('label'),cb=document.createElement('input');cb.type='checkbox';cb.checked=selected.has(i);cb.onchange=()=>{cb.checked?selected.add(i):selected.delete(i);selectedStatus();};label.append(cb,document.createTextNode(' '+st.cls.toUpperCase()+' · '+st.name));target.append(label);});if(!visible)target.textContent='Keine passenden Schüler.';selectedStatus();}
-$('excel').addEventListener('change',async()=>{const file=$('excel').files[0];if(!file)return;try{const r=await EPCore.excel(file);roster=r.students;selected.clear();const classes=[...new Set(roster.map(x=>x.cls))].sort();$('classFilter').replaceChildren(new Option('Alle Klassen',''),...classes.map(x=>new Option(x.toUpperCase(),x)));$('excelStatus').textContent=`${roster.length} Schüler aus ${classes.length} Klassen. `+(r.warnings.length?r.warnings.slice(0,3).join(' · '):'');render();}catch(e){roster=[];selected.clear();render();$('excelStatus').textContent='Importfehler: '+e.message;}});
+ const head=document.createElement('div');head.style.cssText='display:grid;grid-template-columns:minmax(150px,1fr) 95px;gap:12px;padding:7px 6px;font-weight:700';head.innerHTML='<span>Teilnahme</span><span>EV erhalten</span>';target.append(head);
+ roster.forEach((st,i)=>{if(filter&&st.cls!==filter||q&&!st.name.toLowerCase().includes(q))return;visible++;
+ const label=document.createElement('label');label.style.cssText='display:grid;grid-template-columns:minmax(150px,1fr) 95px;gap:12px;align-items:center';
+ const first=document.createElement('span'),cb=document.createElement('input');cb.type='checkbox';cb.checked=selected.has(i);cb.onchange=()=>{cb.checked?selected.add(i):selected.delete(i);selectedStatus();};first.append(cb,document.createTextNode(' '+st.cls.toUpperCase()+' · '+st.name));
+ const ev=document.createElement('input');ev.type='checkbox';ev.title='Unterschriebene Einverständniserklärung liegt vor';ev.setAttribute('aria-label','Einverständniserklärung erhalten: '+st.name);ev.checked=evReceived.has(i);ev.onchange=()=>{ev.checked?evReceived.add(i):evReceived.delete(i);selectedStatus();};
+ label.append(first,ev);target.append(label);});if(!visible)target.textContent='Keine passenden Schüler.';selectedStatus();}
+$('excel').addEventListener('change',async()=>{const file=$('excel').files[0];if(!file)return;try{const r=await EPCore.excel(file);roster=r.students;selected.clear();evReceived.clear();applySaved();const classes=[...new Set(roster.map(x=>x.cls))].sort();$('classFilter').replaceChildren(new Option('Alle Klassen',''),...classes.map(x=>new Option(x.toUpperCase(),x)));$('excelStatus').textContent=`${roster.length} Schüler aus ${classes.length} Klassen. `+(r.warnings.length?r.warnings.slice(0,3).join(' · '):'');render();}catch(e){roster=[];selected.clear();evReceived.clear();render();$('excelStatus').textContent='Importfehler: '+e.message;}});
 $('classFilter').onchange=render;$('search').oninput=render;
 for(const [id,on] of [['all',true],['none',false]])$(id).onclick=()=>{const f=val('classFilter'),q=val('search').toLowerCase();roster.forEach((s,i)=>{if((!f||s.cls===f)&&(!q||s.name.toLowerCase().includes(q)))on?selected.add(i):selected.delete(i);});render();};
 function download(content,name,type='application/octet-stream'){const u=URL.createObjectURL(new Blob([content],{type}));const a=document.createElement('a');a.href=u;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000);}
-$('saveProject').onclick=()=>{download(JSON.stringify({version:1,event:data()},null,2),clean(val('company')||'BE')+' Veranstaltung.json','application/json');};
-$('loadProject').onchange=async()=>{const f=$('loadProject').files[0];if(!f)return;try{const j=JSON.parse(await f.text());if(j.version!==1||!j.event||typeof j.event!=='object')throw Error('Unbekanntes Veranstaltungsformat');for(const id of FIELDS)if(typeof j.event[id]==='string')$(id).value=j.event[id];$('status').textContent='Veranstaltungsdaten geladen. Die Schülerauswahl wird aus Datenschutzgründen nicht gespeichert.';selectedStatus();}catch(e){$('status').textContent='Datei konnte nicht geladen werden: '+e.message;}};
+$('saveProject').onclick=()=>{const payload={version:2,event:data(),selected:[...selected].map(i=>studentKey(roster[i])),evReceived:[...evReceived].map(i=>studentKey(roster[i]))};download(JSON.stringify(payload,null,2),clean(val('company')||'BE')+' Veranstaltung.json','application/json');$('status').textContent='Veranstaltung einschließlich Teilnehmerauswahl und EV-Rücklauf gespeichert.';};
+$('loadProject').onchange=async()=>{const f=$('loadProject').files[0];if(!f)return;try{const j=JSON.parse(await f.text());if(![1,2].includes(j.version)||!j.event||typeof j.event!=='object')throw Error('Unbekanntes Veranstaltungsformat');for(const id of FIELDS)if(typeof j.event[id]==='string')$(id).value=j.event[id];pendingSaved=j.version===2?{selected:Array.isArray(j.selected)?j.selected:[],evReceived:Array.isArray(j.evReceived)?j.evReceived:[]}:null;
+ if(roster.length)applySaved();else $('status').textContent='Veranstaltungsdaten geladen. Bitte die passende Excel-Schülerliste einlesen, damit Teilnehmer und EV-Häkchen zugeordnet werden.';
+ selectedStatus();}catch(e){$('status').textContent='Datei konnte nicht geladen werden: '+e.message;}};
 // DOCX: in sich geschlossenes, mit Word/LibreOffice bearbeitbares OOXML. Kein Cloud-Dienst.
 const wP=(str,bold=false)=>`<w:p><w:pPr><w:spacing w:after="120"/></w:pPr><w:r>${bold?'<w:rPr><w:b/></w:rPr>':''}<w:t xml:space="preserve">${esc(str)}</w:t></w:r></w:p>`;
 const wTable=rows=>`<w:tbl><w:tblPr><w:tblBorders><w:top w:val="single" w:sz="4"/><w:bottom w:val="single" w:sz="4"/><w:insideH w:val="single" w:sz="4"/><w:insideV w:val="single" w:sz="4"/></w:tblBorders></w:tblPr>${rows.map(row=>`<w:tr>${row.map(c=>`<w:tc><w:tcPr><w:tcW w:w="3300" w:type="dxa"/></w:tcPr>${wP(c)}</w:tc>`).join('')}</w:tr>`).join('')}</w:tbl>`;
@@ -30,6 +47,9 @@ async function schoolDoc(d,students){const response=await fetch('Vorlagen/BE/Exk
  for(const [row,col,value] of [[0,1,cl],[1,1,desc(d)],[2,1,fmt(d.date)],[3,1,d.leader],[4,1,`Gesamt: ${students.length+adult}`],[4,2,`Kinder: ${students.length}`],[4,3,`Erwachsene: ${adult}`],[5,1,[d.leader,d.companions].filter(Boolean).join(', ')],[6,1,d.transport]])setAt(t,row,col,value);
  for(const [row,col,value] of [[0,1,cl],[1,1,desc(d)],[2,1,fmt(d.date)],[3,1,d.leader]])setAt(g,row,col,value);
  setAt(t,12,0,`Datum ${fmt(new Date().toISOString().slice(0,10))}`);
+ // Word-Datumsfeld vollständig entfernen, damit Word nicht zusätzlich seinen alten Feldwert anzeigt.
+ const dateCell=tableCells([...t.childNodes].filter(x=>x.localName==='tr')[12])[0];
+ for(const run of [...dateCell.getElementsByTagNameNS('*','r')])if(run.getElementsByTagNameNS('*','fldChar').length||run.getElementsByTagNameNS('*','instrText').length)run.remove();
  // Die beiden Tabellenzellen für Treff und Ende enthalten verschachtelte Ort/Uhrzeit-Tabellen.
  const rows=[...t.childNodes].filter(e=>e.localName==='tr');const travel=[[7,d.meeting,d.meettime],[8,d.returnPlace,d.returnTime]];
  for(const [i,place,time] of travel){const cells=tableCells(rows[i]),nested=cells[1]?.getElementsByTagNameNS('*','tbl')[0];if(!nested)continue;const nr=[...nested.childNodes].filter(x=>x.localName==='tr');if(nr.length>=2){setCell(tableCells(nr[0]).at(-1),place);setCell(tableCells(nr[1]).at(-1),time?time+' Uhr':'');}}
@@ -37,7 +57,8 @@ async function schoolDoc(d,students){const response=await fetch('Vorlagen/BE/Exk
  if(d.remarks){const note=tableCells(rows[9])[1];if(note)setCell(note,d.remarks);}
  // Original-Antrag bewahren; die Schülerliste als zweite Seite im gleichen bearbeitbaren DOCX anhängen.
  const body=doc.getElementsByTagNameNS('*','body')[0],sect=[...body.childNodes].find(x=>x.localName==='sectPr');
- const appendix=`<w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:r><w:br w:type="page"/></w:r></w:p>${wP('Anlage zum Exkursionsantrag – Teilnehmerliste',true)}${wP('Betriebserkundung: '+d.company+' · '+fmt(d.date))}${wP('Teilnehmende Schülerinnen und Schüler: '+students.length)}${wTable([['Nr.','Klasse','Vorname','Nachname'],...students.map((s,i)=>[String(i+1),s.cls.toUpperCase(),...nameParts(s.name)])])}`;
+ for(const node of [...body.childNodes].reverse()){if(node.localName==='sectPr')continue;if(node.localName!=='p')break;const txt=[...node.getElementsByTagNameNS('*','t')].map(t=>t.textContent).join('').trim();if(txt)break;body.removeChild(node);}
+ const appendix=`<w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:pPr><w:pageBreakBefore/></w:pPr><w:r><w:rPr><w:b/></w:rPr><w:t>Anlage zum Exkursionsantrag – Teilnehmerliste</w:t></w:r></w:p>${wP('Betriebserkundung: '+d.company+' · '+fmt(d.date))}${wP('Teilnehmende Schülerinnen und Schüler: '+students.length)}${wTable([['Nr.','Klasse','Vorname','Nachname'],...students.map((s,i)=>[String(i+1),s.cls.toUpperCase(),...nameParts(s.name)])])}`;
  const parsed=new DOMParser().parseFromString(`<root xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">${appendix}</root>`,'application/xml');if(parsed.querySelector('parsererror'))throw Error('Anlage konnte nicht erstellt werden.');
  for(const node of [...parsed.documentElement.childNodes])body.insertBefore(doc.importNode(node,true),sect||null);
  zip.file('word/document.xml',new XMLSerializer().serializeToString(doc));return zip.generateAsync({type:'uint8array'});}
@@ -64,19 +85,19 @@ async function feedbackXlsx(d,students){
  put(top[3],'C',[d.field,d.jobs].filter(Boolean).join(' · '));
  const date=new Date(d.date+'T12:00:00Z');const serial=Math.floor((date.getTime()-Date.UTC(1899,11,30))/86400000);
  put(top[4],'C',serial);put(top[5],'C',d.company);
- const count=Math.max(6,students.length),extra=Math.max(0,count-8);
+ const count=Math.max(6,students.length),delta=count-8;
  // Die beiden ursprünglichen Leerzeilen werden als Teil der Liste genutzt.
  const existing=rows.filter(r=>{const n=+r.getAttribute('r');return n>=7&&n<=14;});
  for(const r of existing)ss.removeChild(r);
  for(let i=0;i<count;i++){
-   const no=7+i, row=(i<8?existing[i]:src).cloneNode(true);row.setAttribute('r',String(no));
+   const no=7+i, row=src.cloneNode(true);row.setAttribute('r',String(no));
    for(const c of [...row.childNodes])if(c.localName==='c'){const col=c.getAttribute('r').replace(/\d+/g,'');c.setAttribute('r',col+no);}
    const st=students[i],parts=st?nameParts(st.name):['',''];
    for(const [col,value] of [['A',st?i+1:''],['B',st?st.cls.toUpperCase():''],['C',parts[0]],['D',parts[1]],['E',''],['F',''],['G','J'],['H','K'],['I','L'],['J','']])put(row,col,value);
    const before=[...ss.childNodes].find(e=>e.localName==='row'&&+e.getAttribute('r')>=15);ss.insertBefore(row,before||null);
  }
- for(const row of rows.filter(r=>+r.getAttribute('r')>=15)){const n=+row.getAttribute('r')+extra;row.setAttribute('r',String(n));for(const c of [...row.childNodes])if(c.localName==='c')c.setAttribute('r',c.getAttribute('r').replace(/\d+$/,n));}
- const dim=doc.getElementsByTagNameNS(ns,'dimension')[0];if(dim)dim.setAttribute('ref',`A1:J${16+extra}`);
+ for(const row of rows.filter(r=>+r.getAttribute('r')>=15)){const n=+row.getAttribute('r')+delta;row.setAttribute('r',String(n));for(const c of [...row.childNodes])if(c.localName==='c')c.setAttribute('r',c.getAttribute('r').replace(/\d+$/,n));}
+ const dim=doc.getElementsByTagNameNS(ns,'dimension')[0];if(dim)dim.setAttribute('ref',`A1:J${14+count-6}`);
  const sort=doc.getElementsByTagNameNS(ns,'sortState')[0];if(sort){sort.setAttribute('ref',`B7:D${6+count}`);for(const condition of [...sort.childNodes])if(condition.localName==='sortCondition'){const s=condition.getAttribute('ref');if(s)condition.setAttribute('ref',s.replace(/\d+$/,6+count));}}
  z.file(path,new XMLSerializer().serializeToString(doc));
  const tp='xl/tables/table1.xml';if(z.file(tp)){const td=new DOMParser().parseFromString(await z.file(tp).async('string'),'application/xml');const table=td.documentElement;table.setAttribute('ref',`A6:J${6+count}`);const af=[...table.childNodes].find(e=>e.localName==='autoFilter');if(af)af.setAttribute('ref',`A6:J${6+count}`);z.file(tp,new XMLSerializer().serializeToString(td));}
@@ -94,7 +115,7 @@ async function generate(){if(busy)return;
  const zip=new Z(),folder=`BE ${clean(d.company)} ${d.date.slice(0,4)}/`;
  if(chosen.has('antrag'))zip.file(folder+'01 Exkursionsantrag mit TN-Anlage.docx',await schoolDoc(d,students));
  if(chosen.has('feedback'))zip.file(folder+'02 TN-Liste mit Feedback.xlsx',await feedbackXlsx(d,students));
- zip.file(folder+'Veranstaltung.json',JSON.stringify({version:1,event:d},null,2));
+ zip.file(folder+'Veranstaltung.json',JSON.stringify({version:2,event:d,selected:[...selected].map(i=>studentKey(roster[i])),evReceived:[...evReceived].map(i=>studentKey(roster[i]))},null,2));
  zip.file(folder+'BITTE LESEN.txt','Bearbeitbare Originalvorlagen: Exkursionsantrag (Word) mit TN-Anlage und Feedbackliste (Excel).\nDruck: Originale in Word/LibreOffice beziehungsweise Excel öffnen, vor dem Ausdruck prüfen und dort ausdrucken.\nBeim Antrag Duplexdruck aktivieren; die TN-Anlage beginnt auf einer neuen Seite.\nEine originalgetreue Sammeldruck-PDF ist in dieser Version bewusst nicht enthalten.\n');
  const blob=await zip.generateAsync({type:'blob'});download(blob,clean(`BE ${d.company} ${d.date.slice(0,4)}`)+'.zip','application/zip');
  $('status').textContent=`Fertig: ${students.length} Schüler. Original-Word-Antrag inklusive TN-Anlage und Original-Excel-Feedbackliste sind im ZIP. Beide Dateien bleiben bearbeitbar. Bitte Druckbild vor Nutzung prüfen.`;

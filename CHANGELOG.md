@@ -104,3 +104,8 @@ Projektidee (noch nicht umgesetzt): PDF-Kompatibilität mit Adobe Acrobat Reader
 - Sicherheitsregel: letzte belegte BO-Zeile bestimmen, ausschließlich in die *nächste* freie Zeile schreiben; keine früheren Lücken auffüllen, keine Originaldateien verändern.
 - ZIP- oder unterstützte Ordnerausgabe mit Kollisionsschutz; ausfüllbare Einzel-PDFs. Separater Sammeldruck für neue Einträge oder alle eingelesenen Dokumente.
 - Microsoft-Forms-/Excel-Import für spätere Version vorgesehen.
+
+## v1.6.9 (16.11.2026)
+- Antrag BE v0.1.2: EV-Rücklauf pro Teilnehmer, JSON-Sicherung und Wiederherstellung, einheitliche Feedback-Zeilen und Korrektur des Seitenumbruchs der TN-Anlage.
+- EP-Generator: optionaler aktualisierter Zieltext und ausführliche Beschriftungen für Kompetenzprofile und Profilvergleiche.
+- Gemeinsame aktuelle Excel-Testliste 7a–8c: direkt laden oder herunterladen in PA-Drucktool, EP-Generator und Antrag BE.

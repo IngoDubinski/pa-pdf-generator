@@ -6,7 +6,18 @@ const EPCore=(()=>{
 const PDF=window.PDFLib;
 const FALLBACK='keine Daten aus der PA gefunden';
 const EVENTS=['Projektvorstellung','Elternabend','Merkmalsschulung','Potenzialanalyse','Auswertungsgespräch','Entwicklungsplangespräch'];
-const GOALS=`1. Teilnahme an mindestens drei Berufserkundung nach Interesse\n\n2. Teilnahme an Aktionstagen (genial sozial, Boyday bzw. Erlebnistagen)\n\n3. Besuch Berufsorientierungsmesse 82. Oberschule am 04.05.27\n\n4. eigenständige Praktikumsplatzsuche nach Interessengebiet\n\nInternetseiten, um sich über Berufe, Berufsfelder und Bewerbung zu informieren:\nwww.berufe.tv, berufenet.arbeitsagentur.de, planet-beruf.de`;
+const GOALS=`1. Teilnahme an mindestens drei Betriebserkundungen nach Interesse
+
+2. Teilnahme an Aktionstagen (genial sozial, Girls' Day, Boys' Day bzw. Erlebnistagen)
+
+3. Besuch der Berufsorientierungsmesse der 82. Oberschule am 04.05.2027 – verschiedene Berufsfelder kennenlernen
+
+4. Eigenständige Suche nach einem Praktikumsplatz entsprechend den persönlichen Interessen für Klasse 8
+
+5. Teilnahme an mindestens einer Veranstaltung der SCHAU-REIN!-Woche („Woche der offenen Unternehmen“) in Klasse 8
+
+Hilfreiche Internetangebote zur Berufsorientierung und Bewerbung:
+BERUFENET, Check-U (Berufswahltest) und meinBERUF GO auf www.arbeitsagentur.de`;
 const safe=s=>String(s||'').replace(/[\\/:*?"<>|\x00-\x1f]/g,'_').trim().slice(0,110)||'Unbekannt';
 const cls=s=>(String(s||'').replace(/\s+/g,'').match(/^\d{1,2}[a-z]$/i)?.[0]||'').toLowerCase();
 const colNo=s=>[...(s.match(/^[A-Z]+/i)?.[0]||'').toUpperCase()].reduce((x,c)=>x*26+c.charCodeAt(0)-64,0)-1;

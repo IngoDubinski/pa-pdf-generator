@@ -1,5 +1,25 @@
 [
   {
+    "path": "ANLEITUNG.txt",
+    "bytes": 525,
+    "sha256": "8cdbd863d79fcf549dd1999cf0382e5a704c1eddc7e3cc653a6dcaefe9e75bed"
+  },
+  {
+    "path": "ANLEITUNG_V1.3.txt",
+    "bytes": 1059,
+    "sha256": "407e0363a610a0bdf14af91f26b77abcde2928cbb5697b9d0674db1138c3e321"
+  },
+  {
+    "path": "ANLEITUNG_V1.4.txt",
+    "bytes": 433,
+    "sha256": "d6e9afd3d6179e5a0fed0b42533a23c5ead31d94b837cc068a14ecf30679fb80"
+  },
+  {
+    "path": "ANTRAG_BE_V010_ANLEITUNG.md",
+    "bytes": 1578,
+    "sha256": "f99c66bf1a900e5af65dd4fc2ec9b25274e10f09076396751c8a828cd111ff06"
+  },
+  {
     "path": "ARCHITEKTUR.md",
     "bytes": 5006,
     "sha256": "d24ddeb2846bd464fbe5f1b2b58c051da9fccffa5136cc60d65a022cf309c243"
@@ -71,8 +91,8 @@
   },
   {
     "path": "CHANGELOG.md",
-    "bytes": 7064,
-    "sha256": "c19961cf185a90b6a60d09ebde571591382d5cad790e4657edd8b36f2534eff8"
+    "bytes": 9106,
+    "sha256": "a7706b42d172906a467b1be85e813c574403e2b7cb1769a889a0e689f56a764b"
   },
   {
     "path": "DATENSCHUTZ_UND_GITHUB.md",
@@ -85,6 +105,36 @@
     "sha256": "f49c4b75dbfbd97435c8d77baa90ff9c0f1e73dff20a2f867d47bd7729b74cb1"
   },
   {
+    "path": "EP_SEITE2_V010_ANLEITUNG.md",
+    "bytes": 2617,
+    "sha256": "6188d128d6617d0bf2a649d61eb1819d03aa98cd23b012e467e4fa17b3f21e77"
+  },
+  {
+    "path": "FEHLERBEHEBUNG.md",
+    "bytes": 636,
+    "sha256": "49a8adc37685f69a300b27f20370231f3f39133c7745961a67c4d36d6edcff73"
+  },
+  {
+    "path": "FIX_SKALEN.md",
+    "bytes": 687,
+    "sha256": "9493bdaabb5181712a1a1415495fc8133b7171042c9222e4b6ba77e717e243fb"
+  },
+  {
+    "path": "GITHUB_PAGES_ANLEITUNG.txt",
+    "bytes": 1375,
+    "sha256": "1a4b954fb2a0b0082af81dbf697f25f7c4468ad63ad8afee589dfbe6bdc92d7b"
+  },
+  {
+    "path": "KLASSENVERBUND_V143.md",
+    "bytes": 1190,
+    "sha256": "c61f7ec73d83595f6e91f0ffb147b5f248bbdc4b9e87b720c84ede14edba8cd9"
+  },
+  {
+    "path": "KLASSENVERBUND_V144.md",
+    "bytes": 801,
+    "sha256": "b8d8e94f11356bc3fcd2c752936eb8c1462fbe9a69bc5f130813c6b9eec0319e"
+  },
+  {
     "path": "LICENSE-JSZIP.txt",
     "bytes": 33753,
     "sha256": "566c953c6090b1218ca6217dd7359d45dde46581968586dc607d59a78af6a9c4"
@@ -95,9 +145,9 @@
     "sha256": "8fb3f38e86217ae36d07770095c58036db9e9f5a3bb0ab8f3726449677e7c39c"
   },
   {
-    "path": "PA_Excel_Beispiel_Dummydaten.xlsx",
-    "bytes": 10476,
-    "sha256": "08e16bf9f86353ece1d1f2dace45ec2e37560b6ed9151f47797cf820a50941dd"
+    "path": "PA_TOOLS_V169_HINWEISE.md",
+    "bytes": 1449,
+    "sha256": "d74d8ae785a23c9f70cbfda630d429f47ef1c3c2425e11df97c698dc645f66b4"
   },
   {
     "path": "PROJEKTKONTEXT.md",
@@ -106,13 +156,28 @@
   },
   {
     "path": "README.md",
-    "bytes": 8211,
-    "sha256": "eec5bcd29081925acfad9f1ddd05eeb97eb3fffb9bd81dd7a8f3eefe3a795b41"
+    "bytes": 8763,
+    "sha256": "a8bd049b881e6b57d519df0468eae73f8948a9ef337276b386149c9cc9390fa6"
+  },
+  {
+    "path": "README.txt",
+    "bytes": 296,
+    "sha256": "0fad631741389caf2e17832c2986d5fc4bd129aca10107504be7e71d337bb591"
   },
   {
     "path": "README_SaxSVS.txt",
     "bytes": 1017,
     "sha256": "0911b427829a0c5636dbc13826e89675e4934f9f2e6d106202904b28731077e1"
+  },
+  {
+    "path": "README_V1.2.txt",
+    "bytes": 447,
+    "sha256": "f0638ef138dc2716ca899e6242a98a728748fc2c0f8243f7f7e5f8b31684f179"
+  },
+  {
+    "path": "START_HIER.txt",
+    "bytes": 364,
+    "sha256": "205a0e666667ad5b4253179048f4da233bbe4e51558cdd6f7176e8bae9717397"
   },
   {
     "path": "START_HIER_V146.md",
@@ -135,14 +200,44 @@
     "sha256": "826a4928d9b2e556499290d2db79b0b48def6a1d3513c13a00e3aeb296604ccd"
   },
   {
+    "path": "Tests/test_ep_seite2.js",
+    "bytes": 2137,
+    "sha256": "c8645bf3927b3339390168082e657fc70858b48f0df1f2d56184ffcd16e11ac9"
+  },
+  {
     "path": "Tests/test_ep_single_print.js",
-    "bytes": 2500,
-    "sha256": "109655a9e3c3080aa5a5ec0e442612bfdd0b16e129e739891e9703fb8daf555c"
+    "bytes": 2525,
+    "sha256": "a3183a6834437a699f257f0639cd0c4cc24c5465e86903010bc3d45aec36c2fd"
+  },
+  {
+    "path": "Tests/test_info_help_menu.js",
+    "bytes": 2190,
+    "sha256": "be80e6db5e0f7e16ff312309583cef7c0816498e6f4272712e170a6fc698dee1"
   },
   {
     "path": "Tests/test_progress_ui.js",
     "bytes": 3090,
     "sha256": "24dde3ba0b23b4878337c70858f85f61c76f369ed4eb507c4273e1260f197f13"
+  },
+  {
+    "path": "UPDATE_HINWEIS.txt",
+    "bytes": 185,
+    "sha256": "cc1648f8814b4cdb87b271c04a5e7984647a9b0dbce17dc29e062ae93f0d1926"
+  },
+  {
+    "path": "UPDATE_SE_DURCHSTREICHUNG.md",
+    "bytes": 1483,
+    "sha256": "595102eec36c0735fa86283b25817b51b19eccb1b7efdf2b4ac25eae40fb5f45"
+  },
+  {
+    "path": "Vorlagen/BE/Exkursionsantrag_Original.docx",
+    "bytes": 36602,
+    "sha256": "b2e629be060a0761759dbd176823c12c51c226eaae9212b00e79336f3321425d"
+  },
+  {
+    "path": "Vorlagen/BE/TN_Liste_Feedback_Original.xlsx",
+    "bytes": 12079,
+    "sha256": "f1a5bff1ad1e67dbd5fbe21a8fcd743464e209ca6a4841fad3c415b5e2b77485"
   },
   {
     "path": "Vorlagen/EP/Entwicklungsplan_Original_Word_nur_Referenz.docx",
@@ -153,6 +248,11 @@
     "path": "Vorlagen/EP/Entwicklungsplan_ausfuellbar.pdf",
     "bytes": 266142,
     "sha256": "5e9779445003f7a457d155ae8d32c5f4190c14cdf629454d9dcf91a37d612a44"
+  },
+  {
+    "path": "Vorlagen/Klassenlisten Dummydaten_7a-8c.xlsx",
+    "bytes": 21491,
+    "sha256": "22661c8fe7b9ab77dc3034b7001468fe72540d1d6e8f7e088f14ecd05530b9fc"
   },
   {
     "path": "Vorlagen/Matrix Beobachtungsaufgaben.pdf",
@@ -186,8 +286,8 @@
   },
   {
     "path": "admin.html",
-    "bytes": 3494,
-    "sha256": "e31f898a5f06ba0ef9f3d897caa2216fb7a08ea7b72a5b79c3503f362a58df11"
+    "bytes": 3422,
+    "sha256": "cd28663a670045087c623ad9678792875bde53d348fd101d650cef778e99a3a9"
   },
   {
     "path": "admin.js",
@@ -195,9 +295,19 @@
     "sha256": "9ff7f87304109b286398da9df33760ffbc5dd447e8ed1e336fc8d66ae3efc0ad"
   },
   {
+    "path": "antrag-be-app.js",
+    "bytes": 20026,
+    "sha256": "00f374f8c78e31bf909ebb1126322c20321cce3bdfcf3769ff5be24befc293b5"
+  },
+  {
+    "path": "antrag-be.css",
+    "bytes": 1477,
+    "sha256": "8c20d81171e1827ed566c5f2cb6b0dacdbf7a0758df14aca706505e07f990c07"
+  },
+  {
     "path": "antrag-be.html",
-    "bytes": 1331,
-    "sha256": "2416b341d4198dc24eccdca014afbf2b355fe6d5a82c97f5090f79dbabfebf67"
+    "bytes": 5952,
+    "sha256": "8b8a3d22ae5063f6d84f16fc75dbd9c91c2a37f289261f19b3756b68ac8de4b8"
   },
   {
     "path": "app.js",
@@ -206,8 +316,8 @@
   },
   {
     "path": "architektur.html",
-    "bytes": 3092,
-    "sha256": "7a99a65ea74e23949f7310c097801036436c6e82ff914c28e59238dcd9c01554"
+    "bytes": 3086,
+    "sha256": "c447b4256d4d56d3042d101985d0410b0722163e3594430fea9014181bc7ba9f"
   },
   {
     "path": "captcha-beispiel.png",
@@ -226,38 +336,53 @@
   },
   {
     "path": "ep-app.js",
-    "bytes": 16647,
-    "sha256": "52d2448cddd9224c93865d809cd2cafcf032065e7ea7fa7d37dc0b83273b31cd"
+    "bytes": 19071,
+    "sha256": "d28e7e8badbf4622d64bee7aee965568448b4e108e768150f925a1fbb144a0b8"
   },
   {
     "path": "ep-core.js",
-    "bytes": 16633,
-    "sha256": "1e4bad0145060e2f9df43357d13595561ba9e1e3af9295d135c1212a7b5d0460"
+    "bytes": 20463,
+    "sha256": "56e723e18ec27d96273137f423d86773e7bf298b81b32b9ba08e50c3f2d34b40"
   },
   {
     "path": "ep-generator.html",
-    "bytes": 11237,
-    "sha256": "ba8b480a34ee5bdb73a74180daf0a3c695c5440892a67ccfb0448756a0779b90"
+    "bytes": 14605,
+    "sha256": "c2f48afe96d26019c7d3ace5788cd5333aa44ab2fb02044fb8a9230aeecafd72"
+  },
+  {
+    "path": "ep-seite2-app.js",
+    "bytes": 9546,
+    "sha256": "7418b4fd75acacdf39475f5a2a957fa62e4fbc3f61bd7150d94764ca3faa6833"
+  },
+  {
+    "path": "ep-seite2-core.js",
+    "bytes": 2411,
+    "sha256": "cef53e85cf05ee2a4b8e3775a8f25c078b2247b1a06c257d5aee6c1464307a1d"
+  },
+  {
+    "path": "ep-seite2.css",
+    "bytes": 1253,
+    "sha256": "d7b7583a24bccd44e7d12da8489d7abebb9d1b947054d2c232bc36e48260a4fd"
   },
   {
     "path": "ep-seite2.html",
-    "bytes": 1357,
-    "sha256": "f34b8f703c6aadd7231be838c669387fb7ed3f563c6d063ea0562ea65c30f34a"
+    "bytes": 5041,
+    "sha256": "7c9215db15e39b15636188c1c5657e7e8b993fed510d2f43aa88a7b6f29bb543"
   },
   {
     "path": "ep-selection.js",
-    "bytes": 998,
-    "sha256": "f529ae0f0985923197d4685360fef3ab1fdf9410b2eb1f76dcedf08cebecee72"
+    "bytes": 1760,
+    "sha256": "8ff4a512aee224f62b2de7748bc170b137213ed72a1eaae28e85dc7ce7c329ac"
   },
   {
     "path": "excel-anleitung.html",
-    "bytes": 7846,
-    "sha256": "80ddf82dfb9a9d116703e624b5cffd5df34e41c02e19d7b5a38d50611a19b202"
+    "bytes": 8173,
+    "sha256": "633360ef9ca04062378d8aa16005e972dd97eae167ac72a25c244c5306b5768d"
   },
   {
     "path": "index.html",
-    "bytes": 3521,
-    "sha256": "def6b344e3e930fe9b3254ad9f8518530c64bb611d5621c4165d08427374d10b"
+    "bytes": 3527,
+    "sha256": "079d8ad5e9c0fa66396c747a17fee1967f8ef13939e7db7c8f98bae4b2b77704"
   },
   {
     "path": "js/jszip.min.js",
@@ -291,13 +416,13 @@
   },
   {
     "path": "projektideen.html",
-    "bytes": 4277,
-    "sha256": "8274e189ff55ebfd91c0dbe3f7837e01ff334ffe10575a88681c41e16a594389"
+    "bytes": 4099,
+    "sha256": "6333696c31b15b8109bfee86bd29741631012d905b8f5847e085df051ff10cdc"
   },
   {
     "path": "quellcode.html",
-    "bytes": 3537,
-    "sha256": "666190122ade467c387ce2c249154112420d956cf971551b2053b457f498e995"
+    "bytes": 3363,
+    "sha256": "23cede83b86a50f348af27c5052c0b3f65e7304bd8cb93d3484a33647eb5ef23"
   },
   {
     "path": "robots.txt",
@@ -316,18 +441,13 @@
   },
   {
     "path": "style.css",
-    "bytes": 6622,
-    "sha256": "9b691c5845825bc9822bbfd406a093ac5cdefdeb38ca542961e41ed69309ddd5"
+    "bytes": 8378,
+    "sha256": "a8210bc6861e3d29832f1d1fdc93ccfe45f6c0aabdbc0c92b822eb93c5a02103"
   },
   {
-    "path": "testdatei.js",
-    "bytes": 15449,
-    "sha256": "19a93402145014a98557055fe38e5e632540b64b8dfdb855d0aa9dba225e1972"
-  },
-  {
-    "path": "testdatei.xlsx",
-    "bytes": 10486,
-    "sha256": "28f96e8caecfd11dd9721fcedea7f3243b23586122f561c5d13119f79e5ce235"
+    "path": "testlisten.js",
+    "bytes": 843,
+    "sha256": "f9630abbb18769f290f70b8a927aa52bae5e30a3efc506775809d073f6880aa2"
   },
   {
     "path": "theme.js",
@@ -336,23 +456,23 @@
   },
   {
     "path": "tipp.html",
-    "bytes": 1901,
-    "sha256": "7c3d762284d81a55de2bc8b03d7dfcad1690210fa440667bf13c1866da4e4aaf"
+    "bytes": 2102,
+    "sha256": "a1dfe164f2ba0fb32b8fbd3ba65332f59f33ff2dae70d182a5b7fe1518185030"
   },
   {
     "path": "tool-nav.js",
-    "bytes": 3577,
-    "sha256": "edc491a8fb2cd3fd2cf8cf4b24e3413e4e3f5d512b79e3a72bc6fec99041adc9"
+    "bytes": 4851,
+    "sha256": "111f7cbebc2bfff1e1024a0a29a6ea87cdca32b7678f25b6ffe6a1d28a595f6d"
   },
   {
     "path": "tool.html",
-    "bytes": 11973,
-    "sha256": "a5d14bad80a1de8923841a82ebbf50ceb30c72cdde99293d7a007c8639600be4"
+    "bytes": 12015,
+    "sha256": "a3596c087a545fb1e23e34491353e8248396ce12374dd8ab1a75615bd22c9c3e"
   },
   {
     "path": "vorlagen.html",
-    "bytes": 1918,
-    "sha256": "e734ae51e5fce4c491b0bc15194c4e92a1e0fc1738875d5c3e617c044f6894df"
+    "bytes": 2198,
+    "sha256": "8280371aed2052967447bcb1f71be03ea1511f6b69068383dca068a41476bd59"
   },
   {
     "path": "workflow.js",
