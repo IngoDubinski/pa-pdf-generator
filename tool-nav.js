@@ -21,7 +21,8 @@
         ['index.html', 'PA-Tools'],
         ['tool.html', 'PA-Drucktool'],
         ['ep-generator.html', 'EP Generator'],
-        ['ep-seite2.html', 'EP 2. Seite']
+        ['ep-seite2.html', 'EP 2. Seite'],
+        ['profil.html', 'Mein Profil']
       ];
       if (admin) directLinks.push(['antrag-be.html', 'Antrag BE']);
       for (const [href, label] of directLinks) {
