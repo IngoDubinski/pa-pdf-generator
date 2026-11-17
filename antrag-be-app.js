@@ -93,6 +93,27 @@ async function schoolDoc(d,students){
  if(d.remarks)pText(191,d.remarks);
  // Vorhandene Namen/Adressen der Demonstrations-Begleitpersonen entfernen.
  for(const i of [123,124,125,129,130,131])pText(i,'');
+ // Optionales persönliches Unterschriftsbild direkt im bearbeitbaren Word-Original.
+ const profile=window.PAProfile?.get?.(),useSign=$('beUseSign')?.checked!==false;
+ if(useSign&&profile?.signature){
+  const data=window.PAProfile.getSignatureBytes(),mime=profile.signature.startsWith('data:image/png;')?'png':'jpeg';
+  if(data&&data.byteLength){
+   const relpath='word/_rels/document.xml.rels',relDoc=new DOMParser().parseFromString(await zip.file(relpath).async('string'),'application/xml');
+   const relNs='http://schemas.openxmlformats.org/package/2006/relationships';
+   const ids=[...relDoc.getElementsByTagNameNS('*','Relationship')].map(el=>Number((el.getAttribute('Id')||'').replace('rId',''))||0);
+   const rid='rId'+(Math.max(20,...ids)+1),rel=relDoc.createElementNS(relNs,'Relationship');
+   rel.setAttribute('Id',rid);rel.setAttribute('Type','http://schemas.openxmlformats.org/officeDocument/2006/relationships/image');rel.setAttribute('Target','media/pa-profile-signature.'+mime);relDoc.documentElement.append(rel);
+   zip.file(relpath,new XMLSerializer().serializeToString(relDoc));zip.file('word/media/pa-profile-signature.'+mime,data);
+   const cpath='[Content_Types].xml',ct=new DOMParser().parseFromString(await zip.file(cpath).async('string'),'application/xml');
+   if(![...ct.getElementsByTagNameNS('*','Default')].some(e=>e.getAttribute('Extension')===mime)){
+    const t=ct.createElementNS('http://schemas.openxmlformats.org/package/2006/content-types','Default');t.setAttribute('Extension',mime);t.setAttribute('ContentType',mime==='png'?'image/png':'image/jpeg');ct.documentElement.append(t);
+   }zip.file(cpath,new XMLSerializer().serializeToString(ct));
+   // Eine kleine Inline-Grafik rechts neben dem Antragsdatum; die Formularseiten bleiben bestehen.
+   const rxml=`<w:r xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><w:t xml:space="preserve">                      </w:t><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="1320000" cy="520000"/><wp:docPr id="9101" name="Unterschrift Praxisberatung"/><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic><pic:nvPicPr><pic:cNvPr id="9101" name="Unterschrift"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="${rid}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="1320000" cy="520000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r>`;
+   const imgRun=new DOMParser().parseFromString(rxml,'application/xml').documentElement;
+   ps[193].appendChild(doc.importNode(imgRun,true));
+  }
+ }
  zip.file('word/document.xml',new XMLSerializer().serializeToString(doc));
  return zip.generateAsync({type:'uint8array'});
 }
