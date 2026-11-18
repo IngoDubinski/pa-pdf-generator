@@ -51,7 +51,7 @@
  $('selectNone').onclick=()=>{entries.filter(visible).forEach(e=>e.selected=false);redraw();};
  function data(){const date=$('eventDate').value,title=$('eventTitle').value.trim(),place=$('eventPlace').value.trim(),notes=$('eventNotes').value.trim(),rating=$('eventRating').value;
   if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!title)throw Error('Datum und Veranstaltungstitel sind Pflicht.');
-  const [y,m,d]=date.split('-');return {date:`${d}.${m}.${y}`,title,place:place||'Schule',notes,rating};
+  const [y,m,d]=date.split('-');return {date:`${d}.${m}.${y.slice(-2)}`,title,place:place||'Schule',notes,rating};
  }
  function pdfName(e){const base=(e.file.name||'EP.pdf').replace(/\.pdf$/i,'');return EPSeite2Core.safeFile(base)+'_BO_ergaenzt.pdf';}
  function uniqueName(name,used){let result=name,n=2;while(used.has(result.toLowerCase())){result=name.replace(/\.pdf$/i,`_${n++}.pdf`);}used.add(result.toLowerCase());return result;}
