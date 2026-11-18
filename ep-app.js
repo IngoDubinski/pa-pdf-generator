@@ -77,7 +77,9 @@ $('epExcel').addEventListener('change',async()=>{const file=$('epExcel').files[0
 }catch(e){$('epImportStatus').textContent='Excel-Import fehlgeschlagen: '+e.message;students=[];activeClass='';$('epClass').replaceChildren(new Option('Bitte zuerst Excel laden',''));$('epSingleClass').replaceChildren(new Option('Erst Excel importieren',''));selectedByClass.clear();renderPicker();}});
 $('epKP').onchange=()=>{kpFiles=[...$('epKP').files];$('epImportStatus').textContent+=`\n${kpFiles.length} KP-Datei(en) ausgewählt.`;};
 $('epPV').onchange=()=>{pvFiles=[...$('epPV').files];$('epImportStatus').textContent+=`\n${pvFiles.length} PV-Datei(en) ausgewählt.`;};
-$('epMode').addEventListener('change',()=>{const file=$('epMode').value==='files';$('epFolderArea').hidden=!file;$('epOutputHint').textContent=file?'Die ZIP-Datei enthält einen Klassenordner. Der Browser speichert sie in deinem üblichen Downloadordner.':'Die Klassen-PDF wird heruntergeladen. Anschließend erscheint ein Link zum Öffnen und Drucken. Kein leeres neues Browserfenster.';});
+const selectedOutputMode=()=>document.querySelector('input[name="epMode"]:checked')?.value||'class';
+function updateOutputMode(){const file=selectedOutputMode()==='files';$('epFolderArea').hidden=!file;$('epOutputHint').textContent=file?'Die ZIP-Datei enthält einen Klassenordner. Der Browser speichert sie in deinem üblichen Downloadordner.':'Die Klassen-PDF wird heruntergeladen. Anschließend erscheint ein Link zum Öffnen und Drucken. Kein leeres neues Browserfenster.';}
+document.querySelectorAll('input[name="epMode"]').forEach(r=>r.addEventListener('change',updateOutputMode));updateOutputMode();
 async function openDB(){return new Promise((ok,fail)=>{const r=indexedDB.open(dbname,1);r.onupgradeneeded=()=>r.result.createObjectStore('assets');r.onsuccess=()=>ok(r.result);r.onerror=()=>fail(r.error);});}
 async function storeSig(data){const db=await openDB();try{await new Promise((ok,no)=>{const tx=db.transaction('assets','readwrite');tx.objectStore('assets').put(data,'signature');tx.oncomplete=ok;tx.onerror=()=>no(tx.error);});}finally{db.close();}}
 async function readSig(){const db=await openDB();try{return await new Promise((ok,no)=>{const tx=db.transaction('assets','readonly'),r=tx.objectStore('assets').get('signature');r.onsuccess=()=>ok(r.result||null);r.onerror=()=>no(r.error);});}finally{db.close();}}
@@ -100,7 +102,7 @@ const settings=()=>({school:$('epSchool').value.trim(),staff:$('epStaff').value.
 async function getTemplate(){if(!template){const r=await fetch('Vorlagen/EP/Entwicklungsplan_ausfuellbar.pdf');if(!r.ok)throw Error('EP-PDF-Vorlage nicht verfügbar.');template=new Uint8Array(await r.arrayBuffer());}return template;}
 async function generate(single=false){
  if(generating)return;
- const btn=single?$('epGenerateSelected'):$('epGenerate'),out=$('epOutputStatus'),s=settings(),docs=pick(),mode=single?'single':$('epMode').value,folder=$('epFolder').value;
+ const btn=single?$('epGenerateSelected'):$('epGenerate'),out=$('epOutputStatus'),s=settings(),docs=pick(),mode=single?'single':selectedOutputMode(),folder=$('epFolder').value;
  if(!activeClass){out.textContent='Bitte zuerst Klasse wählen.';return;}if(single&&!S.selected(students,activeClass,selectedIndexSet()).length){out.textContent='Bitte mindestens einen Schüler für den Einzeldruck auswählen.';return;}if(!s.school){out.textContent='Schulname fehlt (Pflichtangabe).';return;}if(!docs.length){out.textContent='Bitte mindestens einen Dokumenttyp auswählen.';return;}
  const incomplete=s.extraEvents.filter(e=>(e.date||e.name)&&(!e.date||!e.name));
  if(docs.includes('EP')&&incomplete.length){out.textContent='Zusätzliche BO-Aktivität unvollständig: Bitte jeweils Datum und Veranstaltung eintragen oder die Zeile entfernen.';return;}
