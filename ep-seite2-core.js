@@ -1,4 +1,4 @@
-/* EP 2. Seite v0.1.0 – nur freie BO-Zeilen, keine Änderungen an Bestandsfeldern. */
+/* EP 2. Seite v0.1.1 – nur freie BO-Zeilen, keine Änderungen an Bestandsfeldern. */
 'use strict';
 const EPSeite2Core = (()=>{
  const MAX=14;
@@ -32,7 +32,23 @@ const EPSeite2Core = (()=>{
   if(!clean(data.date)||!clean(data.title))throw Error('Datum und Veranstaltungstitel sind Pflicht.');
   const i=status.next;
   const values={[`BO${i} Datum`]:data.date,[`BO${i}`]:data.title,[`BO${i} Ort`]:data.place||'Schule',[`BO${i} Notizen`]:data.notes||''};
-  Object.entries(values).forEach(([name,value])=>text(form,name).setText(clean(value)));
+  Object.entries(values).forEach(([name,value])=>{
+   const field=text(form,name),content=clean(value);
+   // Schrift der urspruenglichen Vorlage: Helvetica, 8 pt.
+   // Nur die neu beschriebene Zeile wird angepasst, bestehende Daten bleiben unberuehrt.
+   const isLong=name===`BO${i}`||name===`BO${i} Ort`;
+   const width=isLong?(name.endsWith(' Ort')?90:78):name.endsWith(' Notizen')?209:40;
+   const charCount=Math.max(...content.split('\\n').map(line=>line.length),0);
+   const estimated=charCount*4.1;
+   const size=content&&estimated>width?Math.max(5,Math.min(8,8*width/estimated)):8;
+   field.setFontSize(size);
+   // PDF-Lib wertet zuerst die Widget-DA aus. Dort steht teils 0 pt
+   // (automatische Schriftgroesse); deshalb auch diese direkt setzen.
+   for(const widget of field.acroField.getWidgets()){
+    widget.dict.set(PDFLib.PDFName.of('DA'),PDFLib.PDFString.of(`/Helv ${size} Tf 0 g`));
+   }
+   field.setText(content);
+  });
   if(data.rating){const k=Number(data.rating);if(![1,2,3].includes(k))throw Error('Ungültige Einschätzung.');
    const target=checkbox(form,`Check BoxBO${i}_${k}`)|| (i===10&&k===3?checkbox(form,'Check Box4BO10_3'):null);
    if(!target)throw Error('Bewertungsfeld fehlt.');target.check();
