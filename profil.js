@@ -2,8 +2,8 @@
 'use strict';
 (()=>{
  const KEY='pa-tools-personal-profile-v1';
- const FIELDS=['name','role','school','schoolAddress','email','phone','signatureName','beMeeting','beReturnPlace','beTransport','bePedagogical','beLeaderAddress','beCompanions','beReplacement','beHints'];
- const defaults={role:'Praxisberater',beMeeting:'Schuleingang',beTransport:'zu Fuß / ÖPNV',beReturnPlace:'Entlassung vor Ort bei Einverständnis, sonst Rückkehr zur Schule',bePedagogical:'Kennenlernen von Berufsfeldern und Ausbildungsberufen durch eine Betriebserkundung',useSignature:true};
+ const FIELDS=['name','role','school','schoolAddress','email','phone','signatureName'];
+ const defaults={role:'Praxisberater',useSignature:true};
  let profile=null;
  function read(){try{const v=JSON.parse(localStorage.getItem(KEY)||'null');return v&&v.version===1?v:null;}catch{return null;}}
  function current(){return profile||read();}
@@ -13,7 +13,7 @@
  function save(v){const p=validate(v);try{localStorage.setItem(KEY,JSON.stringify(p));}catch{throw Error('Browserspeicher voll oder blockiert. Bitte Unterschriftsdatei verkleinern.');}profile=p;window.dispatchEvent(new Event('pa-profile-changed'));return p;}
  function apply(force=false){const p=current();if(!p)return;const mapping= {
   epSchool:'school',epStaff:'name',
-  leaderFullName:'name',leaderRole:'role',leaderAddress:'beLeaderAddress',meeting:'beMeeting',returnPlace:'beReturnPlace',transport:'beTransport',pedagogical:'bePedagogical',companions:'beCompanions',replacement:'beReplacement',hints:'beHints'
+  leaderFullName:'name',leaderRole:'role'
  };
  for(const [id,key] of Object.entries(mapping)){const el=document.getElementById(id);if(!el||!p[key])continue;const defaultVal=defaults[key]||'';
  if(force||!el.value||el.value===defaultVal||id==='epSchool'&&!el.value.trim()||id==='epStaff'&&!el.value.trim()){el.value=p[key];el.dispatchEvent(new Event('input',{bubbles:true}));}}
