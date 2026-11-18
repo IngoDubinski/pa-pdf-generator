@@ -1,7 +1,7 @@
 'use strict';
 (()=>{
  const form=document.getElementById('profileForm'),sigFile=document.getElementById('profileSignature'),status=document.getElementById('profileStatus'),sigStatus=document.getElementById('signatureStatus'),preview=document.getElementById('signaturePreview');
- let sig='';const keys=['name','role','school','schoolAddress','email','phone','beMeeting','beReturnPlace','beTransport','bePedagogical','beLeaderAddress','beCompanions','beReplacement','beHints'];
+ let sig='';const keys=['name','role','school','schoolAddress','email','phone'];
  function show(v){sig=v.signature||'';for(const k of keys)form.elements[k].value=v[k]||PAProfile.defaults[k]||'';form.elements.useSignature.checked=v.useSignature!==false;preview.hidden=!sig;preview.src=sig||'';sigStatus.textContent=sig?'Unterschrift im Profil vorhanden.':'Noch kein Unterschriftsbild hinterlegt.';}
  show(PAProfile.get()||{version:1,useSignature:true});
  sigFile.addEventListener('change',async()=>{const f=sigFile.files[0];if(!f)return;if(!['image/png','image/jpeg'].includes(f.type)||f.size>1400000){sigStatus.textContent='Bitte PNG/JPG mit höchstens 1,4 MB wählen.';sigFile.value='';return;}const r=new FileReader();r.onload=()=>{sig=r.result;preview.src=sig;preview.hidden=false;sigStatus.textContent='Unterschrift ausgewählt. Bitte Profil speichern.';};r.readAsDataURL(f);});
