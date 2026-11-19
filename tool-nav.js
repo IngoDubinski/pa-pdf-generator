@@ -24,7 +24,7 @@
         ['ep-seite2.html', 'EP 2. Seite'],
         ['profil.html', 'Mein Profil']
       ];
-      if (admin) directLinks.push(['antrag-be.html', 'Antrag BE']);
+      directLinks.push(['antrag-be.html', 'Antrag BE (Beta)']);
       for (const [href, label] of directLinks) {
         const a = document.createElement('a');
         a.href = addKey(href);
@@ -73,9 +73,9 @@
       nav.hidden = true;
     }
 
-    for (const card of document.querySelectorAll('[data-admin-only]')) card.hidden = !admin;
+    for (const card of document.querySelectorAll('[data-admin-only]')) card.hidden = !authorized;
     for (const a of document.querySelectorAll('[data-key-link]')) {
-      const needsAdmin = a.hasAttribute('data-admin-link');
+      const needsAdmin = a.hasAttribute('data-admin-link') && !a.hasAttribute('data-beta-public');
       if (authorized && (!needsAdmin || admin)) {
         a.href = addKey(a.getAttribute('href').split('?')[0]);
         a.classList.remove('tool-link-disabled');
@@ -92,7 +92,7 @@
       const notice = new URLSearchParams(location.search).get('notice');
       const state = access?.state() || 'none';
       if (admin) status.textContent = 'Admin-Dauerlink aktiv: Alle Werkzeuge und Platzhalter sind sichtbar.';
-      else if (authorized) status.textContent = 'Freigabelink gültig: PA-Drucktool, EP Generator und EP 2. Seite verfügbar.';
+      else if (authorized) status.textContent = 'Freigabelink gültig: PA-Drucktool, EP Generator, EP 2. Seite und Antrag BE (Beta) verfügbar.';
       else if (notice === 'admin') status.textContent = 'Dieses Werkzeug ist dem Admin-Dauerlink vorbehalten. Du kannst die öffentliche Projektinformation weiterhin ansehen.';
       else if (notice === 'expired' || state === 'expired') status.textContent = 'Dein Freigabelink ist abgelaufen. Bitte einen neuen Link anfordern. Die Projektinformation bleibt frei zugänglich.';
       else if (state === 'invalid' || new URLSearchParams(location.search).has('key')) status.textContent = 'Der Freigabelink ist ungültig. Bitte den Link prüfen oder einen neuen anfordern.';
