@@ -8,3 +8,5 @@
 .be-more{margin:14px 0;border:1px solid #aab5c577;border-radius:8px;padding:12px}.be-more summary{font-weight:700;cursor:pointer}.be-more[open] summary{margin-bottom:12px}.be-counter{display:flex;gap:5px;flex-wrap:wrap;flex-direction:column;margin:14px 0 6px;padding:12px;border:1px solid #aab5c577;border-radius:8px;background:var(--panel,#fff)}
 
 .be-counter{color:#18314e;background:#e9f2fc;border:1px solid #718eaa}.be-counter #selection{font-size:1.04rem;color:#173451}.be-counter #evSummary{color:#234c72;opacity:1;font-weight:600}html[data-theme="dark"] .be-counter{background:#203a55;border-color:#86a9d1;color:#fff}html[data-theme="dark"] .be-counter #selection{color:#fff}html[data-theme="dark"] .be-counter #evSummary{color:#deebff;opacity:1}
+
+.be-beta-tag{display:inline-block;vertical-align:middle;padding:2px 9px;border-radius:6px;border:1px solid currentColor;font-size:.64em;font-weight:750;letter-spacing:.07em;line-height:1.5}
