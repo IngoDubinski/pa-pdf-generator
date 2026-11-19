@@ -9,7 +9,7 @@
  const extPdf=f=>/\.pdf$/i.test(f.name);
  const displayName=e=>e.name||`(Name fehlt: ${e.file.name})`;
  const sorted=()=>[...new Set(entries.map(e=>e.cls).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'de',{numeric:true}));
- const lines=e=>e.error?'Nicht verarbeitet: '+e.error:e.next?`Nächste freie Zeile ${e.next}/14`:'Alle 14 Zeilen belegt';
+ const lines=e=>e.error?'Nicht verarbeitet: '+e.error:e.next?typeof e.next==='number'?`Nächste freie Zeile ${e.next}/14`:`Weiter auf ${e.next}`:'Nicht beschreibbar';
  function visible(e){return !$('classFilter').value||e.cls===$('classFilter').value;}
  function redraw(){
   const select=$('classFilter'),old=select.value;select.replaceChildren(new Option('Alle Klassen',''));sorted().forEach(c=>select.add(new Option(c,c)));select.value=sorted().includes(old)?old:'';
@@ -88,7 +88,7 @@
    try{
     const doc=await PDF.PDFDocument.load(await fileBytes(e.file));const form=doc.getForm();
     // Fail closed: re-read all rows immediately before modification.
-    const row=EPSeite2Core.append(form,event);
+    const row=await EPSeite2Core.append(doc,event);
     const bytes=await doc.save({useObjectStreams:false,updateFieldAppearances:true});
     const name=uniqueName(pdfName(e),used);results.push({name,bytes});changed.set(e,bytes);logs.push(`OK ${displayName(e)} (${e.cls}): BO-Zeile ${row}`);
    }catch(err){logs.push(`ÜBERSPRUNGEN ${displayName(e)}: ${err.message}`);}
