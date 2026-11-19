@@ -1,4 +1,4 @@
-/* EP 2. Seite v0.1.1 – nur freie BO-Zeilen, keine Änderungen an Bestandsfeldern. */
+/* EP 2. Seite v0.1.3 – nur freie BO-Zeilen, keine Änderungen an Bestandsfeldern. */
 'use strict';
 const EPSeite2Core = (()=>{
  const MAX=14;
@@ -17,7 +17,8 @@ const EPSeite2Core = (()=>{
    lines.push({index:i,occupied});
   }
   const last=lines.reduce((n,l)=>l.occupied?l.index:n,0);
-  const next=last<MAX?last+1:null;
+  const overflow=EPContinuation.list(form);
+  const next=last<MAX?last+1:(overflow.find(p=>p.hasSpace)?`Fortsetzung ${overflow.find(p=>p.hasSpace).page}`:`neue Fortsetzungsseite ${overflow.length+1}`);
   return {lines,last,next,free:MAX-last};
  }
  function person(form){
@@ -26,10 +27,10 @@ const EPSeite2Core = (()=>{
   if(!field||!cls)throw Error('Name/Klasse fehlen als Formularfelder. Keine Änderung.');
   return {name:clean(field.getText()),cls:clean(cls.getText())};
  }
- function append(form,data){
-  const status=inspect(form);
-  if(!status.next)throw Error('Alle 14 BO-Zeilen belegt. Datei unverändert.');
+ async function append(doc,data){
+  const form=doc.getForm(),status=inspect(form);
   if(!clean(data.date)||!clean(data.title))throw Error('Datum und Veranstaltungstitel sind Pflicht.');
+  if(status.last===MAX)return EPContinuation.append(doc,data);
   const i=status.next;
   const values={[`BO${i} Datum`]:data.date,[`BO${i}`]:data.title,[`BO${i} Ort`]:data.place||'Schule',[`BO${i} Notizen`]:data.notes||''};
   Object.entries(values).forEach(([name,value])=>{
