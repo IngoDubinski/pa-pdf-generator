@@ -72,7 +72,7 @@
   const events=[];
   for(const [i,row] of [...eventList.querySelectorAll('.ep2-event')].entries()){
    const date=row.querySelector('.ep2-event-date').value,title=row.querySelector('.ep2-event-name').value.trim();
-   if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(date)||!title)throw Error('Veranstaltung '+(i+1)+': Datum und Veranstaltungstitel sind Pflicht.');
+   if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!title)throw Error('Veranstaltung '+(i+1)+': Datum und Veranstaltungstitel sind Pflicht.');
    const [y,m,d]=date.split('-');
    const check=new Date(Date.UTC(Number(y),Number(m)-1,Number(d)));
    if(check.getUTCFullYear()!==Number(y)||check.getUTCMonth()!==Number(m)-1||check.getUTCDate()!==Number(d))throw Error('Veranstaltung '+(i+1)+': Datum ist ungültig.');
