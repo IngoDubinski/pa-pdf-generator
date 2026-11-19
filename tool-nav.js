@@ -25,7 +25,7 @@
         ['antrag-be.html', 'Antrag BE · Beta'],
         ['profil.html', 'Mein Profil']
       ];
-      directLinks.push(['antrag-be.html', 'Antrag BE (Beta)']);
+
       for (const [href, label] of directLinks) {
         const a = document.createElement('a');
         a.href = addKey(href);
