@@ -48,37 +48,10 @@ function boActivities(student,settings){
  return rows.sort((a,b)=>a.sortKey-b.sortKey||a.order-b.order);
 }
 async function appendBOContinuation(pdf,form,overflow,student){
- const regular=await pdf.embedFont(PDF.StandardFonts.Helvetica);
- const bold=await pdf.embedFont(PDF.StandardFonts.HelveticaBold);
- const blue=PDF.rgb(.91,.94,1),ink=PDF.rgb(.08,.15,.25),rule=PDF.rgb(.38,.46,.56);
- const x=[32,110,331,430,563],rHeight=35,topRow=716;
- for(let start=0;start<overflow.length;start+=BO_CONTINUATION_ROWS){
-  const page=pdf.addPage(PDF.PageSizes.A4);
-  page.drawText('Entwicklungsplan – BO-Aktivitäten (Fortsetzung)',{x:34,y:796,size:15,font:bold,color:ink});
-  const sub=`${student.name} · Klasse ${student.cls} · zusätzliche Veranstaltungen`;
-  page.drawText(sub.slice(0,100),{x:34,y:773,size:9,font:regular,color:ink});
-  page.drawRectangle({x:x[0],y:728,width:x[4]-x[0],height:32,color:blue,borderColor:rule,borderWidth:.6});
-  for(let j=1;j<x.length-1;j++)page.drawLine({start:{x:x[j],y:728},end:{x:x[j],y:760},color:rule,thickness:.5});
-  ['Datum','BO-Aktivität','Umsetzungsort','Notizen'].forEach((name,i)=>page.drawText(name,{x:x[i]+4,y:741,size:9,font:bold,color:ink}));
-  const section=overflow.slice(start,start+BO_CONTINUATION_ROWS);
-  for(let n=0;n<section.length;n++){
-   const entry=section[n],hi=topRow-n*rHeight,lo=hi-rHeight;
-   if(n%2===0)page.drawRectangle({x:x[0],y:lo,width:x[4]-x[0],height:rHeight,color:PDF.rgb(.975,.985,1)});
-   page.drawRectangle({x:x[0],y:lo,width:x[4]-x[0],height:rHeight,borderWidth:.55,borderColor:rule});
-   for(let j=1;j<x.length-1;j++)page.drawLine({start:{x:x[j],y:lo},end:{x:x[j],y:hi},color:rule,thickness:.5});
-   const nr=BO_TEMPLATE_ROWS+start+n+1;
-   const fields=[['Datum',shortDate(entry.date)],['',entry.name],['Ort',entry.place],['Notizen','']];
-   fields.forEach(([suffix,val],i)=>{
-    const key=`BO_extra_${nr}_${suffix||'Aktivitaet'}`;
-    const f=form.createTextField(key);
-    if(i===1||i===3)f.enableMultiline();
-    f.addToPage(page,{x:x[i]+2,y:lo+2,width:x[i+1]-x[i]-4,height:rHeight-4,
-     backgroundColor:undefined,borderColor:undefined,borderWidth:0});
-    f.setText(val);f.setFontSize(i===0?8:i===1?9:8.5);
-   });
-  }
-  page.drawText(`Fortsetzung · ${Math.floor(start/BO_CONTINUATION_ROWS)+1}`,{x:34,y:98,size:8,font:regular,color:rule});
- }
+ // Vollstaendig bearbeitbare Original-EP-Seite 2 als Fortsetzung verwenden.
+ await EPContinuation.appendMany(pdf,overflow.map(entry=>({
+  date:shortDate(entry.date),title:entry.name,place:entry.place,notes:''
+ })));
 }
 
 const bytes=async file=>new Uint8Array(await file.arrayBuffer());
