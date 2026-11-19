@@ -49,9 +49,36 @@
  document.querySelectorAll('input[name="mode"]').forEach(x=>x.onchange=()=>{if(x.value==='mixed')$('classFilter').value='';else if(sorted().length)$('classFilter').value=sorted()[0];redraw();});
  $('selectAll').onclick=()=>{entries.filter(visible).forEach(e=>{if(e.next)e.selected=true});redraw();};
  $('selectNone').onclick=()=>{entries.filter(visible).forEach(e=>e.selected=false);redraw();};
- function data(){const date=$('eventDate').value,title=$('eventTitle').value.trim(),place=$('eventPlace').value.trim(),notes=$('eventNotes').value.trim(),rating=$('eventRating').value;
-  if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!title)throw Error('Datum und Veranstaltungstitel sind Pflicht.');
-  const [y,m,d]=date.split('-');return {date:`${d}.${m}.${y.slice(-2)}`,title,place:place||'Schule',notes,rating};
+ const eventList=$('eventList');
+ function renumberEvents(){
+  const rows=[...eventList.querySelectorAll('.ep2-event')];
+  rows.forEach((row,i)=>{row.querySelector('.ep2-event-title').textContent='Veranstaltung '+(i+1);row.querySelector('.ep2-event-remove').disabled=rows.length===1;});
+  $('eventCount').textContent=rows.length+' Veranstaltung'+(rows.length===1?'':'en')+' erfasst';
+ }
+ eventList.addEventListener('click',e=>{
+  const remove=e.target.closest('.ep2-event-remove');
+  if(remove&&eventList.querySelectorAll('.ep2-event').length>1){remove.closest('.ep2-event').remove();renumberEvents();}
+ });
+ $('addEvent').addEventListener('click',()=>{
+  const original=eventList.querySelector('.ep2-event');
+  const next=original.cloneNode(true);
+  next.querySelectorAll('input,textarea,select').forEach(el=>{
+   el.value=el.classList.contains('ep2-event-place')?'Schule':'';
+  });
+  eventList.append(next);renumberEvents();
+  next.querySelector('.ep2-event-date').focus();
+ });
+ function data(){
+  const events=[];
+  for(const [i,row] of [...eventList.querySelectorAll('.ep2-event')].entries()){
+   const date=row.querySelector('.ep2-event-date').value,title=row.querySelector('.ep2-event-name').value.trim();
+   if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(date)||!title)throw Error('Veranstaltung '+(i+1)+': Datum und Veranstaltungstitel sind Pflicht.');
+   const [y,m,d]=date.split('-');
+   const check=new Date(Date.UTC(Number(y),Number(m)-1,Number(d)));
+   if(check.getUTCFullYear()!==Number(y)||check.getUTCMonth()!==Number(m)-1||check.getUTCDate()!==Number(d))throw Error('Veranstaltung '+(i+1)+': Datum ist ungültig.');
+   events.push({date:`${d}.${m}.${y.slice(-2)}`,title,place:row.querySelector('.ep2-event-place').value.trim()||'Schule',notes:row.querySelector('.ep2-event-notes').value.trim(),rating:row.querySelector('.ep2-event-rating').value});
+  }
+  return events;
  }
  function pdfName(e){const base=(e.file.name||'EP.pdf').replace(/\.pdf$/i,'');return EPSeite2Core.safeFile(base)+'_BO_ergaenzt.pdf';}
  function uniqueName(name,used){let result=name,n=2;while(used.has(result.toLowerCase())){result=name.replace(/\.pdf$/i,`_${n++}.pdf`);}used.add(result.toLowerCase());return result;}
@@ -75,7 +102,7 @@
   const classMode=document.querySelector('input[name="mode"]:checked').value==='class';
   if(classMode&&!$('classFilter').value){status('Bitte eine Klasse auswählen.');return;}
   const chosen=entries.filter(e=>e.selected&&e.next&&(!classMode||e.cls===$('classFilter').value));if(!chosen.length){status('Bitte mindestens einen beschreibbaren EP auswählen.');return;}
-  let event;try{event=data();}catch(err){status(err.message);return;}
+  let events;try{events=data();}catch(err){status(err.message);return;}
   const destination=document.querySelector('input[name="destination"]:checked').value;
   let dir=null;
   if(destination==='folder'){
@@ -88,9 +115,10 @@
    try{
     const doc=await PDF.PDFDocument.load(await fileBytes(e.file));const form=doc.getForm();
     // Fail closed: re-read all rows immediately before modification.
-    const row=await EPSeite2Core.append(doc,event);
+    const added=[];
+    for(const event of events)added.push(await EPSeite2Core.append(doc,event));
     const bytes=await doc.save({useObjectStreams:false,updateFieldAppearances:true});
-    const name=uniqueName(pdfName(e),used);results.push({name,bytes});changed.set(e,bytes);logs.push(`OK ${displayName(e)} (${e.cls}): BO-Zeile ${row}`);
+    const name=uniqueName(pdfName(e),used);results.push({name,bytes});changed.set(e,bytes);logs.push(`OK ${displayName(e)} (${e.cls}): ${added.length} Veranstaltung(en) – ${added.join(', ')}`);
    }catch(err){logs.push(`ÜBERSPRUNGEN ${displayName(e)}: ${err.message}`);}
    status(`${results.length} Dateien vorbereitet.\n`+logs.join('\n'));
   }
@@ -98,7 +126,7 @@
   try{
    if(dir){await writeFolder(dir,results);}else{
     const zip=new JSZip();for(const r of results)zip.file(r.name,r.bytes);
-    const blob=await zip.generateAsync({type:'blob',compression:'DEFLATE'});download(blob,`PA-Tools_v1.6.6_EP2_${new Date().toISOString().slice(0,10)}.zip`,'application/zip');
+    const blob=await zip.generateAsync({type:'blob',compression:'DEFLATE'});download(blob,`PA-Tools_v1.6.17_EP2_${new Date().toISOString().slice(0,10)}.zip`,'application/zip');
    }
    const scope=$('printScope').value;const printDocs=[];
    for(const e of entries){
