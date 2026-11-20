@@ -23,7 +23,8 @@
         ['ep-generator.html', 'EP Generator'],
         ['ep-seite2.html', 'EP 2. Seite'],
         ['antrag-be.html', 'Antrag BE · Beta'],
-        ['profil.html', 'Mein Profil']
+        ['profil.html', 'Mein Profil'],
+        ['tn-zertifikat.html', 'TN-Zertifikat · geplant']
       ];
 
       for (const [href, label] of directLinks) {
