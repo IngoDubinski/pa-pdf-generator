@@ -1,8 +1,8 @@
 "use strict";
 (function(){
  const key="pa-drucktool-theme";
- let theme="light";
- try{theme=localStorage.getItem(key)==="dark"?"dark":"light";}catch(e){}
+ let theme="dark";
+ try{theme=localStorage.getItem(key)==="light"?"light":"dark";}catch(e){}
  function apply(){document.documentElement.dataset.theme=theme;const b=document.getElementById("themeToggle");if(b){b.textContent=theme==="dark"?"☀ Hell":"☾ Dunkel";b.setAttribute("aria-pressed",String(theme==="dark"));}}
  apply();
  document.addEventListener("DOMContentLoaded",()=>{
