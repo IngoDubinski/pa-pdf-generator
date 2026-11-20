@@ -97,21 +97,19 @@ function pageSegments(page){
   const tm=b.match(/-?[\d.]+\s+-?[\d.]+\s+-?[\d.]+\s+-?[\d.]+\s+(-?[\d.]+)\s+(-?[\d.]+)\s+Tm\b/);
   if(t)out.push({text:t,x:tm?+tm[1]:(td?+td[1]:null),y:tm?+tm[2]:(td?-Number(td[2]):null)});
  }
- // PDFs edited with a standard PDF editor (including our fictional test
- // profiles) may append WinAnsi text as /helv [<HEX>] TJ, not as ToUnicode Tj.
- // Read that additional text for the footer ID and AC unit; never infer IDs
- // from the position of a page in the collected PDF.
- for(const part of src.matchAll(/\\bBT\\s*([\\s\\S]*?)\\s*ET\\b/g)){
+ // Some PDFs append WinAnsi text as /helv [<HEX>]TJ, not as ToUnicode Tj.
+ // Detect only these text runs, so the footer IDs stay accessible after editing.
+ for(const part of src.matchAll(/\bBT\s*([\s\S]*?)\s*ET\b/g)){
   const b=part[1];
-  if(!/\\/helv\\s+[\\d.]+\\s+Tf\\b/i.test(b))continue;
-  for(const match of b.matchAll(/\\[\\s*<([0-9a-f]+)>\\s*\\]\\s*TJ\\b/gi)){
+  if(!/\/helv\s+[\d.]+\s+Tf\b/i.test(b))continue;
+  for(const match of b.matchAll(/\[\s*<([0-9a-f]+)>\s*\]\s*TJ\b/gi)){
    const hex=match[1],bytes=[];
    for(let i=0;i+1<hex.length;i+=2)bytes.push(parseInt(hex.slice(i,i+2),16));
    const value=new TextDecoder('windows-1252').decode(Uint8Array.from(bytes)).trim();
    if(value)out.push({text:value,x:null,y:null});
   }
  }
- return {blocks:out,text:out.map(b=>b.text).join('\\n'),raw:src};
+ return {blocks:out,text:out.map(b=>b.text).join('\n'),raw:src};
 }
 function ident(text,kind){const top=kind==='PV'?text.match(/Sch[üu]ler\s*ID\s*:\s*(\d+)/i):null;const matches=[...text.matchAll(/\bID\s*:\s*(\d+)/gi)];const bottom=matches.length?+matches[matches.length-1][1]:null;
  if(top&&bottom&&+top[1]!==bottom)return null;return top?+top[1]:bottom;}
