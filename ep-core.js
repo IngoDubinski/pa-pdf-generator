@@ -93,30 +93,51 @@ function pageSegments(page){
  for(const part of src.matchAll(/\bBT\s*([\s\S]*?)\s*ET\b/g)){
   const b=part[1],f=b.match(/\/(F\d+)\s+[\d.]+\s+Tf/),map=maps[f?.[1]]||{},td=b.match(/(-?[\d.]+)\s+(-?[\d.]+)\s+Td/);
   const t=[...b.matchAll(/<([a-f0-9]+)>\s*Tj/gi)].map(g=>{let s='';for(let i=0;i<g[1].length;i+=4)s+=map[parseInt(g[1].slice(i,i+4),16)]||'';return s;}).join('');
-  if(t)out.push({text:t,x:td?+td[1]:null,y:td?-Number(td[2]):null});
+  // Profil-AC uses absolute Tm coordinates; Td commands inside each glyph run are only advances.
+  const tm=b.match(/-?[\d.]+\s+-?[\d.]+\s+-?[\d.]+\s+-?[\d.]+\s+(-?[\d.]+)\s+(-?[\d.]+)\s+Tm\b/);
+  if(t)out.push({text:t,x:tm?+tm[1]:(td?+td[1]:null),y:tm?+tm[2]:(td?-Number(td[2]):null)});
  }
  return {blocks:out,text:out.map(b=>b.text).join('\n'),raw:src};
 }
 function ident(text,kind){const top=kind==='PV'?text.match(/Sch[üu]ler\s*ID\s*:\s*(\d+)/i):null;const matches=[...text.matchAll(/\bID\s*:\s*(\d+)/gi)];const bottom=matches.length?+matches[matches.length-1][1]:null;
  if(top&&bottom&&+top[1]!==bottom)return null;return top?+top[1]:bottom;}
 function green(pageinfo){
- const cells=[];const regex=/0\.407843\d*\s+0\.752941\d*\s+0\.176470\d*\s+scn[\s\S]{0,160}?\s([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+re\s*f/g;
- for(const m of pageinfo.raw.matchAll(regex)){let [x,y,w,h]=m.slice(1).map(Number);if(x<195||x>650||y<155||y>590||w<18||w>24||h<11||h>16)continue;cells.push({x,y,side:x<400?'L':'R'});}
- const groups=new Map();for(const r of cells){const k=`${Math.round(r.y)}:${r.side}`;if(!groups.has(k))groups.set(k,new Set());groups.get(k).add(Math.round(r.x));}
- const values=[],strong=[];
- for(const [k,xs] of groups){const [y,side]=k.split(':'),score=xs.size;if(!score||score>5)continue;
-  let labels=pageinfo.blocks.filter(b=>b.x!=null&&b.y!=null&&Math.abs(b.y-(+y+19))<=3&&(side==='L'?b.x<150:b.x>295&&b.x<500)&&!b.text.toLowerCase().includes('nicht erfasst'));
+ // Profil AC draws green filled rectangles using RGB 'rg', not 'scn'.
+ // Follow fill colors across consecutive rectangles, not just the first bar in a run.
+ const cells=[],ops=/(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+rg\b|\/[A-Za-z0-9]+\s+scn\b|(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+re\s+f\b/g;
+ let isGreen=false;
+ for(const m of pageinfo.raw.matchAll(ops)){
+  if(m[1]!==undefined){
+   isGreen=Math.abs(+m[1]-0.407843)<0.012&&Math.abs(+m[2]-0.752941)<0.012&&Math.abs(+m[3]-0.176471)<0.012;
+   continue;
+  }
+  if(m[4]===undefined){isGreen=false;continue;} // patterned fill
+  if(!isGreen)continue;
+  const [x,y,w,h]=m.slice(4,8).map(Number);
+  // Exclude the legend and non-competency drawings.
+  if(x<195||x>650||y<155||y>590||w<18||w>24||h<11||h>16)continue;
+  cells.push({x,y,side:x<400?'L':'R'});
+ }
+ const groups=new Map();
+ for(const r of cells){const k=`${Math.round(r.y)}:${r.side}`;if(!groups.has(k))groups.set(k,new Set());groups.get(k).add(Math.round(r.x));}
+ const values=[],strengths=[];
+ for(const [k,xs] of groups){
+  const [y,side]=k.split(':'),score=xs.size;
+  if(score<1||score>5)continue;
+  const labels=pageinfo.blocks.filter(b=>b.x!=null&&b.y!=null&&Math.abs(b.y-(+y+19))<=3&&(side==='L'?b.x<150:b.x>295&&b.x<500)&&!b.text.toLowerCase().includes('nicht erfasst'));
   if(!labels.length)continue;
   const closest=labels.sort((a,b)=>Math.abs(a.y-(+y+19))-Math.abs(b.y-(+y+19)))[0];
-  const name=closest.text.trim();if(name.length<4||/^(\d+|\.{2,})$/.test(name))continue;
-  values.push({name,score});if(score>=4&&!strong.includes(name))strong.push(name);
+  const name=closest.text.trim();
+  if(name.length<4||/^(\d+|\.{2,})$/.test(name))continue;
+  values.push({name,score});
+  if(score>=4&&!strengths.includes(name))strengths.push(name);
  }
- return {hasValues:values.length>0,strengths:strong,values};
+ return {hasValues:values.length>0,strengths,values};
 }
 async function indexPdfs(files,kind,onlyClass='',onProgress=null){
  const index=new Map(),warnings=[];
  for(let fidx=0;fidx<files.length;fidx++){const file=files[fidx],doc=await PDF.PDFDocument.load(await bytes(file)),pageCount=doc.getPageCount();for(let n=0;n<pageCount;n++){
-  const page=doc.getPages()[n],p=pageSegments(page),klass=cls(p.text.match(/AC\s*[-–]?\s*Einheit\s*:\s*[^\n]*?\b(\d{1,2}[a-z])\b/i)?.[1]),id=ident(p.text,kind);
+  const page=doc.getPages()[n],p=pageSegments(page),parsedClass=cls(p.text.match(/AC\s*[-–]?\s*Einheit\s*:\s*[^\n]*?\b(\d{1,2}[a-z])\b/i)?.[1]),testFile=/AC\s*[-–]?\s*Einheit\s*:\s*PA\s*2026\s*Test\b/i.test(p.text),klass=parsedClass||(testFile?cls(onlyClass):''),id=ident(p.text,kind);
   if(onlyClass&&klass&&klass!==onlyClass){if(onProgress)onProgress({kind,file:file.name,fileIndex:fidx,fileCount:files.length,page:n+1,pageCount});if(onProgress&&n%5===0)await new Promise(r=>setTimeout(r,0));continue;}
   if(!klass||!id){warnings.push(`${kind} ${file.name} Seite ${n+1}: Klasse/ID nicht eindeutig – Seite nicht zugeordnet.`);if(onProgress)onProgress({kind,file:file.name,fileIndex:fidx,fileCount:files.length,page:n+1,pageCount});if(onProgress&&n%5===0)await new Promise(r=>setTimeout(r,0));continue;}
   const key=`${klass}:${id}`;if(index.has(key)){index.set(key,null);warnings.push(`${kind} ${klass} ID ${id}: doppelt, nicht zugeordnet.`);}else index.set(key,{file,page:n,info:p,assessment:kind==='KP'?green(p):null});
