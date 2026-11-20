@@ -18,7 +18,7 @@
       // Kein Aufblitzen der internen Navigation: Die nav-Tags sind im HTML vorab versteckt.
       nav.replaceChildren();
       const directLinks = [
-        ['index.html', 'PA-Tools'],
+        ['index.html', 'Übersicht'],
         ['tool.html', 'PA-Drucktool'],
         ['ep-generator.html', 'EP Generator'],
         ['ep-seite2.html', 'EP 2. Seite'],
