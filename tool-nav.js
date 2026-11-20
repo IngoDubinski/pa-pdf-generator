@@ -46,6 +46,7 @@
       const helpLinks = [
         ['vorlagen.html', 'Vorlagen'],
         ['excel-anleitung.html', 'Anleitung'],
+        ['abkuerzungen.html', 'Abkürzungen'],
         ['quellcode.html', 'Quellcode'],
         ['architektur.html', 'Schaubild'],
         ['projektideen.html', 'Projektideen'],
