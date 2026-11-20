@@ -149,7 +149,7 @@ function green(pageinfo){
 async function indexPdfs(files,kind,onlyClass='',onProgress=null){
  const index=new Map(),warnings=[];
  for(let fidx=0;fidx<files.length;fidx++){const file=files[fidx],doc=await PDF.PDFDocument.load(await bytes(file)),pageCount=doc.getPageCount();for(let n=0;n<pageCount;n++){
-  const page=doc.getPages()[n],p=pageSegments(page),parsedClass=cls(p.text.match(/AC\s*[-–]?\s*Einheit\s*:\s*[^\n]*?\b(\d{1,2}[a-z])\b/i)?.[1]),testFile=/AC\s*[-–]?\s*Einheit\s*:\s*PA\s*2026\s*Test\b/i.test(p.text),klass=parsedClass||(testFile?cls(onlyClass):''),id=ident(p.text,kind);
+  const page=doc.getPages()[n],p=pageSegments(page),parsedClass=cls(p.text.match(/AC\s*[-–]?\s*Einheit\s*:\s*[^\n]*?\b(\d{1,2}[a-z])\b/i)?.[1]),testFile=/AC\s*[-–]?\s*Einheit\s*:\s*PA\s*2026\s*Test\b/i.test(p.text),klass=testFile?cls(onlyClass):parsedClass,id=ident(p.text,kind);
   if(onlyClass&&klass&&klass!==onlyClass){if(onProgress)onProgress({kind,file:file.name,fileIndex:fidx,fileCount:files.length,page:n+1,pageCount});if(onProgress&&n%5===0)await new Promise(r=>setTimeout(r,0));continue;}
   if(!klass||!id){warnings.push(`${kind} ${file.name} Seite ${n+1}: Klasse/ID nicht eindeutig – Seite nicht zugeordnet.`);if(onProgress)onProgress({kind,file:file.name,fileIndex:fidx,fileCount:files.length,page:n+1,pageCount});if(onProgress&&n%5===0)await new Promise(r=>setTimeout(r,0));continue;}
   const key=`${klass}:${id}`;if(index.has(key)){index.set(key,null);warnings.push(`${kind} ${klass} ID ${id}: doppelt, nicht zugeordnet.`);}else index.set(key,{file,page:n,info:p,assessment:kind==='KP'?green(p):null});
