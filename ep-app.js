@@ -7,6 +7,12 @@ window.addEventListener('pagehide',()=>{if(lastClassPdfUrl)URL.revokeObjectURL(l
 const classDrafts=new Map(),selectedByClass=new Map();let lastDraft=null;const dkey='pa-ep-web-v020-', dbname='pa-ep-signature';
 const localGet=(key,def='')=>{try{return localStorage.getItem(dkey+key)??def;}catch{return def;}};
 const localSet=(key,v)=>{try{localStorage.setItem(dkey+key,v);}catch{}};
+// Dokumentauswahl: bei Erstnutzung nur EP, danach letzte Nutzerauswahl behalten.
+for(const kind of ['EP','KP','PV']){
+ const box=$('epDoc'+kind),saved=localGet('document-'+kind,null);
+ box.checked=saved===null?(kind==='EP'):saved==='1';
+ box.addEventListener('change',()=>localSet('document-'+kind,box.checked?'1':'0'));
+}
 $('epSchool').value=localGet('school','');$('epStaff').value=localGet('staff','');$('epSort').value=localGet('sort-v2','nr');
 $('epSchool').addEventListener('input',()=>localSet('school',$('epSchool').value));$('epStaff').addEventListener('input',()=>localSet('staff',$('epStaff').value));$('epSort').addEventListener('change',()=>{localSet('sort-v2',$('epSort').value);renderPicker();});
 $('epGoals').value=C.GOALS;
