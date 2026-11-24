@@ -173,6 +173,71 @@ async function feedbackXlsx(d,students){
  const tp='xl/tables/table1.xml';if(z.file(tp)){const td=new DOMParser().parseFromString(await z.file(tp).async('string'),'application/xml');const table=td.documentElement;table.setAttribute('ref',`A6:J${6+count}`);const af=[...table.childNodes].find(e=>e.localName==='autoFilter');if(af)af.setAttribute('ref',`A6:J${6+count}`);z.file(tp,new XMLSerializer().serializeToString(td));}
  return z.generateAsync({type:'uint8array'});
 }
+
+async function feedbackPdf(d,students){
+ // Druckfertige, eigenständige A4-Querformat-Liste; keine Änderung an der Excel-Vorlage.
+ const pdf=await P.PDFDocument.create();
+ const normal=await pdf.embedFont(P.StandardFonts.Helvetica);
+ const bold=await pdf.embedFont(P.StandardFonts.HelveticaBold);
+ const W=841.89,H=595.28,margin=35;
+ const ink=P.rgb(.10,.17,.25),pale=P.rgb(.93,.95,.98),border=P.rgb(.72,.77,.83);
+ const text=(value,size=10)=>String(value??'').replace(/[–—]/g,'-').replace(/[“”]/g,'"').replace(/[‘’]/g,"'").replace(/[^\u0020-\u00ff]/g,'');
+ const fit=(value,font,size,width)=>{const src=text(value),all=src.split(/\s+/),lines=[''];
+  for(const word of all){const current=lines[lines.length-1],next=current?current+' '+word:word;
+   if(font.widthOfTextAtSize(next,size)>width&&current)lines.push(word);else lines[lines.length-1]=next;}
+  return lines;
+ };
+ const profile=window.PAProfile?.get?.();
+ const adviser=(profile?.name||d.leaderFullName||d.leader||'').trim();
+ const sigOn=$('beUseSign')?.checked!==false&&profile?.useSignature!==false&&!!profile?.signature;
+ let signature=null;
+ if(sigOn){
+  const buf=window.PAProfile?.getSignatureBytes?.();
+  if(buf?.byteLength){
+   try{signature=profile.signature.startsWith('data:image/png;')?await pdf.embedPng(buf):await pdf.embedJpg(buf);}
+   catch(error){console.warn('Unterschriftsbild konnte nicht in die TN-PDF eingebettet werden:',error);}
+  }
+ }
+ const nPages=Math.max(1,Math.ceil(students.length/18));
+ const col=[margin,margin+35,margin+91,margin+215,margin+338,margin+600,W-margin];
+ const titles=['Nr.','Klasse','Vorname','Nachname','Feedback / Beobachtungen','EV'];
+ function drawText(page,t,x,y,size=9,font=normal,maxWidth=null){
+  const str=text(t,size);if(!str)return;
+  if(maxWidth&&font.widthOfTextAtSize(str,size)>maxWidth){
+   let trimmed=str;
+   while(trimmed.length&&font.widthOfTextAtSize(trimmed+'...',size)>maxWidth)trimmed=trimmed.slice(0,-1);
+   page.drawText(trimmed+'...',{x,y,size,font,color:ink});
+  }else page.drawText(str,{x,y,size,font,color:ink});
+ }
+ for(let p=0;p<nPages;p++){
+  const page=pdf.addPage([W,H]);
+  drawText(page,'Teilnahmeliste mit Feedback - Betriebserkundung',margin,H-42,17,bold);
+  drawText(page,'Betrieb / Firma: '+d.company,margin,H-68,10,bold,570);
+  drawText(page,'Datum: '+fmt(d.date),W-230,H-68,9,normal,200);
+  drawText(page,'Berufsfeld / Beruf: '+[d.field,d.jobs].filter(Boolean).join(' / '),margin,H-88,9,normal,W-2*margin);
+  const rowH=21,headY=H-112,firstY=headY-27;
+  page.drawRectangle({x:margin,y:headY-23,width:W-2*margin,height:25,color:pale});
+  titles.forEach((t,i)=>drawText(page,t,col[i]+5,headY-15,9,bold,col[i+1]-col[i]-8));
+  for(let c=0;c<col.length;c++)page.drawLine({start:{x:col[c],y:headY+2},end:{x:col[c],y:firstY-18*rowH},thickness:.55,color:border});
+  for(let r=0;r<=18;r++){const y=firstY-r*rowH;page.drawLine({start:{x:margin,y},end:{x:W-margin,y},thickness:.55,color:border});}
+  for(let r=0;r<18;r++){
+   const index=p*18+r,st=students[index];if(!st)continue;
+   const y=firstY-r*rowH-14,parts=nameParts(st.name);
+   const cell=[index+1,normClass(st.cls),parts[0],parts[1],'',evReceived.has(roster.findIndex(x=>studentKey(x)===studentKey(st)))?'ja':''];
+   cell.forEach((v,i)=>drawText(page,v,col[i]+5,y,8.3,normal,col[i+1]-col[i]-10));
+  }
+  const footerY=firstY-18*rowH-19;
+  drawText(page,'Praxisberater: '+adviser,margin,footerY,10,normal,470);
+  drawText(page,'Unterschrift:',W-265,footerY,9);
+  if(signature){
+   const scale=Math.min(165/signature.width,42/signature.height,1);
+   page.drawImage(signature,{x:W-175,y:footerY-13,width:signature.width*scale,height:signature.height*scale});
+  }else page.drawLine({start:{x:W-176,y:footerY-8},end:{x:W-39,y:footerY-8},thickness:.65,color:border});
+  drawText(page,'Seite '+(p+1)+' / '+nPages,W-100,20,8,normal);
+ }
+ return pdf.save();
+}
+
 const pdfDoc=(title,lines,rows)=>({title,lines,rows});
 async function generate(){if(busy)return;
  const d=data(),students=got(),chosen=new Set([...document.querySelectorAll('[data-doc]:checked')].map(x=>x.dataset.doc));
@@ -184,11 +249,11 @@ async function generate(){if(busy)return;
  try{
  const zip=new Z(),folder=`BE ${clean(d.company)} ${d.date.slice(0,4)}/`;
  if(chosen.has('antrag')){zip.file(folder+'01 Antrag Schulleitung.docx',await schoolDoc(d,students));zip.file(folder+'02 Teilnehmeranlage.docx',await appendixDoc(d,students));}
- if(chosen.has('feedback'))zip.file(folder+'03 TN-Liste mit Feedback.xlsx',await feedbackXlsx(d,students));
+ if(chosen.has('feedback')){zip.file(folder+'03 TN-Liste mit Feedback.xlsx',await feedbackXlsx(d,students));zip.file(folder+'04 TN-Liste mit Feedback.pdf',await feedbackPdf(d,students));}
  zip.file(folder+'Veranstaltung.json',JSON.stringify({version:2,event:d,selected:[...selected].map(i=>studentKey(roster[i])),evReceived:[...evReceived].map(i=>studentKey(roster[i]))},null,2));
- zip.file(folder+'BITTE LESEN.txt','Bearbeitbare Originalvorlagen: fünfseitiger Schulleitungsantrag (Word), Teilnehmeranlage (Word) und Feedbackliste (Excel).\nDruck: Originale in Word/LibreOffice beziehungsweise Excel öffnen, vor dem Ausdruck prüfen und dort ausdrucken.\nSchulleitungsantrag 5 Seiten: Duplexdruck beachten. Die separate Teilnehmeranlage kann direkt angehängt werden.\nEine originalgetreue Sammeldruck-PDF ist in dieser Version bewusst nicht enthalten.\n');
+ zip.file(folder+'BITTE LESEN.txt','Bearbeitbare Originalvorlagen: fünfseitiger Schulleitungsantrag (Word), Teilnehmeranlage (Word) und Feedbackliste (Excel und PDF).\nDruck: Originale in Word/LibreOffice beziehungsweise Excel öffnen, vor dem Ausdruck prüfen und dort ausdrucken.\nSchulleitungsantrag 5 Seiten: Duplexdruck beachten. Die separate Teilnehmeranlage kann direkt angehängt werden.\nEine originalgetreue Sammeldruck-PDF ist in dieser Version bewusst nicht enthalten.\n');
  const blob=await zip.generateAsync({type:'blob'});download(blob,clean(`BE ${d.company} ${d.date.slice(0,4)}`)+'.zip','application/zip');
- $('status').textContent=`Fertig: ${students.length} Schüler. fünfseitiger Original-Word-Antrag, separate Teilnehmeranlage und Original-Excel-Feedbackliste sind im ZIP. Beide Dateien bleiben bearbeitbar. Bitte Druckbild vor Nutzung prüfen.`;
+ $('status').textContent=`Fertig: ${students.length} Schüler. fünfseitiger Original-Word-Antrag, separate Teilnehmeranlage und Original-Excel-Feedbackliste und zusätzliche TN-PDF sind im ZIP. Beide Dateien bleiben bearbeitbar. Bitte Druckbild vor Nutzung prüfen.`;
  }catch(e){console.error(e);$('status').textContent='Erstellung fehlgeschlagen: '+e.message;}finally{busy=false;$('generate').disabled=false;}
 }
 $('generate').onclick=generate;
