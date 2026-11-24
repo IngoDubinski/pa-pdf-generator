@@ -167,6 +167,22 @@ async function feedbackXlsx(d,students){
    for(const [col,value] of [['A',st?i+1:''],['B',st?normClass(st.cls):''],['C',parts[0]],['D',parts[1]],['E',''],['F',''],['G','J'],['H','K'],['I','L'],['J','']])put(row,col,value);
    ss.insertBefore(row,anchor);
  }
+ // Praxisberater aus dem lokalen Profil statt eines fest eingetragenen Namens.
+ // Unterhalb der Teilnehmer-Tabelle bleibt Raum zum Unterzeichnen.
+ const profile=window.PAProfile?.get?.();
+ const adviser=(profile?.name||d.leaderFullName||d.leader||'').trim();
+ const footerRow=rows.find(row=>+row.getAttribute('r')===15+delta);
+ if(footerRow){
+  // Nur ein vorhandenes Namensfeld in der ersten Footer-Zeile ersetzen.
+  const candidates=[...footerRow.childNodes].filter(el=>el.localName==='c');
+  let target=candidates.find(el=>/Hallbauer|Dubinski/i.test(el.textContent||''));
+  if(!target)target=colCell(footerRow,'C');
+  if(target){
+   const letter=target.getAttribute('r').replace(/\d+/g,'');
+   put(footerRow,letter,adviser||'Praxisberater');
+  }
+  put(footerRow,'H','Unterschrift: ____________________');
+ }
  const dim=doc.getElementsByTagNameNS(ns,'dimension')[0];if(dim)dim.setAttribute('ref',`A1:J${16+delta}`);
  const sort=doc.getElementsByTagNameNS(ns,'sortState')[0];if(sort){sort.setAttribute('ref',`B7:D${6+count}`);for(const condition of [...sort.childNodes])if(condition.localName==='sortCondition'){const s=condition.getAttribute('ref');if(s)condition.setAttribute('ref',s.replace(/\d+$/,6+count));}}
  z.file(path,new XMLSerializer().serializeToString(doc));
